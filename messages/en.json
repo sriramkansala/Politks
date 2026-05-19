@@ -1,0 +1,31 @@
+{
+  "nav": {
+    "overview": "Overview",
+    "parties": "Parties",
+    "manifestos": "Manifestos",
+    "compare": "Compare",
+    "tracker": "Tracker",
+    "methodology": "Methodology",
+    "about": "About"
+  },
+  "home": {
+    "title": "Bharat Manifesto Watch",
+    "tagline": "Tracking political promises across India. See what was promised — see what was delivered.",
+    "glance": "At a glance",
+    "partiesTracked": "Parties tracked",
+    "promisesIndexed": "Promises indexed",
+    "promiseKept": "Promise Kept",
+    "promiseBroken": "Promise Broken"
+  },
+  "status": {
+    "not_yet_rated": "Not Yet Rated",
+    "in_the_works": "In the Works",
+    "stalled": "Stalled",
+    "compromise": "Compromise",
+    "promise_kept": "Promise Kept",
+    "promise_broken": "Promise Broken"
+  },
+  "search": {
+    "placeholder": "Search pages, parties, promises…"
+  }
+}

@@ -1,26 +1,174 @@
 @import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource/jetbrains-mono/400.css";
 
+/* ─── Linear-faithful design tokens ───────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surfaces */
+  --bg-base:       #08090a;
+  --bg-elevated:   #0f1011;
+  --bg-elevated-2: #161718;
+  --bg-input:      #1c1d1f;
+
+  /* Borders */
+  --border:        #23252a;
+  --border-strong: #2e3035;
+
+  /* Text */
+  --text-primary:   #f7f8f8;
+  --text-secondary: #8a8f98;
+  --text-tertiary:  #62666d;
+  --text-disabled:  #4a4d52;
+
+  /* Brand */
+  --accent:       #5e6ad2;
+  --accent-hover: #7170ff;
+  --accent-muted: color-mix(in oklab, #5e6ad2 12%, transparent);
+
+  /* Semantic */
+  --success: #4cb782;
+  --warning: #f2c94c;
+  --danger:  #eb5757;
+  --info:    #02b8cc;
+
+  /* Promise status (PolitiFact taxonomy) */
+  --status-kept:       #4cb782;
+  --status-broken:     #eb5757;
+  --status-compromise: #f2c94c;
+  --status-stalled:    #b08968;
+  --status-inworks:    #02b8cc;
+  --status-unrated:    #62666d;
+
+  /* Shadows */
+  --shadow-sm:     0 2px 4px rgba(0, 0, 0, 0.4);
+  --shadow-subtle: inset 0 0 0 1px #23252a;
+  --shadow-xl:     0 4px 32px rgba(8, 9, 10, 0.6);
+
+  /* Motion */
+  --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast:     100ms;
+  --duration-base:     150ms;
+  --duration-moderate: 200ms;
+  --duration-slow:     300ms;
+
+  /* Layout */
+  --sidebar-width:  240px;
+  --topnav-height:  48px;
+  --content-max:    1200px;
+
+  /* Radii */
+  --radius-tag:    2px;
+  --radius-badge:  4px;
+  --radius-card:   6px;
+  --radius-large:  12px;
+  --radius-pill:   9999px;
+
+  /* shadcn/ui compat */
+  --background:         var(--bg-base);
+  --foreground:         var(--text-primary);
+  --card:               var(--bg-elevated);
+  --card-foreground:    var(--text-primary);
+  --popover:            var(--bg-elevated-2);
+  --popover-foreground: var(--text-primary);
+  --primary:            var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary:          var(--bg-elevated-2);
+  --secondary-foreground: var(--text-secondary);
+  --muted:              var(--bg-elevated);
+  --muted-foreground:   var(--text-secondary);
+  --accent-ui:          var(--bg-elevated-2);
+  --accent-foreground:  var(--text-primary);
+  --destructive:        var(--danger);
+  --destructive-foreground: #ffffff;
+  --border-ui:          var(--border);
+  --input-ui:           var(--bg-input);
+  --ring:               var(--accent);
+  --radius:             6px;
 }
 
+/* ─── Tailwind v4 theme extension ─────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg-base:       var(--bg-base);
+  --color-bg-elevated:   var(--bg-elevated);
+  --color-bg-elevated-2: var(--bg-elevated-2);
+  --color-bg-input:      var(--bg-input);
+  --color-border:        var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-text-primary:   var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary:  var(--text-tertiary);
+  --color-text-disabled:  var(--text-disabled);
+
+  --color-accent:       var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-muted: var(--accent-muted);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger:  var(--danger);
+  --color-info:    var(--info);
+
+  --color-status-kept:       var(--status-kept);
+  --color-status-broken:     var(--status-broken);
+  --color-status-compromise: var(--status-compromise);
+  --color-status-stalled:    var(--status-stalled);
+  --color-status-inworks:    var(--status-inworks);
+  --color-status-unrated:    var(--status-unrated);
+
+  --font-sans: "Inter Variable", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base ─────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.4;
+  letter-spacing: -0.011em;
+  font-weight: 400;
+}
+
+/* ─── Typography ───────────────────────────────────────────── */
+.text-display    { font-size: 72px; line-height: 1;    letter-spacing: -0.022em; font-weight: 590; }
+.text-heading-xl { font-size: 48px; line-height: 1.2;  letter-spacing: -0.022em; font-weight: 590; }
+.text-heading    { font-size: 24px; line-height: 1.33; letter-spacing: -0.022em; font-weight: 510; }
+.text-subheading { font-size: 17px; line-height: 1.47; letter-spacing: -0.015em; font-weight: 510; }
+.text-body       { font-size: 14px; line-height: 1.4;  letter-spacing: -0.011em; font-weight: 400; }
+.text-caption    { font-size: 12px; line-height: 1.4;  letter-spacing: -0.010em; font-weight: 400; }
+.text-mono       { font-family: var(--font-mono); font-size: 13px; line-height: 1.4; letter-spacing: -0.015em; font-weight: 400; }
+
+/* ─── Focus ring ───────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent) 40%, transparent);
+  outline-offset: 2px;
+  border-radius: var(--radius-card);
+}
+
+/* ─── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+/* ─── Reduced motion ───────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

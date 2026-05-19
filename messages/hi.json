@@ -1,0 +1,31 @@
+{
+  "nav": {
+    "overview": "अवलोकन",
+    "parties": "दल",
+    "manifestos": "घोषणापत्र",
+    "compare": "तुलना",
+    "tracker": "ट्रैकर",
+    "methodology": "पद्धति",
+    "about": "हमारे बारे में"
+  },
+  "home": {
+    "title": "भारत मेनिफेस्टो वॉच",
+    "tagline": "भारत भर में राजनीतिक वादों पर नज़र रखना। देखें क्या वादा किया गया — देखें क्या पूरा हुआ।",
+    "glance": "एक नज़र में",
+    "partiesTracked": "ट्रैक किए गए दल",
+    "promisesIndexed": "दर्ज वादे",
+    "promiseKept": "वादा पूरा",
+    "promiseBroken": "वादा टूटा"
+  },
+  "status": {
+    "not_yet_rated": "अभी मूल्यांकन नहीं",
+    "in_the_works": "प्रगति में",
+    "stalled": "रुका हुआ",
+    "compromise": "समझौता",
+    "promise_kept": "वादा पूरा",
+    "promise_broken": "वादा टूटा"
+  },
+  "search": {
+    "placeholder": "पृष्ठ, दल, वादे खोजें…"
+  }
+}
