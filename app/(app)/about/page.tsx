@@ -1,4 +1,3 @@
-import { TopNav } from "@/components/shell/TopNav"
 import { ExternalLink } from "lucide-react"
 
 export const revalidate = 86400
@@ -6,7 +5,6 @@ export const revalidate = 86400
 export default function AboutPage() {
   return (
     <>
-      <TopNav title="About" />
       <div className="px-6 py-8 max-w-[860px] mx-auto space-y-8">
         <div>
           <h1 className="text-heading mb-2" style={{ color: "var(--text-primary)" }}>

@@ -85,6 +85,10 @@
   --input-ui:           var(--bg-input);
   --ring:               var(--accent);
   --radius:             6px;
+
+  /* Fluid Functionalism surface tokens */
+  --ff-hover:  rgba(247, 248, 248, 0.06);
+  --ff-active: rgba(247, 248, 248, 0.10);
 }
 
 /* ─── Tailwind v4 theme extension ─────────────────────────── */
@@ -117,8 +121,25 @@
   --color-status-inworks:    var(--status-inworks);
   --color-status-unrated:    var(--status-unrated);
 
+  /* FF surface utilities — generates bg-hover, bg-active */
+  --color-hover:  var(--ff-hover);
+  --color-active: var(--ff-active);
+
   --font-sans: "Inter Variable", "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  @keyframes spinner-move {
+  to {
+    stroke-dashoffset:       -100;
+    }
+  }
+  @keyframes spinner-dash {
+  0%, 100% {
+    stroke-dasharray:       15 85;
+    }
+  50% {
+    stroke-dasharray:       40 60;
+    }
+  }
 }
 
 /* ─── Base ─────────────────────────────────────────────────── */
@@ -164,6 +185,12 @@ body {
 ::-webkit-scrollbar-track { background: var(--bg-base); }
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 9999px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+/* ─── FF Table: named-group not supported in Tailwind v4 ───── */
+tr.is-active td {
+  color: var(--text-primary);
+  transition: color 80ms;
+}
 
 /* ─── Reduced motion ───────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {

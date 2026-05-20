@@ -1,5 +1,6 @@
-import { TopNav } from "@/components/shell/TopNav"
 import { StatusPill } from "@/components/promises/StatusPill"
+import { PartySymbol } from "@/components/parties/PartySymbol"
+import { tokens } from "@/lib/tokens"
 import type { PromiseStatus } from "@/lib/db/types"
 
 export const revalidate = 21600
@@ -49,20 +50,19 @@ const TOPICS = [
 export default function ComparePage() {
   return (
     <>
-      <TopNav title="Compare" />
       <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-8">
         <div>
-          <h1 className="text-heading mb-1" style={{ color: "var(--text-primary)" }}>
+          <h1 className="text-heading mb-1" style={{ color: tokens.color.textPrimary }}>
             Cross-Party Comparison
           </h1>
-          <p className="text-body" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-body" style={{ color: tokens.color.textSecondary }}>
             How did different parties promise on the same topics? Track delivery side by side.
           </p>
         </div>
 
         {TOPICS.map((topic) => (
           <section key={topic.id}>
-            <h2 className="text-subheading mb-3" style={{ color: "var(--text-primary)" }}>
+            <h2 className="text-subheading mb-3" style={{ color: tokens.color.textPrimary }}>
               {topic.label}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -71,25 +71,31 @@ export default function ComparePage() {
                   key={`${topic.id}-${p.slug}`}
                   className="p-4 rounded-[6px] flex flex-col gap-3"
                   style={{
-                    background: "var(--bg-elevated)",
-                    border: "1px solid var(--border)",
+                    background: tokens.color.bgElevated,
+                    border: `1px solid ${tokens.color.border}`,
                     borderTop: `3px solid ${p.color}`,
                   }}
                 >
                   <div className="flex items-center justify-between">
-                    <span
-                      className="text-[11px] font-[590] uppercase tracking-wide px-2 py-0.5 rounded-[2px]"
-                      style={{ background: `${p.color}22`, color: p.color }}
-                    >
-                      {p.party}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <PartySymbol slug={p.slug} color={p.color} size={18} />
+                      <span
+                        className="text-[11px] font-[590] uppercase tracking-[0.06em]"
+                        style={{ color: p.color }}
+                      >
+                        {p.party}
+                      </span>
+                    </div>
                     {p.numeric && (
-                      <span className="text-[11px] font-mono font-[510]" style={{ color: "var(--text-secondary)" }}>
+                      <span
+                        className="text-[11px] font-mono font-[510]"
+                        style={{ color: tokens.color.textSecondary }}
+                      >
                         {p.numeric}
                       </span>
                     )}
                   </div>
-                  <p className="text-[13px] leading-snug flex-1" style={{ color: "var(--text-primary)" }}>
+                  <p className="text-[13px] leading-snug flex-1" style={{ color: tokens.color.textPrimary }}>
                     {p.title}
                   </p>
                   <StatusPill status={p.status} />

@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation"
-import { TopNav } from "@/components/shell/TopNav"
 import { StatusPill } from "@/components/promises/StatusPill"
 import { ExternalLink, Clock, FileText } from "lucide-react"
 import type { PromiseStatus } from "@/lib/db/types"
@@ -68,7 +67,6 @@ export default async function PromisePage({ params }: { params: Promise<{ id: st
   if (!promise) {
     return (
       <>
-        <TopNav title="Promise" />
         <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto">
           <div
             className="rounded-[6px] px-6 py-10 text-center"
@@ -87,7 +85,6 @@ export default async function PromisePage({ params }: { params: Promise<{ id: st
 
   return (
     <>
-      <TopNav title="Promise Detail" />
       <div className="px-6 py-8 max-w-[860px] mx-auto space-y-6">
 
         {/* Header */}

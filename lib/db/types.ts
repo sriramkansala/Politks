@@ -53,7 +53,7 @@ export interface Manifesto {
   created_at: string
 }
 
-export interface Promise {
+export interface PromiseRow {
   id: string
   manifesto_id: string | null
   party_id: string | null
@@ -117,7 +117,127 @@ export interface PromiseComparison {
   created_at: string
 }
 
-// Supabase Database generic type
+// ── Forensic platform types ────────────────────────────────────────────────
+
+export type BillType = "constitutional" | "ordinary" | "money" | "private_member"
+export type BillOutcome = "passed" | "lapsed" | "withdrawn" | "repealed" | "pending"
+export type HouseType = "lok_sabha" | "rajya_sabha" | "state_assembly"
+export type EdgeType =
+  | "blocked_by" | "amended_by" | "linked_to" | "opposed_by"
+  | "lapsed_with" | "superseded_by" | "descended_from"
+  | "weakened_by" | "endorsed_by" | "caused_by"
+
+export interface Mp {
+  id: string
+  name: string
+  name_translations: Record<string, string>
+  party_id: string | null
+  party_name: string | null
+  house: HouseType | null
+  constituency: string | null
+  state_code: string | null
+  term_start: string | null
+  term_end: string | null
+  photo_url: string | null
+  myneta_id: string | null
+  created_at: string
+}
+
+export interface Bill {
+  id: string
+  slug: string
+  title: string
+  short_title: string | null
+  bill_number: string | null
+  bill_type: BillType | null
+  house_introduced: "lok_sabha" | "rajya_sabha" | null
+  introduced_date: string | null
+  mover_mp_id: string | null
+  mover_party_id: string | null
+  ministry: string | null
+  current_stage: number | null
+  predecessor_bill_id: string | null
+  promise_ids: string[]
+  is_money_bill_claimed: boolean
+  outcome: BillOutcome | null
+  lok_sabha_ayes: number | null
+  lok_sabha_noes: number | null
+  rajya_sabha_ayes: number | null
+  rajya_sabha_noes: number | null
+  assent_date: string | null
+  claude_summary: string | null
+  created_at: string
+}
+
+export interface StageEvent {
+  id: string
+  bill_id: string | null
+  promise_id: string | null
+  stage: number
+  stage_label: string
+  event_date: string | null
+  house: string | null
+  description: string
+  source_url: string | null
+  source_label: string | null
+  verbatim_quote: string | null
+  verbatim_speaker_id: string | null
+  verbatim_speaker_name: string | null
+  created_at: string
+}
+
+export interface IssueGraphEdge {
+  id: string
+  source_type: string
+  source_id: string
+  source_label: string
+  target_type: string
+  target_id: string
+  target_label: string
+  edge_type: EdgeType
+  description: string | null
+  evidence_source_url: string | null
+  confidence: number
+  created_at: string
+}
+
+export interface PromiseAncestry {
+  id: string
+  promise_id: string | null
+  ancestor_name: string
+  ancestor_year: number | null
+  ancestor_govt: string | null
+  relationship_note: string | null
+  sort_order: number
+  created_at: string
+}
+
+export interface BillVersion {
+  id: string
+  bill_id: string
+  version_label: string
+  version_date: string
+  source_url: string | null
+  raw_pdf_url: string | null
+  created_at: string
+}
+
+export interface BillClause {
+  id: string
+  bill_version_id: string
+  clause_number: string
+  clause_title: string | null
+  clause_text: string
+  parent_clause_id: string | null
+  topic_tags: string[]
+  references_act: string | null
+  is_poison_pill: boolean
+  attribution_note: string | null
+  ordinal: number
+  created_at: string
+}
+
+// ── Supabase Database generic type ────────────────────────────────────────
 export interface Database {
   public: {
     Tables: {
@@ -125,31 +245,67 @@ export interface Database {
         Row: Party
         Insert: Omit<Party, "id" | "created_at">
         Update: Partial<Omit<Party, "id" | "created_at">>
+        Relationships: []
       }
       manifestos: {
         Row: Manifesto
         Insert: Omit<Manifesto, "id" | "created_at">
         Update: Partial<Omit<Manifesto, "id" | "created_at">>
+        Relationships: []
       }
       promises: {
-        Row: Promise
-        Insert: Omit<Promise, "id" | "created_at">
-        Update: Partial<Omit<Promise, "id" | "created_at">>
+        Row: PromiseRow
+        Insert: Omit<PromiseRow, "id" | "created_at">
+        Update: Partial<Omit<PromiseRow, "id" | "created_at">>
+        Relationships: []
       }
       sources: {
         Row: Source
         Insert: Omit<Source, "id" | "created_at">
         Update: Partial<Omit<Source, "id" | "created_at">>
+        Relationships: []
       }
       status_updates: {
         Row: StatusUpdate
         Insert: Omit<StatusUpdate, "id" | "created_at">
         Update: Partial<Omit<StatusUpdate, "id" | "created_at">>
+        Relationships: []
       }
       promise_comparisons: {
         Row: PromiseComparison
         Insert: Omit<PromiseComparison, "id" | "created_at">
         Update: Partial<Omit<PromiseComparison, "id" | "created_at">>
+        Relationships: []
+      }
+      mps: {
+        Row: Mp
+        Insert: Omit<Mp, "id" | "created_at">
+        Update: Partial<Omit<Mp, "id" | "created_at">>
+        Relationships: []
+      }
+      bills: {
+        Row: Bill
+        Insert: Omit<Bill, "id" | "created_at">
+        Update: Partial<Omit<Bill, "id" | "created_at">>
+        Relationships: []
+      }
+      stage_events: {
+        Row: StageEvent
+        Insert: Omit<StageEvent, "id" | "created_at">
+        Update: Partial<Omit<StageEvent, "id" | "created_at">>
+        Relationships: []
+      }
+      issue_graph_edges: {
+        Row: IssueGraphEdge
+        Insert: Omit<IssueGraphEdge, "id" | "created_at">
+        Update: Partial<Omit<IssueGraphEdge, "id" | "created_at">>
+        Relationships: []
+      }
+      promise_ancestry: {
+        Row: PromiseAncestry
+        Insert: Omit<PromiseAncestry, "id" | "created_at">
+        Update: Partial<Omit<PromiseAncestry, "id" | "created_at">>
+        Relationships: []
       }
     }
     Functions: {
@@ -172,6 +328,8 @@ export interface Database {
         }>
       }
     }
+    Views: Record<string, never>
+    CompositeTypes: Record<string, never>
     Enums: {
       promise_status: PromiseStatus
       evidence_kind: EvidenceKind

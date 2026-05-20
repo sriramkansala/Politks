@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { FileText, MapPin } from "lucide-react"
 import { StatusPill } from "./StatusPill"
-import type { Promise as PromiseRow } from "@/lib/db/types"
+import type { PromiseRow } from "@/lib/db/types"
 import { cn } from "@/lib/utils"
 
 interface PromiseCardProps {

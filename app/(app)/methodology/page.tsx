@@ -1,4 +1,3 @@
-import { TopNav } from "@/components/shell/TopNav"
 import { StatusPill } from "@/components/promises/StatusPill"
 import type { PromiseStatus } from "@/lib/db/types"
 
@@ -40,7 +39,6 @@ const STATUSES: Array<{ status: PromiseStatus; definition: string; example: stri
 export default function MethodologyPage() {
   return (
     <>
-      <TopNav title="Methodology" />
       <div className="px-6 py-8 max-w-[860px] mx-auto space-y-8">
         <div>
           <h1 className="text-heading mb-2" style={{ color: "var(--text-primary)" }}>

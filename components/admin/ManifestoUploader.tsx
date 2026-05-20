@@ -161,7 +161,7 @@ export function ManifestoUploader() {
             {status === "running" ? "Extracting…" : "Start Extraction"}
           </Button>
           {status === "running" && (
-            <Button variant="outline" onClick={handleCancel}>
+            <Button variant="tertiary" onClick={handleCancel}>
               Cancel
             </Button>
           )}

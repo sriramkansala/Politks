@@ -1,0 +1,2824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bharat Civic Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ─────────────────────────────────────────────────────────────────────────
+     Bharat Civic Atlas — Bloomberg Terminal meets newsroom
+     ─────────────────────────────────────────────────────────────────────── */
+
+  :root {
+    --bg:               #07090c;
+    --bg-elev-1:        #0e1218;
+    --bg-elev-2:        #141a23;
+    --border:           #1d2530;
+    --border-strong:    #2c3848;
+    --text-primary:     #e8edf3;
+    --text-secondary:   #a6b1c0;
+    --text-tertiary:    #6b7888;
+    --text-disabled:    #475260;
+    --accent:           #6aa0ff;
+    --accent-dim:       rgba(106,160,255,0.18);
+    --warn:             #f4b942;
+    --good:             #2ecc71;
+    --bad:              #e74c3c;
+    --neutral:          #8a96a6;
+
+    /* Party palette */
+    --p-BJP:    #FF9933;
+    --p-INC:    #19AAED;
+    --p-AAP:    #0066CC;
+    --p-DMK:    #E50000;
+    --p-TMC:    #1B7A1B;
+    --p-YSRCP:  #00BFFF;
+    --p-BRS:    #FF69B4;
+    --p-OTHER:  #888888;
+
+    --panel-width:        420px;
+    --panel-width-wide:   720px;
+    --transition:         180ms ease-out;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection { background: var(--accent); color: #fff; }
+
+  /* ── Globe canvas ────────────────────────────────────────────── */
+
+  #globeViz {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  /* ── Top-left overlay ────────────────────────────────────────── */
+
+  .top-overlay {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 460px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+  }
+  .brand .dot {
+    width: 8px; height: 8px; border-radius: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent-dim);
+  }
+  .brand .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    letter-spacing: 0.12em;
+    padding: 2px 6px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .breadcrumb {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .breadcrumb .sep { color: var(--text-disabled); }
+  .breadcrumb .crumb {
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: background var(--transition), color var(--transition);
+  }
+  .breadcrumb .crumb:hover { background: var(--bg-elev-2); color: var(--text-primary); }
+  .breadcrumb .crumb.current { color: var(--accent); cursor: default; }
+
+  .search-wrap {
+    position: relative;
+    width: 320px;
+  }
+  .search-wrap input {
+    width: 100%;
+    background: rgba(14,18,24,0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 12px;
+    padding: 8px 12px 8px 30px;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color var(--transition);
+  }
+  .search-wrap input::placeholder { color: var(--text-disabled); }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-wrap::before {
+    content: '⌕';
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    font-size: 13px;
+    color: var(--text-disabled);
+    pointer-events: none;
+  }
+  .search-results {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: var(--bg-elev-1);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    max-height: 320px;
+    overflow-y: auto;
+    z-index: 12;
+    display: none;
+  }
+  .search-results.open { display: block; }
+  .search-results .res-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background var(--transition);
+  }
+  .search-results .res-item:hover { background: var(--bg-elev-2); }
+  .search-results .res-item:last-child { border-bottom: none; }
+  .search-results .res-name { color: var(--text-primary); font-size: 12px; }
+  .search-results .res-meta { color: var(--text-tertiary); font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+
+  /* ── Bottom legend ───────────────────────────────────────────── */
+
+  .legend {
+    position: absolute;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(14,18,24,0.78);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-secondary);
+    letter-spacing: 0.04em;
+  }
+  .legend-label {
+    color: var(--text-disabled);
+    text-transform: uppercase;
+    font-size: 9px;
+    margin-right: 4px;
+  }
+  .legend-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend-chip .sw {
+    width: 9px; height: 9px; border-radius: 2px;
+  }
+
+  /* ── Status pill (corner) ────────────────────────────────────── */
+  .status-pill {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(14,18,24,0.78);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-tertiary);
+  }
+  .status-pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--good);
+    box-shadow: 0 0 8px var(--good);
+  }
+
+  /* ── Right-side panel ────────────────────────────────────────── */
+
+  .panel {
+    position: absolute;
+    top: 0; right: 0;
+    height: 100vh;
+    width: var(--panel-width);
+    background: var(--bg-elev-1);
+    border-left: 1px solid var(--border);
+    z-index: 20;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: transform var(--transition), opacity var(--transition), width var(--transition);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .panel.open { transform: translateX(0); opacity: 1; }
+  .panel.wide { width: var(--panel-width-wide); }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elev-1);
+    flex-shrink: 0;
+  }
+  .panel-header .nav-btns {
+    display: flex; gap: 6px;
+  }
+  .panel-header button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-tertiary);
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 3px;
+    transition: background var(--transition), color var(--transition), border-color var(--transition);
+  }
+  .panel-header button:hover {
+    background: var(--bg-elev-2);
+    color: var(--text-primary);
+    border-color: var(--border-strong);
+  }
+  .panel-header .level {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-disabled);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 22px 32px;
+  }
+  .panel-body::-webkit-scrollbar { width: 6px; }
+  .panel-body::-webkit-scrollbar-track { background: transparent; }
+  .panel-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .panel-body.fade-in { animation: fadeSlide 200ms ease-out; }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Reusable elements ───────────────────────────────────────── */
+
+  .h-serif {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+  }
+  .h1 { font-size: 28px; }
+  .h2 { font-size: 20px; }
+  .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-disabled);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 6px;
+  }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  .party-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px 2px 6px;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+  .party-chip .sq {
+    width: 7px; height: 7px; border-radius: 1px;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 14px 0;
+  }
+  .stat {
+    background: var(--bg-elev-1);
+    padding: 10px 12px;
+  }
+  .stat .v {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+  .stat .k {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .section { margin-top: 22px; }
+  .section-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--text-tertiary);
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* CM card */
+  .cm-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--bg-elev-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-top: 12px;
+    cursor: pointer;
+    transition: border-color var(--transition);
+  }
+  .cm-card:hover { border-color: var(--accent); }
+  .cm-card .avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--bg-elev-1);
+    border: 1px solid var(--border);
+    background-size: cover; background-position: center;
+    flex-shrink: 0;
+  }
+  .cm-card .info .name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .cm-card .info .role { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+
+  /* Org chart */
+  .tree {
+    margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .tree .node { cursor: pointer; padding: 1px 4px; border-radius: 2px; }
+  .tree .node:hover { background: var(--bg-elev-2); color: var(--text-primary); }
+  .tree .leaf { color: var(--text-tertiary); padding-left: 16px; cursor: pointer; }
+  .tree .leaf:hover { color: var(--accent); }
+  .tree .toggle { color: var(--text-disabled); width: 12px; display: inline-block; }
+  .tree .children { padding-left: 16px; border-left: 1px solid var(--border); margin-left: 6px; }
+
+  /* News list */
+  .news-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .news-item:last-child { border-bottom: none; }
+  .news-item .headline { font-size: 12px; color: var(--text-primary); line-height: 1.4; }
+  .news-item .meta {
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sent-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+  .sent-pos { background: var(--good); }
+  .sent-neg { background: var(--bad); }
+  .sent-neu { background: var(--neutral); }
+
+  /* Politician header */
+  .pol-header {
+    display: flex; gap: 14px; align-items: center;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .pol-header .photo {
+    width: 60px; height: 60px; border-radius: 50%;
+    border: 2px solid var(--border-strong);
+    background-size: cover; background-position: center;
+    flex-shrink: 0;
+  }
+  .pol-header .name { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+  .pol-header .meta {
+    margin-top: 4px;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    font-size: 11px; color: var(--text-tertiary);
+  }
+  .pol-header .meta .dot { color: var(--text-disabled); }
+
+  .approval-gauge {
+    margin-top: 12px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .approval-gauge .gauge-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  .approval-gauge .gauge-fill {
+    position: absolute;
+    height: 100%;
+    background: linear-gradient(90deg, var(--bad), var(--warn) 40%, var(--good));
+    border-radius: 2px;
+  }
+  .approval-gauge .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    min-width: 38px;
+    text-align: right;
+  }
+  .approval-gauge .trend { color: var(--good); font-size: 12px; }
+  .approval-gauge .trend.down { color: var(--bad); }
+  .approval-gauge .trend.flat { color: var(--neutral); }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-top: 14px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 9px 12px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    white-space: nowrap;
+    transition: color var(--transition), border-color var(--transition);
+  }
+  .tab-btn:hover { color: var(--text-primary); }
+  .tab-btn.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--accent);
+  }
+  .tab-body {
+    padding-top: 16px;
+    animation: tabFade 180ms ease-out;
+  }
+  @keyframes tabFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Status pills (promises) */
+  .status-pl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .status-pl.fulfilled { background: rgba(46,204,113,0.18); color: var(--good); }
+  .status-pl.progress { background: rgba(244,185,66,0.18); color: var(--warn); }
+  .status-pl.pending  { background: rgba(138,150,166,0.18); color: var(--neutral); }
+  .status-pl.broken   { background: rgba(231,76,60,0.18); color: var(--bad); }
+
+  .promise-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .promise-row:last-child { border-bottom: none; }
+
+  /* Legal cases */
+  .case-card {
+    padding: 10px;
+    background: var(--bg-elev-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+  .case-card .title { font-size: 12px; color: var(--text-primary); font-weight: 500; }
+  .case-card .meta {
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .case-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  .case-status.open { background: rgba(244,185,66,0.18); color: var(--warn); }
+  .case-status.closed { background: rgba(138,150,166,0.18); color: var(--neutral); }
+  .case-status.acquitted { background: rgba(46,204,113,0.18); color: var(--good); }
+
+  .sub-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 14px 0 8px;
+  }
+
+  /* Assets/liabilities */
+  .assets-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .assets-row:last-child { border-bottom: none; }
+  .assets-row .k { color: var(--text-tertiary); }
+  .assets-row .v { color: var(--text-primary); font-family: 'JetBrains Mono', monospace; }
+
+  /* ── Power Network ───────────────────────────────────────────── */
+
+  .network-toolbar {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .mode-btn {
+    background: var(--bg-elev-2);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 5px 9px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: background var(--transition), color var(--transition), border-color var(--transition);
+  }
+  .mode-btn:hover { color: var(--text-primary); border-color: var(--border-strong); }
+  .mode-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 10px;
+    background: var(--bg-elev-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-tertiary);
+  }
+  .filter-row .lbl { text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-disabled); }
+  .hop-chip {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 2px 7px;
+    border-radius: 2px;
+    font-family: inherit;
+    font-size: 10px;
+    transition: background var(--transition), color var(--transition);
+  }
+  .hop-chip:hover { background: var(--bg-elev-1); color: var(--text-primary); }
+  .hop-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .weight-slider {
+    width: 80px;
+    accent-color: var(--accent);
+  }
+  .toggle-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-family: inherit;
+    font-size: 10px;
+  }
+  .toggle-chip.active { background: var(--bg-elev-1); border-color: var(--border-strong); color: var(--text-primary); }
+  .toggle-chip .sw { width: 7px; height: 7px; border-radius: 50%; }
+
+  .network-stage {
+    position: relative;
+    width: 100%;
+    height: 460px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .network-stage svg { width: 100%; height: 100%; cursor: grab; }
+  .network-stage svg:active { cursor: grabbing; }
+  .network-stage .legend-box {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(14,18,24,0.92);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-secondary);
+    z-index: 4;
+    min-width: 160px;
+  }
+  .network-stage .legend-box .lbl {
+    font-size: 9px;
+    color: var(--text-disabled);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .network-stage .legend-box .row {
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 4px;
+  }
+  .network-stage .trace-bar {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(14,18,24,0.92);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 9px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-secondary);
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .trace-bar button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+  .trace-bar button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .trace-bar .clear { color: var(--text-disabled); cursor: pointer; text-decoration: underline; }
+
+  .net-tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: rgba(7,9,12,0.96);
+    border: 1px solid var(--border-strong);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--text-primary);
+    z-index: 10;
+    max-width: 240px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+  }
+  .net-tooltip .ttip-type {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 2px;
+  }
+  .net-tooltip .ttip-name { font-weight: 600; }
+  .net-tooltip .ttip-desc { color: var(--text-secondary); margin-top: 4px; font-size: 10px; }
+
+  /* Shared interests table */
+  .shared-table {
+    width: 100%;
+    margin-top: 16px;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+  .shared-table thead th {
+    text-align: left;
+    padding: 8px 10px;
+    background: var(--bg-elev-2);
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .shared-table thead th:hover { color: var(--text-primary); }
+  .shared-table tbody td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .shared-table tbody tr:hover td { background: var(--bg-elev-2); color: var(--text-primary); }
+  .shared-table .pct { font-family: 'JetBrains Mono', monospace; color: var(--text-primary); }
+
+  /* Edge labels in graph */
+  text.edge-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    fill: var(--text-tertiary);
+    paint-order: stroke;
+    stroke: var(--bg);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  text.edge-label.pct { fill: var(--text-primary); font-weight: 500; }
+
+  text.node-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    fill: var(--text-primary);
+    paint-order: stroke;
+    stroke: var(--bg);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+    pointer-events: none;
+    text-anchor: middle;
+  }
+
+  /* Loading overlay */
+  .loading {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 14px;
+    transition: opacity 400ms;
+  }
+  .loading.hidden { opacity: 0; pointer-events: none; }
+  .loading .spinner {
+    width: 28px; height: 28px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 800ms linear infinite;
+  }
+  .loading .txt {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Action buttons */
+  .pill-link {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    cursor: pointer;
+  }
+  .pill-link:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="loading" id="loading">
+  <div class="spinner"></div>
+  <div class="txt">Loading Bharat Civic Atlas…</div>
+</div>
+
+<div id="globeViz"></div>
+
+<div class="top-overlay">
+  <div class="brand">
+    <span class="dot"></span>
+    BHARAT CIVIC ATLAS
+    <span class="tag">v0.1 · Demo</span>
+  </div>
+  <div class="breadcrumb" id="breadcrumb">
+    <span class="crumb current">India</span>
+  </div>
+  <div class="search-wrap">
+    <input id="search" placeholder="Search states, politicians, parties, entities…" autocomplete="off"/>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<div class="status-pill">
+  <span class="dot"></span>
+  Live data feed · simulated
+</div>
+
+<div class="legend" id="legend"></div>
+
+<aside class="panel" id="panel">
+  <div class="panel-header">
+    <div class="nav-btns">
+      <button id="backBtn" title="Step up one level">← Back</button>
+    </div>
+    <div class="level" id="levelIndicator">—</div>
+    <div class="nav-btns">
+      <button id="closeBtn" title="Close (Esc)">✕</button>
+    </div>
+  </div>
+  <div class="panel-body" id="panelBody"></div>
+</aside>
+
+<!-- Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/globe.gl@2.34.4/dist/globe.gl.min.js"></script>
+
+<script>
+/* ──────────────────────────────────────────────────────────────────────────
+   SAMPLE DATA — illustrative placeholders only.
+   Replace with real data from: ADR/MyNeta (politicians, assets, cases),
+   PRS India (legislative record), MIB media ownership filings,
+   MCA company filings (shareholding), Election Commission donation data,
+   and news APIs (headlines, sentiment).
+   ────────────────────────────────────────────────────────────────────────── */
+
+const PARTIES = {
+  BJP:   { name: 'Bharatiya Janata Party',        color: '#FF9933', short: 'BJP'   },
+  INC:   { name: 'Indian National Congress',      color: '#19AAED', short: 'INC'   },
+  AAP:   { name: 'Aam Aadmi Party',                color: '#0066CC', short: 'AAP'   },
+  DMK:   { name: 'Dravida Munnetra Kazhagam',      color: '#E50000', short: 'DMK'   },
+  TMC:   { name: 'All India Trinamool Congress',   color: '#1B7A1B', short: 'TMC'   },
+  YSRCP: { name: 'YSR Congress Party',             color: '#00BFFF', short: 'YSRCP' },
+  BRS:   { name: 'Bharat Rashtra Samithi',         color: '#FF69B4', short: 'BRS'   },
+  OTHER: { name: 'Regional / Other',                color: '#888888', short: 'OTHER' }
+};
+
+// State → ruling party (placeholder assignments — names match the loaded GeoJSON)
+const STATE_PARTY = {
+  'Andhra Pradesh':                            'YSRCP',
+  'Arunachal Pradesh':                         'BJP',
+  'Assam':                                     'BJP',
+  'Bihar':                                     'OTHER',
+  'Chhattisgarh':                              'BJP',
+  'Goa':                                       'BJP',
+  'Gujarat':                                   'BJP',
+  'Haryana':                                   'BJP',
+  'Himachal Pradesh':                          'INC',
+  'Jharkhand':                                 'OTHER',
+  'Karnataka':                                 'INC',
+  'Kerala':                                    'OTHER',
+  'Madhya Pradesh':                            'BJP',
+  'Maharashtra':                               'BJP',
+  'Manipur':                                   'BJP',
+  'Meghalaya':                                 'OTHER',
+  'Mizoram':                                   'OTHER',
+  'Nagaland':                                  'OTHER',
+  'Odisha':                                    'OTHER',
+  'Punjab':                                    'AAP',
+  'Rajasthan':                                 'BJP',
+  'Sikkim':                                    'OTHER',
+  'Tamil Nadu':                                'DMK',
+  'Telangana':                                 'INC',
+  'Tripura':                                   'BJP',
+  'Uttar Pradesh':                             'BJP',
+  'Uttarakhand':                               'BJP',
+  'West Bengal':                               'TMC',
+  'Delhi':                                     'AAP',
+  'Jammu & Kashmir':                           'OTHER',
+  'Ladakh':                                    'OTHER',
+  'Puducherry':                                'OTHER',
+  'Chandigarh':                                'BJP',
+  'Andaman & Nicobar':                         'OTHER',
+  'Dadra and Nagar Haveli and Daman and Diu':  'BJP',
+  'Lakshadweep':                               'OTHER'
+};
+
+// Detailed state metadata
+const STATES = {
+  'Karnataka': {
+    party: 'INC',
+    cm: 'pol_01',
+    mpCount: 28, mlaCount: 224, population: '6.10 cr', literacy: '75.4%',
+    cabinet: ['pol_01', 'pol_02'],
+    constituencies: {
+      'Bengaluru South':    { district: 'Bengaluru Urban', mla: 'pol_03', mp: 'pol_04', electorate: '23.1 L', turnout: '54.2%' },
+      'Bengaluru Central':  { district: 'Bengaluru Urban', mla: 'pol_02', mp: 'pol_03', electorate: '19.8 L', turnout: '49.1%' }
+    },
+    news: [
+      { headline: 'Karnataka cabinet approves 33% reservation in state corporations',  source: 'PulseWire',     date: '2026-05-12', sentiment: 'pos' },
+      { headline: 'CM Devaraj announces ₹2,400 cr Bengaluru metro extension',          source: 'BharatNow TV',  date: '2026-04-28', sentiment: 'pos' },
+      { headline: 'Opposition flags irregularities in mining lease awards',            source: 'Daily Herald',  date: '2026-04-15', sentiment: 'neg' },
+      { headline: 'New IT policy targets ₹1 L cr export by 2028',                       source: 'NewsByte',      date: '2026-03-22', sentiment: 'pos' }
+    ]
+  },
+  'Tamil Nadu': {
+    party: 'DMK',
+    cm: 'pol_05',
+    mpCount: 39, mlaCount: 234, population: '7.21 cr', literacy: '80.1%',
+    cabinet: ['pol_05', 'pol_06'],
+    constituencies: {
+      'Chennai Central':   { district: 'Chennai',  mla: 'pol_06', mp: 'pol_05', electorate: '14.5 L', turnout: '58.7%' },
+      'Coimbatore':        { district: 'Coimbatore', mla: 'pol_06', mp: 'pol_06', electorate: '17.2 L', turnout: '61.4%' }
+    },
+    news: [
+      { headline: 'TN announces statewide free bus travel scheme for women',          source: 'Dakshin Daily', date: '2026-05-10', sentiment: 'pos' },
+      { headline: 'DMK MLA in court over land conversion case',                       source: 'PulseWire',     date: '2026-04-19', sentiment: 'neg' },
+      { headline: 'Chennai Metro Phase 2 commissioned',                                source: 'BharatNow TV',  date: '2026-03-30', sentiment: 'pos' },
+      { headline: 'NEET dispute reignites — state assembly passes resolution',        source: 'Daily Herald',  date: '2026-03-11', sentiment: 'neu' }
+    ]
+  },
+  'Maharashtra': {
+    party: 'BJP',
+    cm: 'pol_07',
+    mpCount: 48, mlaCount: 288, population: '12.34 cr', literacy: '82.3%',
+    cabinet: ['pol_07', 'pol_08'],
+    constituencies: {
+      'Mumbai South':   { district: 'Mumbai',  mla: 'pol_08', mp: 'pol_07', electorate: '14.8 L', turnout: '47.2%' },
+      'Pune':           { district: 'Pune',     mla: 'pol_07', mp: 'pol_08', electorate: '21.3 L', turnout: '52.6%' }
+    },
+    news: [
+      { headline: 'Maharashtra cabinet clears farm loan waiver of ₹40,000 cr',        source: 'BharatNow TV',  date: '2026-05-08', sentiment: 'pos' },
+      { headline: 'Pune-Mumbai expressway expansion contract awarded',                 source: 'Pulse 24',      date: '2026-04-25', sentiment: 'neu' },
+      { headline: 'ED summons Mumbai South MLA over realty project',                   source: 'Daily Herald',  date: '2026-04-02', sentiment: 'neg' },
+      { headline: 'BMC announces revised garbage collection policy',                   source: 'Bengaluru Mirror', date: '2026-03-15', sentiment: 'neu' }
+    ]
+  },
+  'West Bengal': {
+    party: 'TMC',
+    cm: 'pol_09',
+    mpCount: 42, mlaCount: 294, population: '9.13 cr', literacy: '76.3%',
+    cabinet: ['pol_09'],
+    constituencies: {
+      'Kolkata North':  { district: 'Kolkata', mla: 'pol_09', mp: 'pol_09', electorate: '12.7 L', turnout: '60.3%' }
+    },
+    news: [
+      { headline: 'Bengal expands Lakshmi Bhandar scheme to women under 25',          source: 'NewsByte',      date: '2026-05-14', sentiment: 'pos' },
+      { headline: 'CBI raids on TMC functionaries in coal scam probe',                 source: 'Daily Herald',  date: '2026-04-30', sentiment: 'neg' },
+      { headline: 'Kolkata Port Trust modernization tender floated',                   source: 'WestStar News', date: '2026-04-08', sentiment: 'neu' },
+      { headline: 'CM clears ₹1,200 cr Howrah riverfront project',                     source: 'PulseWire',     date: '2026-03-21', sentiment: 'pos' }
+    ]
+  },
+  'Telangana': {
+    party: 'INC',
+    cm: 'pol_10',
+    mpCount: 17, mlaCount: 119, population: '3.50 cr', literacy: '72.8%',
+    cabinet: ['pol_10'],
+    constituencies: {
+      'Hyderabad':  { district: 'Hyderabad', mla: 'pol_10', mp: 'pol_10', electorate: '20.4 L', turnout: '46.5%' }
+    },
+    news: [
+      { headline: 'Telangana announces ₹500 cr seed fund for AI startups',            source: 'NewsByte',      date: '2026-05-09', sentiment: 'pos' },
+      { headline: 'Hyderabad airport expansion gets environment clearance',           source: 'BharatNow TV',  date: '2026-04-18', sentiment: 'neu' },
+      { headline: 'Opposition raises questions on Kaleshwaram project audit',         source: 'Daily Herald',  date: '2026-04-05', sentiment: 'neg' },
+      { headline: 'CM Kumar inaugurates Musi river rejuvenation Phase 1',             source: 'PulseWire',     date: '2026-03-19', sentiment: 'pos' }
+    ]
+  }
+};
+
+// Politicians — full profiles
+const POLITICIANS = {
+  pol_01: {
+    name: 'Arjun Devaraj', party: 'INC', state: 'Karnataka',
+    constituency: 'Bengaluru Central', position: 'Chief Minister · Karnataka',
+    age: 58, yearsInOffice: 12, approval: 62, trend: 'up',
+    photo: 'https://ui-avatars.com/api/?name=Arjun+Devaraj&background=19AAED&color=fff&size=128',
+    overview: {
+      responsibilities: ['Chief Minister', 'Home Affairs', 'Finance', 'General Administration'],
+      achievements: [
+        { d: '2025-09', t: 'Cleared ₹2,400 cr Namma Metro Phase 3 extension' },
+        { d: '2024-12', t: 'Passed Karnataka State Reservation (Amendment) Act' },
+        { d: '2024-06', t: 'Launched Gruha Lakshmi cash transfer scheme — 1.1 cr beneficiaries' },
+        { d: '2023-08', t: 'Negotiated revised Cauvery water-sharing terms with TN' }
+      ],
+      assets: '₹14.20 cr', liabilities: '₹1.85 cr',
+      cases: 3
+    },
+    promises: [
+      { t: 'Free electricity up to 200 units for households',           s: 'fulfilled' },
+      { t: 'Recruitment freeze on transferable government postings',    s: 'progress'  },
+      { t: 'Bengaluru tunnel road project (Hosur Rd to Tumkur Rd)',     s: 'pending'   },
+      { t: 'Cap on private school annual fee hike at 8%',                s: 'progress'  },
+      { t: 'Direct bus connectivity to all taluka HQs',                 s: 'fulfilled' },
+      { t: '100% rooftop solar subsidy for SC/ST households',           s: 'broken'    }
+    ],
+    legal: {
+      criminal: [
+        { no: 'CC/284/2018', court: 'XV ACMM, Bengaluru',    filed: '2018-07-14', issue: 'Defamation (IPC 499/500)',                    status: 'open'   }
+      ],
+      civil: [
+        { no: 'OS/119/2020',  court: 'City Civil Court, Bengaluru', filed: '2020-02-11', issue: 'Property dispute — family settlement',          status: 'open'  },
+        { no: 'OS/422/2017',  court: 'City Civil Court, Bengaluru', filed: '2017-11-03', issue: 'Land conversion — agricultural to residential', status: 'closed' }
+      ],
+      pending: [
+        { no: 'WP/9302/2023', court: 'Karnataka High Court',  filed: '2023-04-22', issue: 'PIL on cabinet vehicle purchase order', status: 'open'  }
+      ]
+    },
+    news: [
+      { headline: 'Devaraj signals second-term agenda focused on jobs',                   source: 'PulseWire',     date: '2026-05-11', sentiment: 'pos' },
+      { headline: 'CM meets industry on data centre policy',                              source: 'BharatNow TV',  date: '2026-04-29', sentiment: 'neu' },
+      { headline: 'Question over CM\'s declared assets in latest affidavit',              source: 'Daily Herald',  date: '2026-04-14', sentiment: 'neg' },
+      { headline: 'Cabinet reshuffle expected post-budget',                                source: 'NewsByte',      date: '2026-03-28', sentiment: 'neu' },
+      { headline: 'CM inaugurates 24-hour grievance helpline',                            source: 'Bengaluru Mirror', date: '2026-03-12', sentiment: 'pos' }
+    ]
+  },
+  pol_02: {
+    name: 'Priya Iyer', party: 'INC', state: 'Karnataka',
+    constituency: 'Bengaluru Central', position: 'Finance Minister · Karnataka',
+    age: 51, yearsInOffice: 8, approval: 58, trend: 'flat',
+    photo: 'https://ui-avatars.com/api/?name=Priya+Iyer&background=19AAED&color=fff&size=128',
+    overview: {
+      responsibilities: ['Finance', 'Planning', 'Statistics'],
+      achievements: [
+        { d: '2025-03', t: 'Tabled ₹3.47 lakh cr Karnataka state budget' },
+        { d: '2024-09', t: 'Restructured state PSU debt — saved ₹1,800 cr' }
+      ],
+      assets: '₹6.10 cr', liabilities: '₹40 L', cases: 1
+    },
+    promises: [
+      { t: 'Zero deficit budget within first term',  s: 'progress'  },
+      { t: 'Property tax cap for senior citizens',   s: 'fulfilled' },
+      { t: 'Pension digitization across districts',  s: 'pending'   }
+    ],
+    legal: {
+      criminal: [],
+      civil: [{ no: 'OS/88/2019', court: 'City Civil Court, Bengaluru', filed: '2019-05-22', issue: 'Tenancy dispute', status: 'closed' }],
+      pending: []
+    },
+    news: [
+      { headline: 'Iyer presents revised fiscal projections to assembly',         source: 'Daily Herald', date: '2026-05-06', sentiment: 'neu' },
+      { headline: 'FM seeks GST council reform on petroleum',                      source: 'PulseWire',    date: '2026-04-12', sentiment: 'neu' }
+    ]
+  },
+  pol_03: {
+    name: 'Rohan Bhat', party: 'INC', state: 'Karnataka',
+    constituency: 'Bengaluru South', position: 'MLA · Bengaluru South',
+    age: 44, yearsInOffice: 4, approval: 51, trend: 'down',
+    photo: 'https://ui-avatars.com/api/?name=Rohan+Bhat&background=19AAED&color=fff&size=128',
+    overview: {
+      responsibilities: ['MLA', 'Standing Committee — Urban Development'],
+      achievements: [
+        { d: '2024-11', t: 'Cleared backlog of 412 BBMP grievance tickets in constituency' },
+        { d: '2023-07', t: 'Funded community library in Banashankari' }
+      ],
+      assets: '₹3.20 cr', liabilities: '₹65 L', cases: 0
+    },
+    promises: [
+      { t: 'Resolve potholes in 6 wards within 6 months',  s: 'progress' },
+      { t: 'Reduce water shortages in JP Nagar',           s: 'broken'   }
+    ],
+    legal: { criminal: [], civil: [], pending: [] },
+    news: [
+      { headline: 'Local MLA criticised for absentee record in assembly', source: 'Bengaluru Mirror', date: '2026-04-22', sentiment: 'neg' }
+    ]
+  },
+  pol_04: {
+    name: 'Sunita Rao', party: 'INC', state: 'Karnataka',
+    constituency: 'Bengaluru South', position: 'MP · Bengaluru South',
+    age: 49, yearsInOffice: 6, approval: 60, trend: 'up',
+    photo: 'https://ui-avatars.com/api/?name=Sunita+Rao&background=19AAED&color=fff&size=128',
+    overview: {
+      responsibilities: ['MP — Lok Sabha', 'Standing Committee — Information Technology', 'Member, Parliamentary Forum on Children'],
+      achievements: [
+        { d: '2025-11', t: 'Authored Private Member\'s Bill on data minimisation' },
+        { d: '2024-05', t: 'Re-elected with 53.2% vote share' }
+      ],
+      assets: '₹8.45 cr', liabilities: '₹95 L', cases: 1
+    },
+    promises: [
+      { t: 'Set up 3 ITI campuses in constituency',         s: 'progress'  },
+      { t: 'Push Centre on metro funding parity',           s: 'fulfilled' },
+      { t: 'Fellowship for 200 women coders annually',      s: 'fulfilled' }
+    ],
+    legal: {
+      criminal: [{ no: 'CC/91/2021', court: 'CMM, Bengaluru', filed: '2021-08-30', issue: 'Election speech — model code complaint', status: 'open' }],
+      civil: [], pending: []
+    },
+    news: [
+      { headline: 'Rao questions digital-personal-data rules in LS',  source: 'NewsByte',     date: '2026-05-02', sentiment: 'pos' },
+      { headline: 'MP pushes for Cauvery board reform',               source: 'PulseWire',    date: '2026-04-08', sentiment: 'neu' }
+    ]
+  },
+  pol_05: {
+    name: 'Karuna Selvam', party: 'DMK', state: 'Tamil Nadu',
+    constituency: 'Chennai Central', position: 'Chief Minister · Tamil Nadu',
+    age: 61, yearsInOffice: 18, approval: 67, trend: 'up',
+    photo: 'https://ui-avatars.com/api/?name=Karuna+Selvam&background=E50000&color=fff&size=128',
+    overview: {
+      responsibilities: ['Chief Minister', 'Public', 'Industries', 'IAS officer affairs'],
+      achievements: [
+        { d: '2025-08', t: 'Inaugurated Chennai Metro Phase 2 north corridor' },
+        { d: '2024-02', t: 'Rolled out free women bus travel statewide' }
+      ],
+      assets: '₹22.80 cr', liabilities: '₹3.50 cr', cases: 4
+    },
+    promises: [
+      { t: 'NEET exemption for TN students',                  s: 'progress'  },
+      { t: 'Free monthly LPG cylinder for ration cardholders', s: 'fulfilled' },
+      { t: 'Coastal cyclone-shelter network — 350 sites',     s: 'progress'  },
+      { t: 'Cap on private medical college fees',             s: 'broken'    }
+    ],
+    legal: {
+      criminal: [{ no: 'CC/2018/142', court: 'Special CBI Court, Chennai', filed: '2018-04-09', issue: 'PMLA — alleged graft (under appeal)', status: 'open' }],
+      civil: [],
+      pending: [{ no: 'CA/2021/77', court: 'Supreme Court of India', filed: '2021-09-16', issue: 'Appeal against High Court ruling', status: 'open' }]
+    },
+    news: [
+      { headline: 'CM Selvam unveils Tamil Nadu Industrial Policy 2026',        source: 'Dakshin Daily', date: '2026-05-15', sentiment: 'pos' },
+      { headline: 'TN assembly passes resolution against centre on GST share',   source: 'Daily Herald',  date: '2026-04-26', sentiment: 'neu' },
+      { headline: 'Court reserves judgment in CM\'s appeal',                     source: 'PulseWire',     date: '2026-04-11', sentiment: 'neu' }
+    ]
+  },
+  pol_06: {
+    name: 'Vikram Murugan', party: 'DMK', state: 'Tamil Nadu',
+    constituency: 'Coimbatore', position: 'MLA · Coimbatore',
+    age: 47, yearsInOffice: 5, approval: 55, trend: 'flat',
+    photo: 'https://ui-avatars.com/api/?name=Vikram+Murugan&background=E50000&color=fff&size=128',
+    overview: {
+      responsibilities: ['MLA', 'Public Accounts Committee'],
+      achievements: [
+        { d: '2025-05', t: 'Inaugurated 60-bed government maternity wing' }
+      ],
+      assets: '₹4.60 cr', liabilities: '₹70 L', cases: 2
+    },
+    promises: [
+      { t: 'Drinking water to all wards in summer',  s: 'progress' },
+      { t: 'Drainage overhaul in 8 zones',           s: 'pending'  }
+    ],
+    legal: {
+      criminal: [{ no: 'CC/61/2019', court: 'JMFC Coimbatore', filed: '2019-12-04', issue: 'Riot — IPC 147', status: 'open' }],
+      civil: [], pending: []
+    },
+    news: [
+      { headline: 'MLA Murugan in court over 2019 land conversion case', source: 'PulseWire', date: '2026-04-19', sentiment: 'neg' }
+    ]
+  },
+  pol_07: {
+    name: 'Devendra Patil', party: 'BJP', state: 'Maharashtra',
+    constituency: 'Pune', position: 'Chief Minister · Maharashtra',
+    age: 56, yearsInOffice: 14, approval: 64, trend: 'up',
+    photo: 'https://ui-avatars.com/api/?name=Devendra+Patil&background=FF9933&color=fff&size=128',
+    overview: {
+      responsibilities: ['Chief Minister', 'Home', 'Urban Development', 'General Administration'],
+      achievements: [
+        { d: '2025-06', t: 'Cleared Pune ring-road land acquisition (₹26,000 cr)' },
+        { d: '2024-10', t: 'MoU with semiconductor fab — 80,000 promised jobs' }
+      ],
+      assets: '₹38.40 cr', liabilities: '₹4.20 cr', cases: 5
+    },
+    promises: [
+      { t: 'Farm loan waiver for marginal farmers — ₹40,000 cr',       s: 'fulfilled' },
+      { t: 'Marathi as mandatory medium in primary schools',          s: 'progress'  },
+      { t: 'Mumbai coastal road full opening',                        s: 'progress'  },
+      { t: 'Affordable housing — 5 L units by 2027',                  s: 'pending'   },
+      { t: 'Direct cash transfer to women self-help groups',          s: 'fulfilled' }
+    ],
+    legal: {
+      criminal: [{ no: 'CC/118/2017', court: 'Special MP-MLA Court, Mumbai', filed: '2017-05-23', issue: 'Disproportionate assets — disposed',           status: 'closed'  }],
+      civil:    [{ no: 'OS/22/2020',   court: 'Pune Civil Court',              filed: '2020-01-30', issue: 'Family settlement — ancestral property',     status: 'open'    }],
+      pending:  [{ no: 'WP/13881/2023', court: 'Bombay High Court',             filed: '2023-06-14', issue: 'PIL — Mumbai metro contract award',         status: 'open'    }]
+    },
+    news: [
+      { headline: 'CM Patil hosts global investor summit in Mumbai',          source: 'BharatNow TV',     date: '2026-05-10', sentiment: 'pos' },
+      { headline: 'Opposition flags ₹14,000 cr metro tender process',         source: 'Daily Herald',     date: '2026-04-30', sentiment: 'neg' },
+      { headline: 'CM rolls out 12 new district hospitals',                    source: 'Pulse 24',          date: '2026-04-16', sentiment: 'pos' }
+    ]
+  },
+  pol_08: {
+    name: 'Anjali Deshmukh', party: 'BJP', state: 'Maharashtra',
+    constituency: 'Mumbai South', position: 'MLA · Mumbai South',
+    age: 52, yearsInOffice: 9, approval: 53, trend: 'down',
+    photo: 'https://ui-avatars.com/api/?name=Anjali+Deshmukh&background=FF9933&color=fff&size=128',
+    overview: {
+      responsibilities: ['MLA', 'Standing Committee — Finance'],
+      achievements: [
+        { d: '2025-02', t: 'Funded Marine Drive promenade refurbishment' }
+      ],
+      assets: '₹11.20 cr', liabilities: '₹1.30 cr', cases: 2
+    },
+    promises: [
+      { t: 'BMC ward office digitisation',                  s: 'progress' },
+      { t: 'Coastal flooding mitigation plan in 12 months', s: 'broken'   }
+    ],
+    legal: {
+      criminal: [{ no: 'CC/240/2020', court: 'CMM, Mumbai', filed: '2020-08-19', issue: 'Cheating — IPC 420', status: 'open' }],
+      civil: [], pending: []
+    },
+    news: [
+      { headline: 'ED summons Deshmukh in Worli realty case',  source: 'Daily Herald', date: '2026-04-02', sentiment: 'neg' }
+    ]
+  },
+  pol_09: {
+    name: 'Sourav Banerjee', party: 'TMC', state: 'West Bengal',
+    constituency: 'Kolkata North', position: 'Chief Minister · West Bengal',
+    age: 63, yearsInOffice: 22, approval: 59, trend: 'flat',
+    photo: 'https://ui-avatars.com/api/?name=Sourav+Banerjee&background=1B7A1B&color=fff&size=128',
+    overview: {
+      responsibilities: ['Chief Minister', 'Home', 'Information & Cultural Affairs'],
+      achievements: [
+        { d: '2025-04', t: 'Expanded Lakshmi Bhandar to women under 25' },
+        { d: '2024-01', t: 'Cleared Tajpur deep-sea port land allocation' }
+      ],
+      assets: '₹7.80 cr', liabilities: '₹50 L', cases: 6
+    },
+    promises: [
+      { t: 'Two free LPG cylinders per year for BPL households',  s: 'fulfilled' },
+      { t: 'New medical college in every district',                s: 'progress'  },
+      { t: 'Land reform settlement — 1.2 L pending titles',        s: 'progress'  }
+    ],
+    legal: {
+      criminal: [{ no: 'CC/77/2014',  court: 'CBI Special Court, Alipore', filed: '2014-09-12', issue: 'Conspiracy — Saradha chit fund probe',         status: 'open' }],
+      civil:    [],
+      pending:  [{ no: 'WP/2031/2022', court: 'Calcutta High Court',         filed: '2022-03-05', issue: 'Challenge to police reshuffle order',         status: 'open' }]
+    },
+    news: [
+      { headline: 'CM extends Lakshmi Bhandar to women under 25',         source: 'NewsByte',     date: '2026-05-14', sentiment: 'pos' },
+      { headline: 'CBI questions CM\'s OSD over coal levy allegations',   source: 'Daily Herald', date: '2026-04-30', sentiment: 'neg' }
+    ]
+  },
+  pol_10: {
+    name: 'Revanth Kumar', party: 'INC', state: 'Telangana',
+    constituency: 'Hyderabad', position: 'Chief Minister · Telangana',
+    age: 53, yearsInOffice: 3, approval: 56, trend: 'up',
+    photo: 'https://ui-avatars.com/api/?name=Revanth+Kumar&background=19AAED&color=fff&size=128',
+    overview: {
+      responsibilities: ['Chief Minister', 'IT & Industries', 'Information & PR'],
+      achievements: [
+        { d: '2025-01', t: 'AI Mission seed corpus — ₹500 cr' }
+      ],
+      assets: '₹17.90 cr', liabilities: '₹2.60 cr', cases: 2
+    },
+    promises: [
+      { t: 'Six guarantees — pension, gas, electricity, transport, housing, women cash', s: 'progress' },
+      { t: 'Hyderabad airport second runway',                                              s: 'pending'  }
+    ],
+    legal: {
+      criminal: [{ no: 'CC/331/2015', court: 'PMLA Special Court, Hyderabad', filed: '2015-06-20', issue: 'Cash-for-vote — discharged on appeal', status: 'acquitted' }],
+      civil: [], pending: []
+    },
+    news: [
+      { headline: 'CM unveils AI Mission seed corpus of ₹500 cr', source: 'NewsByte', date: '2026-05-09', sentiment: 'pos' }
+    ]
+  }
+};
+
+// Entities — media, businessmen, business groups, family
+const ENTITIES = {
+  // Media outlets
+  ent_med_01: { type: 'media',          subType: 'tv',         name: 'BharatNow TV',     description: 'National English news channel — Mumbai HQ' },
+  ent_med_02: { type: 'media',          subType: 'tv',         name: 'Pulse 24',         description: 'Hindi news channel — Maharashtra & MP focus' },
+  ent_med_03: { type: 'media',          subType: 'print',      name: 'Daily Herald',     description: 'English daily — 11 city editions' },
+  ent_med_04: { type: 'media',          subType: 'print',      name: 'Lok Sandesh',      description: 'Hindi daily — 7 state editions' },
+  ent_med_05: { type: 'media',          subType: 'print',      name: 'Dakshin Daily',    description: 'Tamil daily — Tamil Nadu & Puducherry' },
+  ent_med_06: { type: 'media',          subType: 'digital',    name: 'PulseWire',        description: 'Digital news startup — long-form & data' },
+  ent_med_07: { type: 'media',          subType: 'digital',    name: 'NewsByte',         description: 'Digital-first English news outlet' },
+  ent_med_08: { type: 'media',          subType: 'print',      name: 'Bengaluru Mirror', description: 'City tabloid — Bengaluru' },
+  ent_med_09: { type: 'media',          subType: 'tv',         name: 'WestStar News',    description: 'Regional Bengali news channel' },
+
+  // Businessmen
+  ent_bm_01: { type: 'businessman', name: 'Vikram Shroff',    description: 'Promoter — Vyapar Industries (textiles)' },
+  ent_bm_02: { type: 'businessman', name: 'Ravi Mehta',       description: 'Promoter — NetTel Holdings (telecom)' },
+  ent_bm_03: { type: 'businessman', name: 'Anil Goyenka',     description: 'Promoter — Goyenka Steel' },
+  ent_bm_04: { type: 'businessman', name: 'Karan Reddy',      description: 'Promoter — ReddyPharma Labs' },
+  ent_bm_05: { type: 'businessman', name: 'Mehul Kapoor',     description: 'Promoter — Skyline Realty' },
+  ent_bm_06: { type: 'businessman', name: 'Sundar Iyer',      description: 'Promoter — Deccan Mining Corp' },
+  ent_bm_07: { type: 'businessman', name: 'Deepa Bhatia',     description: 'Promoter — Bhatia Foods (FMCG)' },
+
+  // Business groups
+  ent_bg_01: { type: 'business_group', subType: 'conglomerate', name: 'Vyapar Industries',   description: 'Textiles, real estate, media holdings' },
+  ent_bg_02: { type: 'business_group', subType: 'conglomerate', name: 'NetTel Holdings',     description: 'Telecom, broadband, media stakes' },
+  ent_bg_03: { type: 'business_group', subType: 'conglomerate', name: 'Goyenka Steel',       description: 'Steel, mining, infrastructure' },
+  ent_bg_04: { type: 'business_group', subType: 'conglomerate', name: 'ReddyPharma Labs',    description: 'Pharma, hospitals, digital health' },
+  ent_bg_05: { type: 'business_group', subType: 'conglomerate', name: 'Skyline Realty',      description: 'Real estate, hospitality, retail' },
+  ent_bg_06: { type: 'business_group', subType: 'conglomerate', name: 'Deccan Mining Corp',  description: 'Mining, logistics, ports' },
+  ent_bg_07: { type: 'business_group', subType: 'conglomerate', name: 'Bhatia Foods',        description: 'FMCG, packaging, agri-trade' },
+
+  // Family members
+  ent_fam_01: { type: 'family', name: 'Meera Devaraj',  description: 'Spouse of Arjun Devaraj (pol_01)' },
+  ent_fam_02: { type: 'family', name: 'Aditya Patil',   description: 'Son of Devendra Patil (pol_07)' },
+  ent_fam_03: { type: 'family', name: 'Niharika Mehta', description: 'Daughter of Ravi Mehta (ent_bm_02)' },
+  ent_fam_04: { type: 'family', name: 'Rohit Iyer',     description: 'Brother of Priya Iyer (pol_02)' },
+  ent_fam_05: { type: 'family', name: 'Asha Kapoor',    description: 'Spouse of Mehul Kapoor (ent_bm_05)' }
+};
+
+// Relationships
+const RELATIONSHIPS = [
+  // ─── Politicians ↔ Parties (membership) ───────────────────────────────
+  { from: 'pol_01', to: 'INC',  type: 'member of',    weight: 90,  note: 'State unit president (Karnataka)' },
+  { from: 'pol_02', to: 'INC',  type: 'member of',    weight: 70,  note: 'State working committee' },
+  { from: 'pol_03', to: 'INC',  type: 'member of',    weight: 40,  note: '' },
+  { from: 'pol_04', to: 'INC',  type: 'member of',    weight: 60,  note: '' },
+  { from: 'pol_05', to: 'DMK',  type: 'member of',    weight: 95,  note: 'Party president' },
+  { from: 'pol_06', to: 'DMK',  type: 'member of',    weight: 40,  note: '' },
+  { from: 'pol_07', to: 'BJP',  type: 'member of',    weight: 90,  note: 'State unit head (Maharashtra)' },
+  { from: 'pol_08', to: 'BJP',  type: 'member of',    weight: 50,  note: '' },
+  { from: 'pol_09', to: 'TMC',  type: 'member of',    weight: 98,  note: 'Founder & president' },
+  { from: 'pol_10', to: 'INC',  type: 'member of',    weight: 80,  note: 'Telangana PCC' },
+
+  // ─── Family relations ─────────────────────────────────────────────────
+  { from: 'pol_01', to: 'ent_fam_01', type: 'family of',  weight: 100, note: 'Spouse' },
+  { from: 'pol_07', to: 'ent_fam_02', type: 'family of',  weight: 100, note: 'Son' },
+  { from: 'pol_02', to: 'ent_fam_04', type: 'family of',  weight: 100, note: 'Brother' },
+  { from: 'ent_bm_02', to: 'ent_fam_03', type: 'family of', weight: 100, note: 'Daughter' },
+  { from: 'ent_bm_05', to: 'ent_fam_05', type: 'family of', weight: 100, note: 'Spouse' },
+
+  // ─── Family → board (the soft entry point) ────────────────────────────
+  { from: 'ent_fam_01', to: 'ent_bg_01', type: 'board member', weight: 5,  note: '5% non-executive' },
+  { from: 'ent_fam_02', to: 'ent_bg_02', type: 'board member', weight: 8,  note: 'Non-executive director' },
+  { from: 'ent_fam_04', to: 'ent_bg_07', type: 'board member', weight: 10, note: 'Audit committee' },
+  { from: 'ent_fam_03', to: 'ent_bg_02', type: 'board member', weight: 12, note: 'Strategy advisor' },
+  { from: 'ent_fam_05', to: 'ent_bg_05', type: 'board member', weight: 15, note: 'Non-executive director' },
+
+  // ─── Businessmen own business groups ──────────────────────────────────
+  { from: 'ent_bm_01', to: 'ent_bg_01', type: 'owns', weight: 51,  note: '51% controlling stake (promoter)', source: 'MCA filing' },
+  { from: 'ent_bm_02', to: 'ent_bg_02', type: 'owns', weight: 75,  note: '75% promoter holding',             source: 'MCA filing' },
+  { from: 'ent_bm_03', to: 'ent_bg_03', type: 'owns', weight: 60,  note: '60% promoter holding',             source: 'MCA filing' },
+  { from: 'ent_bm_04', to: 'ent_bg_04', type: 'owns', weight: 80,  note: '80% promoter holding',             source: 'MCA filing' },
+  { from: 'ent_bm_05', to: 'ent_bg_05', type: 'owns', weight: 70,  note: '70% promoter holding',             source: 'MCA filing' },
+  { from: 'ent_bm_06', to: 'ent_bg_06', type: 'owns', weight: 100, note: 'Closely held',                     source: 'MCA filing' },
+  { from: 'ent_bm_07', to: 'ent_bg_07', type: 'owns', weight: 65,  note: '65% promoter holding',             source: 'MCA filing' },
+
+  // ─── Business groups own media (the headline edges) ────────────────────
+  { from: 'ent_bg_01', to: 'ent_med_01', type: 'owns', weight: 40, note: '40% equity stake',              source: 'MIB filing 2024' },
+  { from: 'ent_bg_02', to: 'ent_med_02', type: 'owns', weight: 35, note: '35% equity stake',              source: 'MIB filing 2024' },
+  { from: 'ent_bg_02', to: 'ent_med_03', type: 'owns', weight: 25, note: '25% strategic minority',        source: 'MIB filing 2024' },
+  { from: 'ent_bg_03', to: 'ent_med_05', type: 'owns', weight: 70, note: '70% controlling stake',         source: 'MIB filing 2024' },
+  { from: 'ent_bg_03', to: 'ent_med_02', type: 'owns', weight: 30, note: '30% co-investor',               source: 'MIB filing 2024' },
+  { from: 'ent_bg_04', to: 'ent_med_07', type: 'owns', weight: 51, note: '51% acquisition',               source: 'MCA notice 2025' },
+  { from: 'ent_bg_05', to: 'ent_med_04', type: 'owns', weight: 22, note: '22% minority',                  source: 'MIB filing 2024' },
+  { from: 'ent_bg_07', to: 'ent_med_09', type: 'owns', weight: 45, note: '45% strategic stake',           source: 'MIB filing 2024' },
+
+  // ─── Media cross-ownership ────────────────────────────────────────────
+  { from: 'ent_med_01', to: 'ent_med_06', type: 'owns', weight: 60, note: '60% — digital arm acquisition',    source: 'BSE disclosure' },
+  { from: 'ent_med_03', to: 'ent_med_08', type: 'owns', weight: 100, note: '100% subsidiary',                 source: 'MCA filing' },
+
+  // ─── Donations to parties ─────────────────────────────────────────────
+  { from: 'ent_bm_01', to: 'INC', type: 'donor', weight: 50,  note: '₹50 cr — electoral bonds 2022-24',    source: 'ECI disclosure' },
+  { from: 'ent_bm_02', to: 'BJP', type: 'donor', weight: 100, note: '₹100 cr — electoral bonds 2019-24',   source: 'ECI disclosure' },
+  { from: 'ent_bm_03', to: 'DMK', type: 'donor', weight: 35,  note: '₹35 cr — electoral bonds 2021-24',    source: 'ECI disclosure' },
+  { from: 'ent_bm_04', to: 'TMC', type: 'donor', weight: 25,  note: '₹25 cr — electoral bonds 2022-24',    source: 'ECI disclosure' },
+  { from: 'ent_bm_05', to: 'BJP', type: 'donor', weight: 18,  note: '₹18 cr — electoral bonds 2023',        source: 'ECI disclosure' },
+  { from: 'ent_bm_06', to: 'BJP', type: 'donor', weight: 15,  note: '₹15 cr — electoral bonds 2022',        source: 'ECI disclosure' },
+  { from: 'ent_bm_07', to: 'INC', type: 'donor', weight: 12,  note: '₹12 cr — electoral bonds 2023',        source: 'ECI disclosure' },
+  { from: 'ent_bm_02', to: 'INC', type: 'donor', weight: 8,   note: '₹8 cr — electoral bonds (hedging)',    source: 'ECI disclosure' },
+
+  // ─── Media as advertising client of parties (reverse-flow ad revenue) ──
+  { from: 'INC', to: 'ent_med_01', type: 'advertising client', weight: 20, note: '₹20 cr 2024-25 ad spend',  source: 'CAG-DAVP audit' },
+  { from: 'BJP', to: 'ent_med_03', type: 'advertising client', weight: 40, note: '₹40 cr 2024-25 ad spend',  source: 'CAG-DAVP audit' },
+  { from: 'BJP', to: 'ent_med_02', type: 'advertising client', weight: 28, note: '₹28 cr 2024-25 ad spend',  source: 'CAG-DAVP audit' },
+  { from: 'DMK', to: 'ent_med_05', type: 'advertising client', weight: 18, note: '₹18 cr 2024-25 ad spend',  source: 'CAG-DAVP audit' },
+  { from: 'TMC', to: 'ent_med_09', type: 'advertising client', weight: 9,  note: '₹9 cr 2024-25 ad spend',   source: 'CAG-DAVP audit' },
+  { from: 'INC', to: 'ent_med_08', type: 'advertising client', weight: 4,  note: '₹4 cr 2024-25 ad spend',   source: 'CAG-DAVP audit' },
+
+  // ─── Business-business: loans / strategic alliances ───────────────────
+  { from: 'ent_bm_05', to: 'ent_bm_01', type: 'loan / financial exposure', weight: 200, note: '₹200 cr inter-corp loan', source: 'BSE related-party' },
+  { from: 'ent_bm_01', to: 'ent_bm_02', type: 'ally / coalition partner',  weight: 0,   note: 'JV — TextilesNet',         source: 'press release' },
+  { from: 'ent_bm_03', to: 'ent_bm_06', type: 'ally / coalition partner',  weight: 0,   note: 'Mining-steel supply pact', source: 'press release' },
+
+  // ─── Political alliances ──────────────────────────────────────────────
+  { from: 'INC', to: 'DMK', type: 'ally / coalition partner', weight: 0, note: 'INDIA bloc' },
+  { from: 'INC', to: 'TMC', type: 'ally / coalition partner', weight: 0, note: 'INDIA bloc' },
+  { from: 'BJP', to: 'BRS', type: 'ally / coalition partner', weight: 0, note: 'State-level seat-sharing' }
+];
+
+/* ──────────────────────────────────────────────────────────────────────────
+   GLOBE INIT
+   ────────────────────────────────────────────────────────────────────────── */
+
+const GEOJSON_URL      = 'https://gist.githubusercontent.com/jbrobst/56c13bbbf9d97d187fea01ca62ea5112/raw/e388c4cae20aa53cb5090210a42ebb9b765c0a36/india_states.geojson';
+const FALLBACK_GEOJSON = 'https://raw.githubusercontent.com/geohacker/india/master/state/india_telengana.geojson';
+
+function getStateName(props) {
+  // Handle multiple possible property keys in different GeoJSON sources
+  return props.ST_NM || props.NAME_1 || props.st_nm || props.STATE || props.state || props.name || props.STATE_NAME || 'Unknown';
+}
+
+function partyForState(stateName) {
+  return STATE_PARTY[stateName] || 'OTHER';
+}
+
+function partyColor(stateName) {
+  const code = partyForState(stateName);
+  return PARTIES[code].color;
+}
+
+const NAV_STATE = {
+  level:        'india',     // 'india' | 'state' | 'constituency' | 'politician'
+  stateName:    null,
+  constituency: null,
+  politicianId: null,
+  hoveredFeature: null,
+  selectedFeature: null,
+  tab:          'overview'
+};
+
+let myGlobe;
+let stateFeatures = [];
+
+async function initGlobe() {
+  myGlobe = Globe()(document.getElementById('globeViz'))
+    .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+    .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+    .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
+    .showAtmosphere(true)
+    .atmosphereColor('#3a5d8a')
+    .atmosphereAltitude(0.18)
+    .polygonAltitude(f => f === NAV_STATE.selectedFeature ? 0.025 : (f === NAV_STATE.hoveredFeature ? 0.018 : 0.01))
+    .polygonCapColor(f => {
+      const c = partyColor(getStateName(f.properties));
+      if (f === NAV_STATE.selectedFeature) return c;
+      if (f === NAV_STATE.hoveredFeature)  return c;
+      return hexA(c, 0.55);
+    })
+    .polygonSideColor(() => 'rgba(0,0,0,0.15)')
+    .polygonStrokeColor(f => f === NAV_STATE.selectedFeature ? '#fff' : (f === NAV_STATE.hoveredFeature ? '#e8edf3' : '#1d2530'))
+    .polygonLabel(f => {
+      const n = getStateName(f.properties);
+      const p = partyForState(n);
+      return `
+        <div style="background:rgba(7,9,12,0.95);border:1px solid #2c3848;border-radius:4px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#e8edf3;">
+          <div style="font-weight:600;margin-bottom:2px;">${n}</div>
+          <div style="color:#a6b1c0;font-size:10px;">
+            <span style="display:inline-block;width:8px;height:8px;background:${PARTIES[p].color};border-radius:1px;vertical-align:middle;margin-right:5px"></span>
+            ${PARTIES[p].name}
+          </div>
+        </div>`;
+    })
+    .onPolygonHover(f => {
+      NAV_STATE.hoveredFeature = f;
+      document.body.style.cursor = f ? 'pointer' : 'default';
+      myGlobe.polygonAltitude(myGlobe.polygonAltitude())
+             .polygonCapColor(myGlobe.polygonCapColor())
+             .polygonStrokeColor(myGlobe.polygonStrokeColor());
+    })
+    .onPolygonClick(f => {
+      const name = getStateName(f.properties);
+      if (STATES[name]) {
+        openState(name, f);
+      } else {
+        // Fallback for states without sample data
+        openState(name, f, true);
+      }
+    });
+
+  myGlobe.pointOfView({ lat: 22, lng: 79, altitude: 1.8 }, 0);
+
+  // Load GeoJSON
+  let geo;
+  try {
+    geo = await fetch(GEOJSON_URL).then(r => r.json());
+  } catch (e) {
+    console.warn('Primary GeoJSON failed, trying fallback', e);
+    geo = await fetch(FALLBACK_GEOJSON).then(r => r.json());
+  }
+
+  stateFeatures = geo.features;
+  myGlobe.polygonsData(stateFeatures);
+
+  // Fly into India
+  setTimeout(() => {
+    myGlobe.pointOfView({ lat: 22, lng: 79, altitude: 0.9 }, 1500);
+    document.getElementById('loading').classList.add('hidden');
+  }, 400);
+}
+
+// Convert hex → rgba string with alpha
+function hexA(hex, a) {
+  const c = hex.replace('#', '');
+  const r = parseInt(c.slice(0,2), 16);
+  const g = parseInt(c.slice(2,4), 16);
+  const b = parseInt(c.slice(4,6), 16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+// Find a feature by state name (for search)
+function findFeatureByState(name) {
+  return stateFeatures.find(f => getStateName(f.properties) === name);
+}
+
+// Compute centroid lat/lng of a feature (approx — for camera target)
+function featureCentroid(f) {
+  if (!f) return null;
+  const coords = [];
+  const walk = a => {
+    if (typeof a[0] === 'number') coords.push(a);
+    else a.forEach(walk);
+  };
+  walk(f.geometry.coordinates);
+  let lat = 0, lng = 0;
+  coords.forEach(([x, y]) => { lng += x; lat += y; });
+  return { lat: lat / coords.length, lng: lng / coords.length };
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   PANEL — open/close + breadcrumb
+   ────────────────────────────────────────────────────────────────────────── */
+
+const panel        = document.getElementById('panel');
+const panelBody    = document.getElementById('panelBody');
+const levelInd     = document.getElementById('levelIndicator');
+const breadcrumbEl = document.getElementById('breadcrumb');
+
+function openPanel() {
+  panel.classList.add('open');
+}
+function closePanel() {
+  panel.classList.remove('open');
+  NAV_STATE.level = 'india';
+  NAV_STATE.stateName = null;
+  NAV_STATE.constituency = null;
+  NAV_STATE.politicianId = null;
+  NAV_STATE.selectedFeature = null;
+  myGlobe.polygonCapColor(myGlobe.polygonCapColor())
+         .polygonAltitude(myGlobe.polygonAltitude())
+         .polygonStrokeColor(myGlobe.polygonStrokeColor());
+  updateBreadcrumb();
+  myGlobe.pointOfView({ lat: 22, lng: 79, altitude: 0.9 }, 1500);
+}
+
+function renderBody(html) {
+  panelBody.innerHTML = html;
+  panelBody.classList.remove('fade-in');
+  void panelBody.offsetWidth;
+  panelBody.classList.add('fade-in');
+}
+
+function updateBreadcrumb() {
+  const crumbs = [`<span class="crumb${NAV_STATE.level==='india'?' current':''}" data-go="india">India</span>`];
+  if (NAV_STATE.stateName) {
+    crumbs.push(`<span class="sep">›</span>`);
+    crumbs.push(`<span class="crumb${NAV_STATE.level==='state'?' current':''}" data-go="state">${NAV_STATE.stateName}</span>`);
+  }
+  if (NAV_STATE.constituency) {
+    crumbs.push(`<span class="sep">›</span>`);
+    crumbs.push(`<span class="crumb${NAV_STATE.level==='constituency'?' current':''}" data-go="constituency">${NAV_STATE.constituency}</span>`);
+  }
+  if (NAV_STATE.politicianId) {
+    const p = POLITICIANS[NAV_STATE.politicianId];
+    if (p) {
+      crumbs.push(`<span class="sep">›</span>`);
+      crumbs.push(`<span class="crumb${NAV_STATE.level==='politician'?' current':''}" data-go="politician">${p.name}</span>`);
+    }
+  }
+  breadcrumbEl.innerHTML = crumbs.join(' ');
+  breadcrumbEl.querySelectorAll('.crumb').forEach(el => {
+    el.addEventListener('click', () => {
+      const tgt = el.dataset.go;
+      if (tgt === 'india') closePanel();
+      if (tgt === 'state' && NAV_STATE.stateName) openState(NAV_STATE.stateName, findFeatureByState(NAV_STATE.stateName));
+      if (tgt === 'constituency' && NAV_STATE.constituency) openConstituency(NAV_STATE.stateName, NAV_STATE.constituency);
+      if (tgt === 'politician' && NAV_STATE.politicianId) openPolitician(NAV_STATE.politicianId);
+    });
+  });
+
+  // Update level indicator
+  levelInd.textContent = ({
+    india: 'INDIA',
+    state: 'LEVEL 1 · STATE',
+    constituency: 'LEVEL 2 · CONSTITUENCY',
+    politician: 'LEVEL 3 · POLITICIAN'
+  })[NAV_STATE.level];
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   LEVEL 1 — STATE VIEW
+   ────────────────────────────────────────────────────────────────────────── */
+
+function openState(stateName, feature, noData = false) {
+  NAV_STATE.level = 'state';
+  NAV_STATE.stateName = stateName;
+  NAV_STATE.constituency = null;
+  NAV_STATE.politicianId = null;
+  NAV_STATE.selectedFeature = feature;
+  panel.classList.remove('wide');
+
+  myGlobe.polygonCapColor(myGlobe.polygonCapColor())
+         .polygonAltitude(myGlobe.polygonAltitude())
+         .polygonStrokeColor(myGlobe.polygonStrokeColor());
+
+  const c = featureCentroid(feature);
+  if (c) myGlobe.pointOfView({ lat: c.lat, lng: c.lng, altitude: 0.5 }, 1500);
+
+  const data = STATES[stateName];
+
+  if (!data) {
+    // Render minimal placeholder view
+    const partyCode = partyForState(stateName);
+    const party = PARTIES[partyCode];
+    renderBody(`
+      <h1 class="h-serif h1">${stateName}</h1>
+      <div style="margin-top:8px;">
+        <span class="party-chip" style="background:${hexA(party.color, 0.18)};color:${party.color};border-color:${hexA(party.color, 0.35)}">
+          <span class="sq" style="background:${party.color}"></span>${party.short}
+        </span>
+        <span style="color:var(--text-tertiary);margin-left:8px;font-size:11px;">${party.name}</span>
+      </div>
+      <div class="section">
+        <div class="section-title">No sample data</div>
+        <p style="color:var(--text-tertiary);font-size:12px;">Detailed profiles for this state are not seeded in the demo. Connect ADR / MyNeta / PRS APIs to populate.</p>
+      </div>
+    `);
+    openPanel();
+    updateBreadcrumb();
+    return;
+  }
+
+  const party = PARTIES[data.party];
+  const cm = POLITICIANS[data.cm];
+
+  const constituencyRows = Object.entries(data.constituencies).map(([cName, c]) => {
+    return `<div class="leaf" data-goto-c="${cName}">▸ ${cName} <span style="color:var(--text-disabled);">· ${c.district}</span></div>`;
+  }).join('');
+
+  const cabinetRows = data.cabinet.map(pid => {
+    const p = POLITICIANS[pid];
+    return `<div class="leaf" data-goto-p="${pid}">▸ ${p.name} <span style="color:var(--text-disabled);">· ${p.position.split('·')[0].trim()}</span></div>`;
+  }).join('');
+
+  const newsHtml = data.news.map(n => `
+    <div class="news-item">
+      <div class="headline">${n.headline}</div>
+      <div class="meta">
+        <span>${n.source}</span>
+        <span style="color:var(--text-disabled)">·</span>
+        <span>${n.date}</span>
+        <span class="sent-dot sent-${n.sentiment}"></span>
+      </div>
+    </div>`).join('');
+
+  renderBody(`
+    <h1 class="h-serif h1">${stateName}</h1>
+    <div style="margin-top:10px;">
+      <span class="party-chip" style="background:${hexA(party.color, 0.18)};color:${party.color};border-color:${hexA(party.color, 0.35)}">
+        <span class="sq" style="background:${party.color}"></span>${party.short}
+      </span>
+      <span style="color:var(--text-tertiary);margin-left:8px;font-size:11px;">${party.name}</span>
+    </div>
+
+    <div class="cm-card" data-goto-p="${data.cm}">
+      <div class="avatar" style="background-image:url('${cm.photo}');"></div>
+      <div class="info">
+        <div class="name">${cm.name}</div>
+        <div class="role">Chief Minister · ${stateName}</div>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="v">${data.mpCount}</div><div class="k">MP seats</div></div>
+      <div class="stat"><div class="v">${data.mlaCount}</div><div class="k">MLA seats</div></div>
+      <div class="stat"><div class="v">${data.population}</div><div class="k">Population</div></div>
+      <div class="stat"><div class="v">${data.literacy}</div><div class="k">Literacy</div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Organisation</div>
+      <div class="tree">
+        <div class="node" data-goto-p="${data.cm}"><span class="toggle">▾</span>Chief Minister · ${cm.name}</div>
+        <div class="children">
+          <div class="node"><span class="toggle">▾</span>Cabinet</div>
+          <div class="children">${cabinetRows}</div>
+          <div class="node"><span class="toggle">▾</span>Constituencies</div>
+          <div class="children">${constituencyRows}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Recent state news</div>
+      ${newsHtml}
+    </div>
+  `);
+
+  // Wire interactions
+  panelBody.querySelectorAll('[data-goto-p]').forEach(el => {
+    el.addEventListener('click', () => openPolitician(el.dataset.gotoP));
+  });
+  panelBody.querySelectorAll('[data-goto-c]').forEach(el => {
+    el.addEventListener('click', () => openConstituency(stateName, el.dataset.gotoC));
+  });
+
+  openPanel();
+  updateBreadcrumb();
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   LEVEL 2 — CONSTITUENCY VIEW
+   ────────────────────────────────────────────────────────────────────────── */
+
+function openConstituency(stateName, cName) {
+  NAV_STATE.level = 'constituency';
+  NAV_STATE.stateName = stateName;
+  NAV_STATE.constituency = cName;
+  NAV_STATE.politicianId = null;
+  panel.classList.remove('wide');
+
+  const data = STATES[stateName]?.constituencies?.[cName];
+  if (!data) {
+    renderBody(`<p style="color:var(--text-tertiary)">No constituency data available.</p>`);
+    openPanel();
+    updateBreadcrumb();
+    return;
+  }
+  const mla = POLITICIANS[data.mla];
+  const mp  = POLITICIANS[data.mp];
+
+  const card = (label, p) => p ? `
+    <div class="cm-card" data-goto-p="${p === POLITICIANS[data.mla] ? data.mla : data.mp}">
+      <div class="avatar" style="background-image:url('${p.photo}');"></div>
+      <div class="info">
+        <div class="name">${p.name}</div>
+        <div class="role">${label} · ${p.party}</div>
+      </div>
+    </div>` : '';
+
+  renderBody(`
+    <h1 class="h-serif h2">${cName}</h1>
+    <div class="mono" style="color:var(--text-tertiary);font-size:11px;margin-top:4px;">
+      ${data.district} District · ${stateName}
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="v">${data.electorate}</div><div class="k">Electorate</div></div>
+      <div class="stat"><div class="v">${data.turnout}</div><div class="k">Last turnout</div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Representatives</div>
+      ${card('MLA', mla)}
+      ${card('MP',  mp)}
+    </div>
+  `);
+
+  panelBody.querySelectorAll('[data-goto-p]').forEach(el => {
+    el.addEventListener('click', () => openPolitician(el.dataset.gotoP));
+  });
+
+  openPanel();
+  updateBreadcrumb();
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   LEVEL 3 — POLITICIAN PROFILE with tabs
+   ────────────────────────────────────────────────────────────────────────── */
+
+const TAB_NAMES = [
+  { k: 'overview', label: 'Overview' },
+  { k: 'promises', label: 'Promises' },
+  { k: 'legal',    label: 'Legal Record' },
+  { k: 'news',     label: 'News' },
+  { k: 'network',  label: 'Power Network' }
+];
+
+function openPolitician(pid) {
+  const p = POLITICIANS[pid];
+  if (!p) return;
+  NAV_STATE.level = 'politician';
+  NAV_STATE.politicianId = pid;
+  NAV_STATE.stateName = NAV_STATE.stateName || p.state;
+  NAV_STATE.tab = NAV_STATE.tab === 'network' ? 'overview' : NAV_STATE.tab;
+  panel.classList.remove('wide');
+
+  const party = PARTIES[p.party];
+
+  const tabsHtml = TAB_NAMES.map(t => `
+    <button class="tab-btn${t.k === NAV_STATE.tab ? ' active' : ''}" data-tab="${t.k}">${t.label}</button>
+  `).join('');
+
+  renderBody(`
+    <div class="pol-header">
+      <div class="photo" style="background-image:url('${p.photo}');"></div>
+      <div>
+        <div class="name">${p.name}</div>
+        <div class="meta">
+          <span class="party-chip" style="background:${hexA(party.color, 0.18)};color:${party.color};border-color:${hexA(party.color, 0.35)}">
+            <span class="sq" style="background:${party.color}"></span>${party.short}
+          </span>
+          <span class="dot">·</span>
+          <span>${p.position}</span>
+        </div>
+        <div class="meta">
+          <span>${p.constituency}</span>
+          <span class="dot">·</span>
+          <span>Age ${p.age}</span>
+          <span class="dot">·</span>
+          <span>${p.yearsInOffice} years</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="approval-gauge">
+      <div class="label" style="margin:0;width:78px;">Approval</div>
+      <div class="gauge-bar"><div class="gauge-fill" style="width:${p.approval}%"></div></div>
+      <div class="val">${p.approval}%</div>
+      <div class="trend ${p.trend}">${p.trend==='up'?'↑':p.trend==='down'?'↓':'→'}</div>
+    </div>
+
+    <div class="tabs">${tabsHtml}</div>
+    <div class="tab-body" id="tabBody"></div>
+  `);
+
+  panelBody.querySelectorAll('.tab-btn').forEach(b => {
+    b.addEventListener('click', () => switchTab(b.dataset.tab));
+  });
+
+  switchTab(NAV_STATE.tab);
+  openPanel();
+  updateBreadcrumb();
+}
+
+function switchTab(name) {
+  NAV_STATE.tab = name;
+  panelBody.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === name);
+  });
+
+  // Toggle panel width for network
+  if (name === 'network') panel.classList.add('wide');
+  else panel.classList.remove('wide');
+
+  const tb = document.getElementById('tabBody');
+  if (!tb) return;
+  tb.classList.remove('tab-body');
+  void tb.offsetWidth;
+  tb.classList.add('tab-body');
+
+  const p = POLITICIANS[NAV_STATE.politicianId];
+  if (!p) return;
+
+  switch (name) {
+    case 'overview': tb.innerHTML = renderOverviewTab(p); break;
+    case 'promises': tb.innerHTML = renderPromisesTab(p); break;
+    case 'legal':    tb.innerHTML = renderLegalTab(p);    break;
+    case 'news':     tb.innerHTML = renderNewsTab(p);     break;
+    case 'network':  renderNetworkTab(p, tb);             break;
+  }
+}
+
+function renderOverviewTab(p) {
+  const respChips = p.overview.responsibilities.map(r =>
+    `<span class="party-chip" style="background:var(--bg-elev-2);color:var(--text-secondary);border-color:var(--border);margin:2px 4px 2px 0;">${r}</span>`
+  ).join('');
+  const achievements = p.overview.achievements.map(a =>
+    `<div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;">
+       <span class="mono" style="color:var(--text-tertiary);min-width:60px;">${a.d}</span>
+       <span>${a.t}</span>
+     </div>`).join('');
+  return `
+    <div class="sub-section-title">Responsibilities</div>
+    <div>${respChips}</div>
+
+    <div class="sub-section-title">Achievements</div>
+    <div>${achievements}</div>
+
+    <div class="sub-section-title">Assets & Liabilities <span class="mono" style="text-transform:none;color:var(--text-disabled);font-size:9px;">ADR · affidavit-style</span></div>
+    <div class="assets-row"><span class="k">Movable + immovable assets</span><span class="v">${p.overview.assets}</span></div>
+    <div class="assets-row"><span class="k">Disclosed liabilities</span><span class="v">${p.overview.liabilities}</span></div>
+    <div class="assets-row"><span class="k">Criminal cases declared</span><span class="v">${p.overview.cases}</span></div>
+  `;
+}
+
+function renderPromisesTab(p) {
+  if (!p.promises?.length) return `<p style="color:var(--text-tertiary)">No promises tracked.</p>`;
+  const rows = p.promises.map(pr => `
+    <div class="promise-row">
+      <span>${pr.t}</span>
+      <span class="status-pl ${pr.s}">${pr.s === 'progress' ? 'In progress' : pr.s}</span>
+    </div>`).join('');
+  return `<div class="sub-section-title">Manifesto promises</div>${rows}`;
+}
+
+function renderLegalTab(p) {
+  const section = (title, arr) => {
+    if (!arr.length) return `<div class="sub-section-title">${title}</div><p style="color:var(--text-tertiary);font-size:12px;">None declared.</p>`;
+    return `<div class="sub-section-title">${title}</div>` + arr.map(c => `
+      <div class="case-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+          <div class="title">${c.issue}</div>
+          <span class="case-status ${c.status}">${c.status}</span>
+        </div>
+        <div class="meta">
+          <span>${c.no}</span>
+          <span style="color:var(--text-disabled)">·</span>
+          <span>${c.court}</span>
+          <span style="color:var(--text-disabled)">·</span>
+          <span>Filed ${c.filed}</span>
+        </div>
+      </div>`).join('');
+  };
+  return `
+    ${section('Criminal cases', p.legal.criminal)}
+    ${section('Civil cases', p.legal.civil)}
+    ${section('Pending judicial matters', p.legal.pending)}
+  `;
+}
+
+function renderNewsTab(p) {
+  if (!p.news?.length) return `<p style="color:var(--text-tertiary)">No news items.</p>`;
+  return p.news.map(n => `
+    <div class="news-item">
+      <div class="headline">${n.headline}</div>
+      <div class="meta">
+        <span>${n.source}</span>
+        <span style="color:var(--text-disabled)">·</span>
+        <span>${n.date}</span>
+        <span class="sent-dot sent-${n.sentiment}"></span>
+      </div>
+    </div>`).join('');
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   POWER NETWORK TAB — the headline feature
+   ────────────────────────────────────────────────────────────────────────── */
+
+const NET_STATE = {
+  mode:    'all',      // 'all' | 'media' | 'party-business' | 'cross'
+  hops:    2,
+  weightMin: 0,
+  enabledTypes: new Set(['politician','party','media','businessman','business_group','family']),
+  pivot:   null,       // current center node id (defaults to politician id)
+  pivotStack: [],      // history
+  traceMode: false,
+  traceStart: null,
+  tracePath: null
+};
+
+function renderNetworkTab(politician, tb) {
+  NET_STATE.pivot = politician.id || NAV_STATE.politicianId;
+  NET_STATE.pivotStack = [];
+
+  tb.innerHTML = `
+    <div class="network-toolbar">
+      <button class="mode-btn ${NET_STATE.mode==='all'?'active':''}"             data-mode="all">All</button>
+      <button class="mode-btn ${NET_STATE.mode==='media'?'active':''}"           data-mode="media">Media Ownership</button>
+      <button class="mode-btn ${NET_STATE.mode==='party-business'?'active':''}" data-mode="party-business">Party-Business Ties</button>
+      <button class="mode-btn ${NET_STATE.mode==='cross'?'active':''}"           data-mode="cross">Cross-Ownership</button>
+    </div>
+
+    <div class="filter-row">
+      <span class="lbl">Hops</span>
+      <button class="hop-chip ${NET_STATE.hops===1?'active':''}" data-hop="1">1</button>
+      <button class="hop-chip ${NET_STATE.hops===2?'active':''}" data-hop="2">2</button>
+      <button class="hop-chip ${NET_STATE.hops===3?'active':''}" data-hop="3">3</button>
+
+      <span class="lbl" style="margin-left:6px;">Weight ≥</span>
+      <input class="weight-slider" type="range" min="0" max="100" value="${NET_STATE.weightMin}" />
+      <span class="mono" id="wVal">${NET_STATE.weightMin}</span>
+
+      <span class="lbl" style="margin-left:6px;">Types</span>
+      <button class="toggle-chip ${NET_STATE.enabledTypes.has('politician')?'active':''}"      data-type="politician"><span class="sw" style="background:#e8edf3"></span>politician</button>
+      <button class="toggle-chip ${NET_STATE.enabledTypes.has('party')?'active':''}"            data-type="party"><span class="sw" style="background:var(--p-INC)"></span>party</button>
+      <button class="toggle-chip ${NET_STATE.enabledTypes.has('media')?'active':''}"            data-type="media"><span class="sw" style="background:#f4b942"></span>media</button>
+      <button class="toggle-chip ${NET_STATE.enabledTypes.has('businessman')?'active':''}"      data-type="businessman"><span class="sw" style="background:#9b6fff"></span>businessman</button>
+      <button class="toggle-chip ${NET_STATE.enabledTypes.has('business_group')?'active':''}"   data-type="business_group"><span class="sw" style="background:#6aa0ff"></span>group</button>
+      <button class="toggle-chip ${NET_STATE.enabledTypes.has('family')?'active':''}"            data-type="family"><span class="sw" style="background:#888"></span>family</button>
+    </div>
+
+    <div class="network-stage" id="netStage"></div>
+
+    <div class="section">
+      <div class="section-title">Shared interests — outlets where party + donors + powerful businessmen overlap</div>
+      <div id="sharedTable"></div>
+    </div>
+  `;
+
+  tb.querySelectorAll('[data-mode]').forEach(b => {
+    b.addEventListener('click', () => {
+      NET_STATE.mode = b.dataset.mode;
+      tb.querySelectorAll('[data-mode]').forEach(bb => bb.classList.toggle('active', bb === b));
+      drawNetwork();
+    });
+  });
+  tb.querySelectorAll('[data-hop]').forEach(b => {
+    b.addEventListener('click', () => {
+      NET_STATE.hops = parseInt(b.dataset.hop, 10);
+      tb.querySelectorAll('[data-hop]').forEach(bb => bb.classList.toggle('active', bb === b));
+      drawNetwork();
+    });
+  });
+  tb.querySelectorAll('[data-type]').forEach(b => {
+    b.addEventListener('click', () => {
+      const t = b.dataset.type;
+      if (NET_STATE.enabledTypes.has(t)) NET_STATE.enabledTypes.delete(t);
+      else NET_STATE.enabledTypes.add(t);
+      b.classList.toggle('active');
+      drawNetwork();
+    });
+  });
+  tb.querySelector('.weight-slider').addEventListener('input', e => {
+    NET_STATE.weightMin = parseInt(e.target.value, 10);
+    document.getElementById('wVal').textContent = NET_STATE.weightMin;
+    drawNetwork();
+  });
+
+  drawNetwork();
+  renderSharedInterests(politician);
+}
+
+/* ── Build unified graph from DATA ─────────────────────────────────────── */
+
+function buildGraph() {
+  const nodes = [];
+  // Politicians
+  Object.entries(POLITICIANS).forEach(([id, p]) => {
+    nodes.push({
+      id, type: 'politician', name: p.name,
+      color: PARTIES[p.party]?.color || '#e8edf3',
+      r: 12, party: p.party,
+      sub: p.position
+    });
+  });
+  // Parties
+  Object.entries(PARTIES).forEach(([id, pa]) => {
+    nodes.push({
+      id, type: 'party', name: pa.name,
+      color: pa.color, r: 14, sub: pa.short
+    });
+  });
+  // Entities
+  Object.entries(ENTITIES).forEach(([id, e]) => {
+    let color = '#888', r = 10;
+    if (e.type === 'media')          { color = '#f4b942'; r = 11; }
+    if (e.type === 'businessman')    { color = '#9b6fff'; r = 11; }
+    if (e.type === 'business_group') { color = '#6aa0ff'; r = 13; }
+    if (e.type === 'family')         { color = '#888';    r = 8;  }
+    nodes.push({
+      id, type: e.type, subType: e.subType, name: e.name,
+      color, r, sub: e.description || ''
+    });
+  });
+  const links = RELATIONSHIPS.map((r, i) => ({
+    id: `lnk_${i}`,
+    source: r.from, target: r.to,
+    type: r.type, weight: r.weight, note: r.note, refSource: r.source
+  }));
+  return { nodes, links };
+}
+
+const FULL_GRAPH = buildGraph();
+const NODE_BY_ID = new Map(FULL_GRAPH.nodes.map(n => [n.id, n]));
+
+/* ── Adjacency (undirected for BFS / triangle detection) ──────────────── */
+
+function adjacency(links) {
+  const adj = new Map();
+  links.forEach(l => {
+    const a = typeof l.source === 'string' ? l.source : l.source.id;
+    const b = typeof l.target === 'string' ? l.target : l.target.id;
+    if (!adj.has(a)) adj.set(a, new Set());
+    if (!adj.has(b)) adj.set(b, new Set());
+    adj.get(a).add(b);
+    adj.get(b).add(a);
+  });
+  return adj;
+}
+
+function bfsLimit(startId, maxHops, adj) {
+  const visited = new Map([[startId, 0]]);
+  const q = [startId];
+  while (q.length) {
+    const cur = q.shift();
+    const d = visited.get(cur);
+    if (d >= maxHops) continue;
+    for (const nx of adj.get(cur) || []) {
+      if (visited.has(nx)) continue;
+      visited.set(nx, d + 1);
+      q.push(nx);
+    }
+  }
+  return visited;
+}
+
+function shortestPath(startId, endId, adj) {
+  if (startId === endId) return [startId];
+  const prev = new Map([[startId, null]]);
+  const q = [startId];
+  while (q.length) {
+    const cur = q.shift();
+    if (cur === endId) {
+      const path = [];
+      let x = endId;
+      while (x !== null) { path.unshift(x); x = prev.get(x); }
+      return path;
+    }
+    for (const nx of adj.get(cur) || []) {
+      if (prev.has(nx)) continue;
+      prev.set(nx, cur);
+      q.push(nx);
+    }
+  }
+  return null;
+}
+
+/* ── Filtering by mode + type + weight ─────────────────────────────────── */
+
+function filterGraph() {
+  let nodes = FULL_GRAPH.nodes.slice();
+  let links = FULL_GRAPH.links.slice();
+
+  // Weight threshold (donor/owns only — relationship-membership/family is always shown)
+  links = links.filter(l => {
+    if (['member of','family of','ally / coalition partner'].includes(l.type)) return true;
+    return (l.weight ?? 0) >= NET_STATE.weightMin;
+  });
+
+  // Mode filtering
+  if (NET_STATE.mode === 'media') {
+    // Only media-related edges: owns/donor where target is media; advertising client; cross-media
+    links = links.filter(l => {
+      const tgt = NODE_BY_ID.get(typeof l.target==='string'?l.target:l.target.id);
+      const src = NODE_BY_ID.get(typeof l.source==='string'?l.source:l.source.id);
+      return tgt?.type==='media' || src?.type==='media' ||
+             (l.type==='advertising client');
+    });
+  } else if (NET_STATE.mode === 'party-business') {
+    links = links.filter(l => {
+      const tgt = NODE_BY_ID.get(typeof l.target==='string'?l.target:l.target.id);
+      const src = NODE_BY_ID.get(typeof l.source==='string'?l.source:l.source.id);
+      const ts = [src?.type, tgt?.type];
+      return ts.includes('party') && (ts.includes('businessman') || ts.includes('business_group'));
+    });
+  } else if (NET_STATE.mode === 'cross') {
+    // Filter to nodes involved in any party-businessman-media triangle.
+    // Always preserve the pivot + its immediate neighbours so the politician
+    // remains visible as an entry point into the triangle subgraph.
+    const tri = findTriangles(FULL_GRAPH);
+    const keep = new Set();
+    tri.forEach(t => t.forEach(n => keep.add(n)));
+    keep.add(NET_STATE.pivot);
+    const adjFull = adjacency(FULL_GRAPH.links);
+    for (const nb of adjFull.get(NET_STATE.pivot) || []) keep.add(nb);
+    nodes = nodes.filter(n => keep.has(n.id));
+    const nodeIds = new Set(nodes.map(n => n.id));
+    links = links.filter(l => {
+      const s = typeof l.source==='string'?l.source:l.source.id;
+      const t = typeof l.target==='string'?l.target:l.target.id;
+      return nodeIds.has(s) && nodeIds.has(t);
+    });
+  }
+
+  // Type filter
+  nodes = nodes.filter(n => {
+    if (n.id === NET_STATE.pivot) return true;
+    return NET_STATE.enabledTypes.has(n.type);
+  });
+  const ids = new Set(nodes.map(n => n.id));
+  links = links.filter(l => {
+    const s = typeof l.source==='string'?l.source:l.source.id;
+    const t = typeof l.target==='string'?l.target:l.target.id;
+    return ids.has(s) && ids.has(t);
+  });
+
+  // Hop limit from pivot
+  const adj = adjacency(links);
+  const within = bfsLimit(NET_STATE.pivot, NET_STATE.hops, adj);
+  nodes = nodes.filter(n => within.has(n.id));
+  const ids2 = new Set(nodes.map(n => n.id));
+  links = links.filter(l => {
+    const s = typeof l.source==='string'?l.source:l.source.id;
+    const t = typeof l.target==='string'?l.target:l.target.id;
+    return ids2.has(s) && ids2.has(t);
+  });
+
+  return { nodes, links };
+}
+
+/* ── Triangle detection: party ↔ businessman/business-group ↔ media ──── */
+
+function findTriangles(graph) {
+  // Detects two flavours of the party ↔ businessman ↔ media triangle:
+  //   1. party — businessman — media  (direct)
+  //   2. party — businessman — business_group — media  (chained via group, the
+  //      common pattern when a promoter holds media through a holdco)
+  // Returns chains as arrays of node ids; every node in any chain is "in" the
+  // cross-ownership subgraph.
+  const adj = adjacency(graph.links);
+  const triangles = [];
+  for (const a of graph.nodes) {
+    if (a.type !== 'party') continue;
+    for (const bId of adj.get(a.id) || []) {
+      const b = NODE_BY_ID.get(bId);
+      if (!b || (b.type !== 'businessman' && b.type !== 'business_group')) continue;
+      for (const cId of adj.get(b.id) || []) {
+        const c = NODE_BY_ID.get(cId);
+        if (!c) continue;
+        if (c.type === 'media') {
+          triangles.push([a.id, b.id, cId]);
+        } else if (c.type === 'business_group' && b.type === 'businessman') {
+          for (const dId of adj.get(cId) || []) {
+            const d = NODE_BY_ID.get(dId);
+            if (d?.type === 'media') triangles.push([a.id, b.id, cId, dId]);
+          }
+        }
+      }
+    }
+  }
+  return triangles;
+}
+
+/* ── D3 force graph rendering ─────────────────────────────────────────── */
+
+let simulation = null;
+let tooltip;
+
+function ensureTooltip(stage) {
+  if (tooltip) return tooltip;
+  tooltip = document.createElement('div');
+  tooltip.className = 'net-tooltip';
+  tooltip.style.display = 'none';
+  stage.appendChild(tooltip);
+  return tooltip;
+}
+
+function nodeShapePath(n) {
+  const r = n.r;
+  switch (n.type) {
+    case 'party':
+      return `M ${-r} ${-r} L ${r} ${-r} L ${r} ${r} L ${-r} ${r} Z`;
+    case 'media': {
+      return `M 0 ${-r} L ${r} 0 L 0 ${r} L ${-r} 0 Z`;
+    }
+    case 'business_group': {
+      const pts = [];
+      for (let i=0; i<6; i++) {
+        const a = (Math.PI/3) * i - Math.PI/2;
+        pts.push(`${(Math.cos(a)*r).toFixed(2)} ${(Math.sin(a)*r).toFixed(2)}`);
+      }
+      return `M ${pts.join(' L ')} Z`;
+    }
+    default:
+      return null; // use circle
+  }
+}
+
+function drawNetwork() {
+  const stage = document.getElementById('netStage');
+  if (!stage) return;
+
+  // Wipe old contents
+  stage.innerHTML = '';
+  ensureTooltip(stage);
+
+  const W = stage.clientWidth;
+  const H = stage.clientHeight;
+
+  // Trace bar
+  const traceBar = document.createElement('div');
+  traceBar.className = 'trace-bar';
+  traceBar.innerHTML = `
+    <button id="traceToggle">${NET_STATE.traceMode ? 'Trace mode: ON' : 'Trace path'}</button>
+    <span style="color:var(--text-disabled);">${NET_STATE.traceMode ? (NET_STATE.traceStart ? 'click target node…' : 'click source node…') : ''}</span>
+    ${NET_STATE.pivotStack.length ? `<button id="pivotBack">← Pivot back</button>` : ''}
+    ${NET_STATE.tracePath ? `<span class="clear" id="traceClear">clear</span>` : ''}
+  `;
+  stage.appendChild(traceBar);
+  traceBar.querySelector('#traceToggle').onclick = () => {
+    NET_STATE.traceMode = !NET_STATE.traceMode;
+    NET_STATE.traceStart = null;
+    NET_STATE.tracePath = null;
+    if (!NET_STATE.traceMode) document.body.style.cursor = 'default';
+    drawNetwork();
+  };
+  if (NET_STATE.pivotStack.length) {
+    traceBar.querySelector('#pivotBack').onclick = () => {
+      NET_STATE.pivot = NET_STATE.pivotStack.pop();
+      drawNetwork();
+    };
+  }
+  if (NET_STATE.tracePath) {
+    traceBar.querySelector('#traceClear').onclick = () => {
+      NET_STATE.tracePath = null;
+      NET_STATE.traceStart = null;
+      drawNetwork();
+    };
+  }
+  traceBar.classList.toggle('on', false);
+  if (NET_STATE.traceMode) traceBar.querySelector('#traceToggle').classList.add('on');
+
+  // Side legend
+  const legendBox = document.createElement('div');
+  legendBox.className = 'legend-box';
+  legendBox.innerHTML = `
+    <div class="lbl">Nodes</div>
+    <div class="row"><svg width="14" height="14"><circle cx="7" cy="7" r="5" fill="#e8edf3"/></svg> Politician</div>
+    <div class="row"><svg width="14" height="14"><rect x="2" y="2" width="10" height="10" fill="var(--p-INC)"/></svg> Party</div>
+    <div class="row"><svg width="14" height="14"><polygon points="7,1 13,7 7,13 1,7" fill="#f4b942"/></svg> Media</div>
+    <div class="row"><svg width="14" height="14"><circle cx="7" cy="7" r="5" fill="#9b6fff"/></svg> Businessman</div>
+    <div class="row"><svg width="14" height="14"><polygon points="7,1 12,4 12,10 7,13 2,10 2,4" fill="#6aa0ff"/></svg> Group</div>
+    <div class="row"><svg width="14" height="14"><circle cx="7" cy="7" r="5" fill="none" stroke="#888" stroke-dasharray="2,2"/></svg> Family</div>
+    <div class="lbl" style="margin-top:8px;">Edges</div>
+    <div class="row" style="color:var(--text-secondary);">owns <span style="color:var(--text-primary);">XX%</span></div>
+    <div class="row" style="color:var(--text-secondary);">donor</div>
+    <div class="row" style="color:var(--text-secondary);">advertising client</div>
+    <div class="row" style="color:var(--text-secondary);">board member</div>
+    <div class="row" style="color:var(--text-secondary);">family of</div>
+    <div class="row" style="color:var(--text-secondary);">ally / coalition</div>
+  `;
+  stage.appendChild(legendBox);
+
+  // SVG
+  const svgEl = d3.select(stage).append('svg').attr('viewBox', `0 0 ${W} ${H}`);
+  const root = svgEl.append('g');
+
+  // Filter graph
+  const g = filterGraph();
+  if (!g.nodes.length) {
+    svgEl.append('text').attr('x', W/2).attr('y', H/2).attr('text-anchor','middle')
+         .attr('fill','#6b7888').style('font-family','JetBrains Mono, monospace').style('font-size','11px')
+         .text('No nodes match current filters');
+    return;
+  }
+
+  // Pin pivot to center
+  g.nodes.forEach(n => {
+    if (n.id === NET_STATE.pivot) {
+      n.fx = W/2; n.fy = H/2; n.r = 16;
+    } else {
+      n.fx = null; n.fy = null;
+    }
+  });
+
+  // Pan & zoom
+  const zoom = d3.zoom().scaleExtent([0.4, 3]).on('zoom', ev => root.attr('transform', ev.transform));
+  svgEl.call(zoom);
+
+  // Trace path edge set
+  const tracePathSet = new Set();
+  if (NET_STATE.tracePath) {
+    for (let i=0; i<NET_STATE.tracePath.length-1; i++) {
+      tracePathSet.add(`${NET_STATE.tracePath[i]}|${NET_STATE.tracePath[i+1]}`);
+      tracePathSet.add(`${NET_STATE.tracePath[i+1]}|${NET_STATE.tracePath[i]}`);
+    }
+  }
+
+  function linkInPath(l) {
+    const s = typeof l.source==='string'?l.source:l.source.id;
+    const t = typeof l.target==='string'?l.target:l.target.id;
+    return tracePathSet.has(`${s}|${t}`);
+  }
+
+  // Links
+  const linkG = root.append('g').attr('stroke-linecap','round');
+  const linkSel = linkG.selectAll('line').data(g.links).join('line')
+    .attr('stroke', l => linkInPath(l) ? '#f4b942' : '#2c3848')
+    .attr('stroke-width', l => linkInPath(l) ? 2.2 : (l.weight ? Math.min(1.8, 0.4 + l.weight/100) : 0.6))
+    .attr('stroke-opacity', l => linkInPath(l) ? 1 : 0.6);
+
+  // Edge labels (only show if zoomed in or for high-weight edges)
+  const labelG = root.append('g');
+  const labelSel = labelG.selectAll('text').data(g.links).join('text')
+    .attr('class', l => 'edge-label' + (l.type==='owns' ? ' pct' : ''))
+    .attr('text-anchor', 'middle')
+    .text(l => {
+      if (l.type === 'owns' && l.weight) return `${l.weight}%`;
+      if (l.type === 'donor' && l.weight) return `₹${l.weight} cr`;
+      if (l.type === 'loan / financial exposure' && l.weight) return `₹${l.weight} cr loan`;
+      if (l.type === 'advertising client' && l.weight) return `ad ₹${l.weight} cr`;
+      return l.type;
+    });
+
+  // Nodes
+  const nodeG = root.append('g');
+  const nodeSel = nodeG.selectAll('g').data(g.nodes).join('g')
+    .style('cursor', 'pointer');
+
+  nodeSel.each(function(n) {
+    const grp = d3.select(this);
+    const path = nodeShapePath(n);
+    if (path) {
+      grp.append('path').attr('d', path)
+         .attr('fill', n.type === 'family' ? 'transparent' : n.color)
+         .attr('stroke', n.id === NET_STATE.pivot ? '#fff' : (n.type === 'family' ? n.color : 'rgba(0,0,0,0.4)'))
+         .attr('stroke-dasharray', n.type === 'family' ? '2,2' : null)
+         .attr('stroke-width', n.id === NET_STATE.pivot ? 2 : 1);
+    } else {
+      grp.append('circle').attr('r', n.r)
+         .attr('fill', n.type === 'family' ? 'transparent' : n.color)
+         .attr('stroke', n.id === NET_STATE.pivot ? '#fff' : (n.type === 'family' ? n.color : 'rgba(0,0,0,0.4)'))
+         .attr('stroke-dasharray', n.type === 'family' ? '2,2' : null)
+         .attr('stroke-width', n.id === NET_STATE.pivot ? 2 : 1);
+    }
+    // Label
+    grp.append('text').attr('class','node-label').attr('dy', n.r + 12).text(n.name);
+  });
+
+  // Drag
+  const drag = d3.drag()
+    .on('start', (ev, n) => { if (!ev.active) simulation.alphaTarget(0.3).restart(); n.fx = n.x; n.fy = n.y; })
+    .on('drag',  (ev, n) => { n.fx = ev.x; n.fy = ev.y; })
+    .on('end',   (ev, n) => { if (!ev.active) simulation.alphaTarget(0); if (n.id !== NET_STATE.pivot) { n.fx = null; n.fy = null; } });
+
+  nodeSel.call(drag);
+
+  // Hover dim
+  nodeSel.on('mouseenter', function(ev, n) {
+    const connected = new Set([n.id]);
+    g.links.forEach(l => {
+      const s = typeof l.source==='string'?l.source:l.source.id;
+      const t = typeof l.target==='string'?l.target:l.target.id;
+      if (s === n.id) connected.add(t);
+      if (t === n.id) connected.add(s);
+    });
+    nodeSel.style('opacity', d => connected.has(d.id) ? 1 : 0.18);
+    linkSel.style('opacity', l => {
+      const s = typeof l.source==='string'?l.source:l.source.id;
+      const t = typeof l.target==='string'?l.target:l.target.id;
+      return (s === n.id || t === n.id) ? 1 : 0.06;
+    });
+    labelSel.style('opacity', l => {
+      const s = typeof l.source==='string'?l.source:l.source.id;
+      const t = typeof l.target==='string'?l.target:l.target.id;
+      return (s === n.id || t === n.id) ? 1 : 0.05;
+    });
+    // Tooltip
+    tooltip.style.display = 'block';
+    tooltip.innerHTML = `
+      <div class="ttip-type">${n.type.replace('_',' ')}${n.subType?` · ${n.subType}`:''}</div>
+      <div class="ttip-name">${n.name}</div>
+      ${n.sub ? `<div class="ttip-desc">${n.sub}</div>` : ''}
+    `;
+  })
+  .on('mousemove', function(ev) {
+    const rect = stage.getBoundingClientRect();
+    tooltip.style.left = (ev.clientX - rect.left + 12) + 'px';
+    tooltip.style.top  = (ev.clientY - rect.top + 12) + 'px';
+  })
+  .on('mouseleave', function() {
+    nodeSel.style('opacity', 1);
+    linkSel.style('opacity', l => linkInPath(l) ? 1 : 0.6);
+    labelSel.style('opacity', 1);
+    tooltip.style.display = 'none';
+  })
+  .on('click', function(ev, n) {
+    if (NET_STATE.traceMode) {
+      if (!NET_STATE.traceStart) {
+        NET_STATE.traceStart = n.id;
+      } else {
+        NET_STATE.tracePath = shortestPath(NET_STATE.traceStart, n.id, adjacency(g.links));
+        NET_STATE.traceMode = false;
+      }
+      drawNetwork();
+    }
+  })
+  .on('dblclick', function(ev, n) {
+    if (n.type === 'politician' && POLITICIANS[n.id]) {
+      openPolitician(n.id);
+      return;
+    }
+    // Pivot onto this node
+    NET_STATE.pivotStack.push(NET_STATE.pivot);
+    NET_STATE.pivot = n.id;
+    drawNetwork();
+  });
+
+  // Edge hover tooltip
+  linkSel.on('mouseenter', function(ev, l) {
+    tooltip.style.display = 'block';
+    const s = NODE_BY_ID.get(typeof l.source==='string'?l.source:l.source.id);
+    const t = NODE_BY_ID.get(typeof l.target==='string'?l.target:l.target.id);
+    tooltip.innerHTML = `
+      <div class="ttip-type">${l.type}</div>
+      <div class="ttip-name">${s?.name} → ${t?.name}</div>
+      ${l.note ? `<div class="ttip-desc">${l.note}</div>` : ''}
+      ${l.refSource ? `<div class="ttip-desc" style="font-family:'JetBrains Mono',monospace;color:var(--text-disabled);font-size:9px;">${l.refSource}</div>` : ''}
+    `;
+  })
+  .on('mousemove', function(ev) {
+    const rect = stage.getBoundingClientRect();
+    tooltip.style.left = (ev.clientX - rect.left + 12) + 'px';
+    tooltip.style.top  = (ev.clientY - rect.top + 12) + 'px';
+  })
+  .on('mouseleave', function() {
+    tooltip.style.display = 'none';
+  });
+
+  // Force simulation
+  simulation = d3.forceSimulation(g.nodes)
+    .force('link',    d3.forceLink(g.links).id(d => d.id).distance(l => 80 + (l.type==='owns'?0:30)).strength(0.6))
+    .force('charge',  d3.forceManyBody().strength(-340))
+    .force('center',  d3.forceCenter(W/2, H/2))
+    .force('collide', d3.forceCollide().radius(d => d.r + 8))
+    .on('tick', ticked);
+
+  function ticked() {
+    linkSel
+      .attr('x1', l => l.source.x).attr('y1', l => l.source.y)
+      .attr('x2', l => l.target.x).attr('y2', l => l.target.y);
+    labelSel
+      .attr('x', l => (l.source.x + l.target.x) / 2)
+      .attr('y', l => (l.source.y + l.target.y) / 2 - 2);
+    nodeSel.attr('transform', n => `translate(${n.x},${n.y})`);
+  }
+
+  // Cursor for trace mode
+  document.body.style.cursor = NET_STATE.traceMode ? 'crosshair' : 'default';
+}
+
+/* ── Shared interests companion table ─────────────────────────────────── */
+
+function renderSharedInterests(politician) {
+  const partyId = politician.party;
+  // Donors to this party
+  const donors = RELATIONSHIPS
+    .filter(r => r.to === partyId && r.type === 'donor')
+    .map(r => r.from);
+  // Map businessman → all media outlets they have stakes in (direct or via business group)
+  const businessmanMediaStake = new Map(); // bmId → [{mediaId, pct, via}]
+  donors.forEach(bm => {
+    const stakes = [];
+    // Direct businessman→media? (uncommon in our data but support it)
+    RELATIONSHIPS.filter(r => r.from === bm && r.type === 'owns').forEach(r => {
+      const ent = ENTITIES[r.to];
+      if (ent?.type === 'media') stakes.push({ media: r.to, pct: r.weight, via: 'direct' });
+      if (ent?.type === 'business_group') {
+        // group → media
+        RELATIONSHIPS.filter(rr => rr.from === r.to && rr.type === 'owns').forEach(rr => {
+          const ent2 = ENTITIES[rr.to];
+          if (ent2?.type === 'media') stakes.push({ media: rr.to, pct: rr.weight, via: ent?.name });
+        });
+      }
+    });
+    if (stakes.length) businessmanMediaStake.set(bm, stakes);
+  });
+  // Party stake in each media: advertising client edges OR direct ownership
+  const partyStakeInMedia = new Map(); // mediaId → {pct, kind, note}
+  RELATIONSHIPS.filter(r => r.from === partyId && r.type === 'advertising client').forEach(r => {
+    partyStakeInMedia.set(r.to, { kind: 'ad client', pct: r.weight, note: r.note });
+  });
+  // Build rows: for each businessman donor × each media they hold stake in × where party also has touch
+  const rows = [];
+  businessmanMediaStake.forEach((stakes, bm) => {
+    stakes.forEach(s => {
+      const partyInfo = partyStakeInMedia.get(s.media);
+      if (!partyInfo) return; // require co-presence
+      rows.push({
+        media: ENTITIES[s.media]?.name,
+        partyStake: `${partyInfo.kind} (₹${partyInfo.pct} cr)`,
+        businessman: ENTITIES[bm]?.name,
+        bmStake: `${s.pct}% ${s.via === 'direct' ? '' : `via ${s.via}`}`.trim(),
+        notes: `${ENTITIES[s.media]?.subType || ''} · ${ENTITIES[s.media]?.description || ''}`
+      });
+    });
+  });
+
+  const tbl = document.getElementById('sharedTable');
+  if (!rows.length) {
+    tbl.innerHTML = `<p style="color:var(--text-tertiary);font-size:12px;">No co-stake overlaps found for this politician's party within the seeded data.</p>`;
+    return;
+  }
+  let sortKey = 'media', sortAsc = true;
+  function render() {
+    const sorted = rows.slice().sort((a,b)=> {
+      const av = (a[sortKey]||'').toString();
+      const bv = (b[sortKey]||'').toString();
+      return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
+    });
+    tbl.innerHTML = `
+      <table class="shared-table">
+        <thead><tr>
+          <th data-k="media">Media outlet</th>
+          <th data-k="partyStake">Party stake / influence</th>
+          <th data-k="businessman">Businessman</th>
+          <th data-k="bmStake">Their stake</th>
+          <th data-k="notes">Notes</th>
+        </tr></thead>
+        <tbody>${sorted.map(r => `
+          <tr>
+            <td>${r.media}</td>
+            <td>${r.partyStake}</td>
+            <td>${r.businessman}</td>
+            <td class="pct">${r.bmStake}</td>
+            <td>${r.notes}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+    tbl.querySelectorAll('th').forEach(th => {
+      th.onclick = () => {
+        if (sortKey === th.dataset.k) sortAsc = !sortAsc;
+        else { sortKey = th.dataset.k; sortAsc = true; }
+        render();
+      };
+    });
+  }
+  render();
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   SEARCH
+   ────────────────────────────────────────────────────────────────────────── */
+
+const searchInput   = document.getElementById('search');
+const searchResults = document.getElementById('searchResults');
+
+function buildSearchIndex() {
+  const idx = [];
+  Object.keys(STATES).forEach(n => idx.push({ kind:'state', id: n, name: n, meta: PARTIES[STATES[n].party].short }));
+  Object.entries(POLITICIANS).forEach(([id, p]) => idx.push({ kind:'politician', id, name: p.name, meta: `${p.position} · ${p.party}` }));
+  Object.entries(PARTIES).forEach(([id, p]) => idx.push({ kind:'party', id, name: p.name, meta: p.short }));
+  Object.entries(ENTITIES).forEach(([id, e]) => idx.push({ kind: e.type, id, name: e.name, meta: e.description?.slice(0,40) || '' }));
+  return idx;
+}
+const SEARCH_INDEX = buildSearchIndex();
+
+searchInput.addEventListener('input', e => {
+  const q = e.target.value.trim().toLowerCase();
+  if (!q) {
+    searchResults.classList.remove('open');
+    return;
+  }
+  const matches = SEARCH_INDEX.filter(i =>
+    i.name.toLowerCase().includes(q) || (i.meta||'').toLowerCase().includes(q)
+  ).slice(0, 10);
+  if (!matches.length) {
+    searchResults.innerHTML = `<div class="res-item"><span class="res-name" style="color:var(--text-tertiary)">No matches</span></div>`;
+    searchResults.classList.add('open');
+    return;
+  }
+  searchResults.innerHTML = matches.map(m => `
+    <div class="res-item" data-kind="${m.kind}" data-id="${m.id}">
+      <span class="res-name">${m.name}</span>
+      <span class="res-meta">${m.kind.toUpperCase()} · ${m.meta || ''}</span>
+    </div>`).join('');
+  searchResults.classList.add('open');
+  searchResults.querySelectorAll('.res-item').forEach(r => {
+    r.onclick = () => {
+      const { kind, id } = r.dataset;
+      searchResults.classList.remove('open');
+      searchInput.value = '';
+      if (kind === 'state') {
+        const f = findFeatureByState(id);
+        if (f) openState(id, f);
+      } else if (kind === 'politician') {
+        // Need state context — derive from POLITICIANS
+        const p = POLITICIANS[id];
+        NAV_STATE.stateName = p.state;
+        openPolitician(id);
+      }
+    };
+  });
+});
+document.addEventListener('click', e => {
+  if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+    searchResults.classList.remove('open');
+  }
+});
+
+/* ──────────────────────────────────────────────────────────────────────────
+   LEGEND
+   ────────────────────────────────────────────────────────────────────────── */
+
+(() => {
+  const el = document.getElementById('legend');
+  const chips = Object.entries(PARTIES).map(([k, p]) =>
+    `<div class="legend-chip"><span class="sw" style="background:${p.color}"></span>${p.short}</div>`
+  ).join('');
+  el.innerHTML = `<span class="legend-label">Ruling party</span>${chips}`;
+})();
+
+/* ──────────────────────────────────────────────────────────────────────────
+   GLOBAL CONTROLS
+   ────────────────────────────────────────────────────────────────────────── */
+
+document.getElementById('closeBtn').onclick = closePanel;
+document.getElementById('backBtn').onclick = () => {
+  if (NAV_STATE.level === 'politician') {
+    if (NAV_STATE.constituency) openConstituency(NAV_STATE.stateName, NAV_STATE.constituency);
+    else if (NAV_STATE.stateName) openState(NAV_STATE.stateName, findFeatureByState(NAV_STATE.stateName));
+    else closePanel();
+  } else if (NAV_STATE.level === 'constituency') {
+    openState(NAV_STATE.stateName, findFeatureByState(NAV_STATE.stateName));
+  } else {
+    closePanel();
+  }
+};
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (searchResults.classList.contains('open')) {
+      searchResults.classList.remove('open');
+    } else {
+      closePanel();
+    }
+  } else if (e.key === '/' && document.activeElement !== searchInput) {
+    e.preventDefault();
+    searchInput.focus();
+  }
+});
+
+window.addEventListener('resize', () => {
+  if (NET_STATE.pivot && NAV_STATE.tab === 'network' && NAV_STATE.level === 'politician') {
+    drawNetwork();
+  }
+});
+
+/* ──────────────────────────────────────────────────────────────────────────
+   BOOT
+   ────────────────────────────────────────────────────────────────────────── */
+
+initGlobe().catch(err => {
+  console.error(err);
+  document.getElementById('loading').innerHTML = `
+    <div style="color:var(--bad);font-family:'JetBrains Mono',monospace;font-size:12px;text-align:center;max-width:400px;line-height:1.6;">
+      Failed to load. Check that you have internet (CDN access for globe.gl, d3, and the Indian states GeoJSON).<br/><br/>
+      <span style="color:var(--text-tertiary);font-size:10px;">${err?.message || err}</span>
+    </div>`;
+});
+</script>
+</body>
+</html>

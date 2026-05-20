@@ -59,7 +59,7 @@ export default function PromisesAdminPage() {
             </div>
             <StatusPill status={p.status} />
             <Button
-              variant="outline"
+              variant="tertiary"
               size="sm"
               onClick={() => setEditing(p)}
               className="shrink-0"

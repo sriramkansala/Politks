@@ -109,7 +109,7 @@ export function StatusUpdateDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
+          <Button variant="tertiary" onClick={() => onOpenChange(false)} disabled={saving}>
             Cancel
           </Button>
           <Button

@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { ChevronRight, ExternalLink } from "lucide-react"
+import { ChevronRight } from "lucide-react"
+import { PartySymbol } from "@/components/parties/PartySymbol"
 import type { Party } from "@/lib/db/types"
 import { cn } from "@/lib/utils"
 
@@ -26,12 +27,12 @@ export function PartyCard({ party, promiseCount = 0, keptCount = 0, className }:
         border: "1px solid var(--border)",
       }}
     >
-      {/* Color swatch */}
+      {/* Party symbol */}
       <div
-        className="w-8 h-8 rounded-[4px] flex items-center justify-center shrink-0 text-white text-[13px] font-[590]"
-        style={{ background: party.color_hex }}
+        className="w-9 h-9 rounded-[6px] flex items-center justify-center shrink-0"
+        style={{ background: `${party.color_hex}18` }}
       >
-        {party.short_name?.[0] ?? party.name[0]}
+        <PartySymbol slug={party.slug as string} color={party.color_hex as string} size={24} />
       </div>
 
       <div className="flex-1 min-w-0">

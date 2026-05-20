@@ -1,5 +1,7 @@
 import type { Metadata } from "next"
+import { Analytics } from "@vercel/analytics/react"
 import { ThemeProvider } from "@/components/ui/theme-provider"
+import { ShapeProvider } from "@/lib/shape-context"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -27,7 +29,10 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          {children}
+          <ShapeProvider defaultShape="rounded">
+            {children}
+            <Analytics />
+          </ShapeProvider>
         </ThemeProvider>
       </body>
     </html>

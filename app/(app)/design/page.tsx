@@ -1,4 +1,3 @@
-import { TopNav } from "@/components/shell/TopNav"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -19,7 +18,6 @@ const statuses: PromiseStatus[] = [
 export default function DesignPage() {
   return (
     <>
-      <TopNav title="Design System" />
       <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-10">
 
         {/* Colors */}
@@ -102,9 +100,9 @@ export default function DesignPage() {
           <h2 className="text-subheading mb-4" style={{ color: "var(--text-primary)" }}>Buttons</h2>
           <div className="flex gap-3 flex-wrap items-center">
             <Button>Primary</Button>
-            <Button variant="outline">Outline</Button>
+            <Button variant="tertiary">Outline</Button>
             <Button variant="ghost">Ghost</Button>
-            <Button variant="destructive">Destructive</Button>
+            <Button variant="secondary">Destructive</Button>
             <Button size="sm">Small</Button>
             <Button disabled>Disabled</Button>
           </div>
@@ -125,8 +123,8 @@ export default function DesignPage() {
                   3 crore new houses under PM Awas Yojana by 2029.
                 </p>
                 <div className="mt-3 flex gap-2">
-                  <Badge variant="outline">Infrastructure</Badge>
-                  <Badge variant="outline">National</Badge>
+                  <Badge variant="solid">Infrastructure</Badge>
+                  <Badge variant="solid">National</Badge>
                 </div>
               </CardContent>
             </Card>
