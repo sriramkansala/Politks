@@ -2,30 +2,62 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource/jetbrains-mono/400.css";
 
-/* ─── Linear-faithful design tokens ───────────────────────── */
+/* ─── Linear design tokens ──────────────────────────────────────────────
+ * VERIFIED values extracted from Linear's production CSS bundles at
+ * static.linear.app/web/_next/static/css/ (downloaded May 2026).
+ * Token names follow Linear's own --color- / --bg- conventions.
+ * Inline comments tagged "L:" are the literal variable names from their
+ * stylesheets. Any value WITHOUT that L: tag is derived by us.
+ */
 :root {
-  /* Surfaces */
-  --bg-base:       #08090a;
-  --bg-elevated:   #0f1011;
-  --bg-elevated-2: #161718;
-  --bg-input:      #1c1d1f;
+  /* ── Linear surfaces (dark theme — verified) ─────────────────────────── */
+  --bg-base:       #08090a; /* L: --color-bg-level-0 / --color-bg-primary */
+  --bg-elevated:   #0f1011; /* L: --color-bg-level-1 / --color-bg-panel */
+  --bg-elevated-2: #141516; /* L: --color-bg-level-2 / --color-bg-tint */
+  --bg-elevated-3: #191a1b; /* L: --color-bg-level-3 */
+  --bg-secondary:  #1c1c1f; /* L: --color-bg-secondary */
+  --bg-tertiary:   #232326; /* L: --color-bg-tertiary */
+  --bg-quaternary: #28282c; /* L: --color-bg-quaternary */
+  --bg-quinary:    #282828; /* L: --color-bg-quinary */
+  --bg-tint:       #141516; /* L: --color-bg-tint */
+  --bg-shade:      #191d20; /* L: --bg-shade */
+  --bg-input:      #1c1c1f; /* maps to --color-bg-secondary */
+  --bg-card:       #101012; /* L: --card-bg */
 
-  /* Borders */
-  --border:        #23252a;
-  --border-strong: #2e3035;
+  /* ── Linear borders (dark — verified) ────────────────────────────────── */
+  --border:           #23252a; /* L: --color-border-primary */
+  --border-strong:    #34343a; /* L: --color-border-secondary */
+  --border-stronger:  #3e3e44; /* L: --color-border-tertiary */
+  --border-thin:      #24282c; /* L: --border-thin */
+  --border-solid:     #2a2e33; /* L: --border-solid */
+  --border-frame:     #151616; /* L: --border-frame */
+  --border-faint-thin:#191d21; /* L: --border-faint-thin */
 
-  /* Text */
-  --text-primary:   #f7f8f8;
-  --text-secondary: #8a8f98;
-  --text-tertiary:  #62666d;
-  --text-disabled:  #4a4d52;
+  /* ── Linear text (dark — MEASURED on linear.app DOM via Playwright) ────
+   * Both contexts measured: marketing subnav inactive AND in-app sidebar.
+   *   In-app sidebar nav item (idle "Inbox"): color rgb(208, 214, 224) = #d0d6e0
+   *   Marketing subnav inactive ("Community"): color rgb(138, 143, 152) = #8a8f98
+   *   In-app "In Progress" status label:     color rgb(98, 102, 109)  = #62666d
+   * So secondary = #d0d6e0 (the in-app standard), tertiary = #8a8f98,
+   * quaternary = #62666d (status/timestamp). */
+  --text-primary:    #f7f8f8; /* L: --color-fg-primary — measured */
+  --text-secondary:  #d0d6e0; /* MEASURED on in-app sidebar nav item */
+  --text-tertiary:   #8a8f98; /* MEASURED on marketing subnav inactive */
+  --text-quaternary: #62666d; /* MEASURED on status label */
+  --text-disabled:   #4a4d52;
+  --text-emphasis:   #d0d6e0; /* alias for back-compat */
+  --text-on-accent:  #ffffff; /* foreground for solid accent surfaces */
 
-  /* Brand */
-  --accent:       #5e6ad2;
-  --accent-hover: #7170ff;
-  --accent-muted: color-mix(in oklab, #5e6ad2 12%, transparent);
+  /* ── Linear brand (verified) ─────────────────────────────────────────── */
+  --accent:        #7170ff; /* L: --color-accent (dark) */
+  --accent-brand:  #5e6ad2; /* L: --color-brand-bg (dark) */
+  --accent-hover:  #8989f0; /* L: --color-accent-hover (dark) */
+  --accent-tint:   #18182f; /* L: --color-accent-tint (dark) */
+  --accent-muted:  color-mix(in oklab, #7170ff 12%, transparent);
+  --blue:          #4ea7fc; /* L: --color-blue */
+  --blue-marketing:#56cdff; /* L: --blue (marketing pages) */
 
-  /* Semantic */
+  /* ── Semantic (Linear publishes blue but the rest are ours) ──────────── */
   --success: #4cb782;
   --warning: #f2c94c;
   --danger:  #eb5757;
@@ -39,30 +71,74 @@
   --status-inworks:    #02b8cc;
   --status-unrated:    #62666d;
 
-  /* Shadows */
+  /* ── Shadows (Linear publishes none in their CSS — composed by us) ──── */
   --shadow-sm:     0 2px 4px rgba(0, 0, 0, 0.4);
   --shadow-subtle: inset 0 0 0 1px #23252a;
   --shadow-xl:     0 4px 32px rgba(8, 9, 10, 0.6);
 
-  /* Motion */
-  --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /* ── Linear motion (VERIFIED easing curves from their CSS) ──────────── */
+  --duration:           180ms;                                          /* L: --duration */
+  --ease-out-cubic:     cubic-bezier(0.215, 0.61, 0.355, 1);            /* L */
+  --ease-out-quart:     cubic-bezier(0.165, 0.84, 0.44, 1);             /* L — Linear standard */
+  --ease-out-quint:     cubic-bezier(0.23, 1, 0.32, 1);                 /* L */
+  --ease-out-circ:      cubic-bezier(0.075, 0.82, 0.165, 1);            /* L */
+  --ease-out-expo:      cubic-bezier(0.19, 1, 0.22, 1);                 /* L */
+  --ease-in-out-cubic:  cubic-bezier(0.645, 0.045, 0.355, 1);           /* L */
+  --ease-in-out-quart:  cubic-bezier(0.77, 0, 0.175, 1);                /* L */
+  --ease-in-out-quint:  cubic-bezier(0.86, 0, 0.07, 1);                 /* L */
+  /* Aliases for back-compat with existing call sites */
+  --ease-out:    var(--ease-out-quart);
+  --ease-in-out: var(--ease-in-out-cubic);
   --duration-fast:     100ms;
-  --duration-base:     150ms;
-  --duration-moderate: 200ms;
-  --duration-slow:     300ms;
+  --duration-base:     var(--duration);  /* 180ms — Linear standard */
+  --duration-moderate: 240ms;
+  --duration-slow:     320ms;
 
-  /* Layout */
+  /* ── Layout ──────────────────────────────────────────────────────────── */
   --sidebar-width:  240px;
   --topnav-height:  48px;
   --content-max:    1200px;
 
-  /* Radii */
-  --radius-tag:    2px;
-  --radius-badge:  4px;
-  --radius-card:   6px;
-  --radius-large:  12px;
-  --radius-pill:   9999px;
+  /* ── Linear radii (VERIFIED — they publish a 4/6/8/12/16/24/32 scale) ─ */
+  --radius-2:    2px;
+  --radius-4:    4px;       /* L: --radius-4 */
+  --radius-6:    6px;       /* L: --radius-6 — editor & most cards */
+  --radius-8:    8px;       /* L: --radius-8 */
+  --radius-12:   12px;      /* L: --radius-12 / --app-radius */
+  --radius-16:   16px;      /* L: --radius-16 */
+  --radius-24:   24px;      /* L: --radius-24 */
+  --radius-32:   32px;      /* L: --radius-32 */
+  --radius-pill: 9999px;    /* L: --radius-rounded */
+  --radius-circle: 50%;     /* L: --radius-circle */
+  /* Project aliases for the most-used sizes */
+  --radius-tag:    var(--radius-2);
+  --radius-badge:  var(--radius-4);
+  --radius-card:   var(--radius-6);
+  --radius-large:  var(--radius-12);
+
+  /* ── Linear button sizing (VERIFIED) ─────────────────────────────────── */
+  --button-height-sm:   24px;
+  --button-height-md:   28px;
+  --button-height-lg:   32px;
+  --button-padding-sm:  0 10px;
+  --button-padding-md:  0 12px;
+  --button-padding-lg:  0 16px;
+  --button-gap-sm:      4px;
+  --button-gap-md:      6px;
+  --button-gap-lg:      8px;
+  --button-font-sm:     12px;
+  --button-font-md:     13px;
+  --button-font-lg:     15px;
+
+  /* ── Focus ring (VERIFIED widths from Linear) ────────────────────────── */
+  --focus-ring-width:  2px;             /* L */
+  --focus-ring-offset: 2px;             /* L: --focus-ring-offset */
+  --focus-ring-color:  color-mix(in oklab, var(--accent) 55%, transparent);
+  --focus-ring-outline: var(--focus-ring-width) solid var(--focus-ring-color);
+
+  /* ── Block spacing (VERIFIED) ────────────────────────────────────────── */
+  --block-spacing:       20px;          /* L: --block-spacing */
+  --block-spacing-small:  8px;          /* L: --block-spacing-small */
 
   /* shadcn/ui compat */
   --background:         var(--bg-base);
@@ -89,6 +165,40 @@
   /* Fluid Functionalism surface tokens */
   --ff-hover:  rgba(247, 248, 248, 0.06);
   --ff-active: rgba(247, 248, 248, 0.10);
+
+  /* Fluid Functionalism surface ladder (1 = base canvas → 8 = top-most modal).
+   * Each step lightens the background by ~3-4%; the curve matches Linear's
+   * visible elevation: 8/9/10 → f/10/11 → 16/17/18 → 1d/1e/22 etc. */
+  --surface-1: var(--bg-base);
+  --surface-2: var(--bg-elevated);
+  --surface-3: var(--bg-elevated-2);
+  --surface-4: #1c1d20;
+  --surface-5: #212327;
+  --surface-6: #26282c;
+  --surface-7: #2b2d32;
+  --surface-8: #303237;
+
+  /* Layered shadow scale — multiple stops avoid the "hard halo" look. */
+  --shadow-s1: 0 1px 1px rgba(0,0,0,0.30);
+  --shadow-s2: 0 2px 4px rgba(0,0,0,0.32), 0 1px 1px rgba(0,0,0,0.28);
+  --shadow-s3: 0 4px 12px rgba(0,0,0,0.38), 0 2px 4px rgba(0,0,0,0.28);
+  --shadow-s4: 0 8px 24px rgba(0,0,0,0.42), 0 3px 8px rgba(0,0,0,0.30);
+  --shadow-s5: 0 12px 40px rgba(0,0,0,0.48), 0 4px 12px rgba(0,0,0,0.34);
+  --shadow-s6: 0 18px 56px rgba(0,0,0,0.52), 0 6px 16px rgba(0,0,0,0.36);
+  --shadow-s7: 0 24px 72px rgba(0,0,0,0.55), 0 8px 20px rgba(0,0,0,0.38);
+  --shadow-s8: 0 32px 96px rgba(0,0,0,0.60), 0 10px 24px rgba(0,0,0,0.40);
+
+  /* Linear-precise letter-spacing per text scale (tracks Inter Display) */
+  --tracking-display: -0.022em;
+  --tracking-heading: -0.018em;
+  --tracking-sub:     -0.014em;
+  --tracking-body:    -0.011em;
+  --tracking-caption: -0.005em;
+
+  /* Linear-precise motion curves — official Linear refresh blog values */
+  --ease-linear-out:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-linear-snap:  cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-linear-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* ─── Tailwind v4 theme extension ─────────────────────────── */
@@ -125,6 +235,26 @@
   --color-hover:  var(--ff-hover);
   --color-active: var(--ff-active);
 
+  /* FF surface ladder — generates bg-surface-1 ... bg-surface-8 */
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-surface-4: var(--surface-4);
+  --color-surface-5: var(--surface-5);
+  --color-surface-6: var(--surface-6);
+  --color-surface-7: var(--surface-7);
+  --color-surface-8: var(--surface-8);
+
+  /* FF shadow ladder — generates shadow-surface-1 ... shadow-surface-8 */
+  --shadow-surface-1: var(--shadow-s1);
+  --shadow-surface-2: var(--shadow-s2);
+  --shadow-surface-3: var(--shadow-s3);
+  --shadow-surface-4: var(--shadow-s4);
+  --shadow-surface-5: var(--shadow-s5);
+  --shadow-surface-6: var(--shadow-s6);
+  --shadow-surface-7: var(--shadow-s7);
+  --shadow-surface-8: var(--shadow-s8);
+
   --font-sans: "Inter Variable", "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   @keyframes spinner-move {
@@ -158,26 +288,73 @@ body {
   background-color: var(--bg-base);
   color: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: 14px;
-  line-height: 1.4;
-  letter-spacing: -0.011em;
+  font-size: 16px;                          /* MEASURED on linear.app body */
+  line-height: 24px;                        /* MEASURED — 1.5 ratio */
+  letter-spacing: normal;                   /* MEASURED — Linear doesn't tighten body */
   font-weight: 400;
+  font-feature-settings: 'cv01', 'ss03';    /* MEASURED — Linear's Inter Variable tuning */
 }
 
-/* ─── Typography ───────────────────────────────────────────── */
-.text-display    { font-size: 72px; line-height: 1;    letter-spacing: -0.022em; font-weight: 590; }
-.text-heading-xl { font-size: 48px; line-height: 1.2;  letter-spacing: -0.022em; font-weight: 590; }
-.text-heading    { font-size: 24px; line-height: 1.33; letter-spacing: -0.022em; font-weight: 510; }
-.text-subheading { font-size: 17px; line-height: 1.47; letter-spacing: -0.015em; font-weight: 510; }
-.text-body       { font-size: 14px; line-height: 1.4;  letter-spacing: -0.011em; font-weight: 400; }
-.text-caption    { font-size: 12px; line-height: 1.4;  letter-spacing: -0.010em; font-weight: 400; }
-.text-mono       { font-family: var(--font-mono); font-size: 13px; line-height: 1.4; letter-spacing: -0.015em; font-weight: 400; }
+/* ─── Typography (Linear font-size scale — VERIFIED) ───────────────────
+ * Linear publishes:
+ *   --font-size-micro   11px / 12px (light)
+ *   --font-size-mini    12px / 13px
+ *   --font-size-small   13px / 14px
+ *   --font-size-regular 15px / 16px
+ *   --font-size-large   18px
+ *   --font-size-title3  20px
+ *   --font-size-title2  24px
+ *   --font-size-title1  36px
+ * Letter-spacing in Linear's editor: -0.00666667em (derived to tighter values for headings).
+ */
+.text-micro      { font-size: 11px; line-height: 1.35; font-weight: 400; font-variation-settings: 'wght' 400; }
+.text-mini       { font-size: 12px; line-height: 1.4;  font-weight: 400; font-variation-settings: 'wght' 400; }
+.text-small      { font-size: 13px; line-height: 1.45; font-weight: 400; font-variation-settings: 'wght' 400; }
+.text-regular    { font-size: 15px; line-height: 1.55; font-weight: 400; font-variation-settings: 'wght' 400; }
+.text-large      { font-size: 18px; line-height: 1.45; letter-spacing: -0.012em; font-weight: 510; font-variation-settings: 'wght' 510; }
+.text-title3     { font-size: 20px; line-height: 1.3;  letter-spacing: -0.015em; font-weight: 590; font-variation-settings: 'wght' 590; }
+.text-title2     { font-size: 24px; line-height: 1.25; letter-spacing: -0.018em; font-weight: 590; font-variation-settings: 'wght' 590; }
+.text-title1     { font-size: 36px; line-height: 1.1;  letter-spacing: -0.022em; font-weight: 590; font-variation-settings: 'wght' 590; }
 
-/* ─── Focus ring ───────────────────────────────────────────── */
-:focus-visible {
-  outline: 2px solid color-mix(in oklab, var(--accent) 40%, transparent);
-  outline-offset: 2px;
-  border-radius: var(--radius-card);
+/* Back-compat aliases */
+.text-display    { font-size: 56px; line-height: 1.04; letter-spacing: -0.025em; font-weight: 590; font-variation-settings: 'wght' 590; }
+.text-heading-xl { font-size: 36px; line-height: 1.1;  letter-spacing: -0.022em; font-weight: 590; font-variation-settings: 'wght' 590; }
+.text-heading    { font-size: 24px; line-height: 1.25; letter-spacing: -0.018em; font-weight: 590; font-variation-settings: 'wght' 590; }
+.text-subheading { font-size: 18px; line-height: 1.45; letter-spacing: -0.012em; font-weight: 510; font-variation-settings: 'wght' 510; }
+.text-body       { font-size: 15px; line-height: 1.55; font-weight: 400; font-variation-settings: 'wght' 400; }
+.text-caption    { font-size: 12px; line-height: 1.4;  font-weight: 400; font-variation-settings: 'wght' 400; }
+.text-mono       { font-family: var(--font-mono); font-size: 13px; line-height: 1.4; font-weight: 400; }
+
+/* ─── Inter Variable axis-bound weight utilities ──────────────────
+   Linear & FF set `font-variation-settings` rather than relying solely
+   on `font-weight`, because the Inter Variable file responds to the
+   'wght' axis with finer-grained interpolation. These classes are the
+   canonical replacement for Tailwind arbitrary `font-[NNN]` weights. */
+.font-light    { font-weight: 350; font-variation-settings: 'wght' 350; }
+.font-normal   { font-weight: 400; font-variation-settings: 'wght' 400; }
+.font-book     { font-weight: 450; font-variation-settings: 'wght' 450; }
+.font-medium   { font-weight: 510; font-variation-settings: 'wght' 510; }
+.font-semibold { font-weight: 590; font-variation-settings: 'wght' 590; }
+.font-bold     { font-weight: 700; font-variation-settings: 'wght' 700; }
+
+/* ─── Focus ring — Linear-style (targeted, NOT universal) ──────────────
+ * Linear only applies focus rings to interactive elements. A universal
+ * :focus-visible rule causes ugly double rings on input wrappers (label
+ * gets a ring + nested input gets another). We target ONLY the elements
+ * that should glow, with a SINGLE 1px shadow-style ring matching their
+ * own border-radius (not a fixed --radius-card). */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+[role="link"]:focus-visible,
+[role="menuitem"]:focus-visible,
+[role="option"]:focus-visible,
+[role="checkbox"]:focus-visible,
+[role="radio"]:focus-visible,
+[role="switch"]:focus-visible,
+[role="tab"]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 45%, transparent);
 }
 
 /* ─── Scrollbar ────────────────────────────────────────────── */
@@ -191,6 +368,564 @@ tr.is-active td {
   color: var(--text-primary);
   transition: color 80ms;
 }
+
+/* ─── Legislator row — Linear-monochrome variant ───────────────────────
+ *   Heavy mode (.legislator-row alone): card with depth — used by /parties
+ *   Mono mode (.legislator-row.mono): pure Linear list row — used by /legislators
+ * Mono mode strips the card chrome and uses just a subtle hover background,
+ * matching Linear's actual list aesthetic. */
+.legislator-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-card);
+  box-shadow:
+    inset 0  1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.30),
+    0 1px 1px rgba(0, 0, 0, 0.20);
+  transition:
+    transform var(--duration) var(--ease-out-quart),
+    box-shadow var(--duration) var(--ease-out-quart),
+    background-color var(--duration) var(--ease-out-quart);
+}
+.legislator-row:hover {
+  transform: translateY(-1px);
+  background-color: var(--bg-tertiary) !important;
+  box-shadow:
+    inset 0  1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.40),
+    0 2px 4px rgba(0, 0, 0, 0.30),
+    0 10px 24px rgba(0, 0, 0, 0.40);
+}
+/* Mono variant: Linear-style list row */
+.legislator-row.mono {
+  background: transparent !important;
+  border: none !important;
+  border-radius: var(--radius-4);
+  padding: 8px 10px;
+  box-shadow: none;
+  gap: 10px;
+}
+.legislator-row.mono:hover {
+  transform: none;
+  background-color: var(--bg-elevated) !important;
+  box-shadow: none;
+}
+
+/* ─── Sidebar nav — FF active state with surface elevation jump ──────── */
+nav a[aria-current="page"] {
+  background: var(--surface-3);
+  box-shadow:
+    inset 0  1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.30);
+}
+nav a:hover:not([aria-current="page"]) {
+  background: var(--ff-hover);
+}
+
+/* (universal :focus-visible removed — see scoped rule above) */
+
+/* ─── Subtle "Inter Display" emulation: tighten tracking on big headings ── */
+h1, h2 { font-feature-settings: 'ss01' 1, 'ss02' 1, 'cv11' 1; }
+
+/* ─── Linear primary CTA (MEASURED — Sign-up button on linear.app)──────
+ *   bg: #e5e5e6   (off-white, NOT pure white)
+ *   color: #08090a (--bg-base)
+ *   font-size: 13px  weight 510
+ *   height: 32px  padding: 0 12px
+ *   border-radius: 9999px (pill)
+ * Linear's marketing-page primary CTA is INVERSE, not accent purple. */
+.btn-primary-inverse {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-variation-settings: 'wght' 510;
+  font-weight: 510;
+  letter-spacing: normal;
+  background: #e5e5e6;
+  color: var(--bg-base);
+  border: 1px solid #e5e5e6;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background var(--duration) var(--ease-out-quart),
+    border-color var(--duration) var(--ease-out-quart),
+    transform 100ms var(--ease-out-quart);
+}
+.btn-primary-inverse:hover { background: #ffffff; border-color: #ffffff; }
+.btn-primary-inverse:active { transform: scale(0.98); }
+
+/* Linear-style input wrapper: single 1px border, single focus indicator.
+ * Tailwind v4 arbitrary `focus-within:border-[var(--accent)]` doesn't always
+ * compile cleanly, so we write the focus state explicitly here. */
+.linear-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  width: 100%;
+  cursor: text;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated-2);
+  transition:
+    border-color 180ms var(--ease-out-quart),
+    box-shadow 180ms var(--ease-out-quart);
+}
+.linear-input:hover { border-color: var(--border-strong); }
+.linear-input:focus-within {
+  /* Single focus indicator — border-color change only. Stacking border +
+     inset shadow reads as a double frame. */
+  border-color: var(--accent);
+}
+.linear-input > input {
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  outline: none;
+  padding: 0;
+  font-size: 13px;
+  color: var(--text-primary);
+  font-variation-settings: 'wght' 400;
+}
+.linear-input > input::placeholder { color: var(--text-disabled); }
+.linear-input > input:disabled { opacity: 0.5; pointer-events: none; }
+.linear-input .lead-icon,
+.linear-input .trail-icon {
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+  transition:
+    color 180ms var(--ease-out-quart),
+    stroke-width 180ms var(--ease-out-quart);
+}
+.linear-input:hover .lead-icon,
+.linear-input:hover .trail-icon { color: var(--text-secondary); }
+.linear-input:focus-within .lead-icon,
+.linear-input:focus-within .trail-icon { color: var(--text-primary); }
+.linear-input:focus-within .lead-icon svg,
+.linear-input:focus-within .trail-icon svg { stroke-width: 2; }
+
+/* Top-nav style link matching linear.app */
+.linear-nav-link {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: var(--radius-card);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: background var(--duration) var(--ease-out-quart);
+}
+.linear-nav-link:hover { background: var(--bg-elevated); }
+
+/* ─── Party card (used on /parties grid) ──────────────────────────────── */
+.party-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  box-shadow:
+    inset 0  1px 0 rgba(255, 255, 255, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.20);
+  transition:
+    border-color var(--duration) var(--ease-out-quart),
+    transform var(--duration) var(--ease-out-quart),
+    box-shadow var(--duration) var(--ease-out-quart);
+}
+.party-card:hover {
+  transform: translateY(-1px);
+  border-color: var(--border-strong);
+  box-shadow:
+    inset 0  1px 0 rgba(255, 255, 255, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.30),
+    0 12px 28px rgba(0, 0, 0, 0.40);
+}
+.party-card__band {
+  display: block;
+  height: 2px;
+  width: 100%;
+  opacity: 0.85;
+}
+.party-card__inner {
+  position: relative;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  grid-template-areas:
+    "symbol title arrow"
+    "symbol stats stats";
+  column-gap: 14px;
+  row-gap: 8px;
+  align-items: center;
+}
+.party-card__symbol {
+  grid-area: symbol;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-card);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.party-card__title {
+  grid-area: title;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.party-card__name {
+  font-size: 14px;
+  line-height: 1.25;
+  letter-spacing: -0.14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.party-card__short {
+  font-size: 11px;
+  margin-top: 1px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.party-card__stats {
+  grid-area: stats;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+.party-card__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.party-card__stat .value {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-variation-settings: 'wght' 590;
+  line-height: 1.2;
+}
+.party-card__stat .label {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-variation-settings: 'wght' 510;
+}
+.party-card__arrow {
+  grid-area: arrow;
+  align-self: start;
+  margin-top: 2px;
+}
+
+/* ─── Reusable utility classes (consolidates inline styles) ───────────── */
+
+/* ── Linear card baseline ────────────────────────────────────────────────
+ * Applied to any surface element that should read as a card. Provides:
+ *   - resting shadow (subtle Linear depth, not theatrical)
+ *   - inset top-edge highlight (1px alpha-white) — Linear signature
+ *   - spring-eased hover lift (translateY -1px) + brighter border
+ *
+ * Auto-applied via CSS attribute selectors to any element styled with
+ * `background: var(--bg-elevated)` or `background: var(--bg-elevated-2)` so
+ * that every existing page picks up the depth without touching call sites.
+ */
+.card-base,
+.stat-card,
+.caveat-block,
+[style*="--bg-elevated)"] {
+  border-radius: var(--radius-card);
+  /* Linear's actual card chrome — 1px top highlight, hairline bottom for
+   * definition, and a soft depth shadow. Motion uses Linear's verified
+   * --duration (180ms) and --ease-out-quart curve. */
+  box-shadow:
+    inset 0  1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 1px 1px rgba(0, 0, 0, 0.25),
+    0 4px 12px rgba(0, 0, 0, 0.35);
+  transition:
+    transform var(--duration) var(--ease-out-quart),
+    border-color var(--duration) var(--ease-out-quart),
+    box-shadow var(--duration) var(--ease-out-quart),
+    background-color var(--duration) var(--ease-out-quart);
+}
+.card-base:hover,
+.stat-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0  1px 0 rgba(255, 255, 255, 0.10),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.30),
+    0 12px 28px rgba(0, 0, 0, 0.45);
+}
+
+/* Clickable card-like Link / Anchor — stronger hover affordance. */
+a[style*="--bg-elevated)"]:hover {
+  border-color: var(--accent) !important;
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0  1px 0 rgba(113, 112, 255, 0.18),  /* Linear --color-accent tint */
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.30),
+    0 14px 32px rgba(0, 0, 0, 0.50);
+}
+
+/* Single-stat box used by /mp Honesty Card, manifesto headers, atlas. */
+.stat-card {
+  background: var(--bg-elevated-2);
+  border: 1px solid var(--border);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.stat-card .label {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-variation-settings: 'wght' 510;
+}
+.stat-card .value {
+  font-size: 20px;
+  line-height: 1.1;
+  letter-spacing: -0.018em;
+  color: var(--text-primary);
+  font-variation-settings: 'wght' 590;
+}
+.stat-card .note {
+  font-size: 10px;
+  color: var(--text-disabled);
+}
+.stat-card.tone-good  .value { color: var(--status-kept); }
+.stat-card.tone-bad   .value { color: var(--status-broken); }
+.stat-card.tone-warn  .value { color: var(--status-compromise); }
+.stat-card.tone-info  .value { color: var(--status-inworks); }
+
+/* Filter chip — Linear's filter-row pattern (compact 22px height) */
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 8px;
+  font-size: 11px;
+  letter-spacing: 0;
+  font-variation-settings: 'wght' 510;
+  color: var(--text-tertiary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-4);
+  text-decoration: none;
+  transition: color var(--duration) var(--ease-out-quart),
+              background var(--duration) var(--ease-out-quart),
+              border-color var(--duration) var(--ease-out-quart);
+}
+.filter-chip:hover {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+}
+.filter-chip.is-active {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+.filter-chip .swatch {
+  width: 6px; height: 6px; border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Dropdown button used inside .filter-row for long option lists */
+.filter-dropdown-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  min-width: 130px;
+  max-width: 240px;
+  border-radius: var(--radius-4);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-variation-settings: 'wght' 510;
+  cursor: pointer;
+  transition:
+    background var(--duration) var(--ease-out-quart),
+    color var(--duration) var(--ease-out-quart);
+}
+.filter-dropdown-btn:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+.filter-dropdown-btn[data-state="open"] {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Dropdown menu — Linear-style: dark surface, hairline border, soft shadow */
+.filter-dropdown-menu {
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  background: var(--bg-elevated-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 12px 32px rgba(0, 0, 0, 0.45);
+  width: 280px;        /* fixed width so long names ellipsis cleanly */
+  max-height: 320px;
+  overflow-y: auto;
+  animation: filter-menu-in 140ms var(--ease-out-quart);
+}
+@keyframes filter-menu-in {
+  from { opacity: 0; transform: translateY(-2px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+.filter-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 26px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-size: 12px;
+  color: var(--text-secondary);
+  border-radius: var(--radius-4);
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    background var(--duration) var(--ease-out-quart),
+    color var(--duration) var(--ease-out-quart);
+}
+.filter-dropdown-item > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
+}
+.filter-dropdown-item:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+.filter-dropdown-item.is-active {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Compact filter row — Linear's `/changelog` style: dense, horizontal-scroll */
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: var(--radius-card);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+}
+.filter-row .label-prefix {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  padding: 0 8px;
+  margin-right: 4px;
+  border-right: 1px solid var(--border);
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  font-variation-settings: 'wght' 510;
+}
+
+/* Pillar link — used by sidebar bottom items, footer references. */
+.pillar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+.pillar-link:hover { color: var(--text-primary); }
+
+/* Party-coloured pill (left border) — manifesto card, MP dossier, bill card. */
+.party-band {
+  display: block;
+  height: 3px;
+  border-top-left-radius: var(--radius-card);
+  border-top-right-radius: var(--radius-card);
+}
+
+/* Section caveat block — used at the bottom of /insights, /manifestos, /mp. */
+.caveat-block {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--text-tertiary);
+}
+.caveat-block strong { color: var(--text-secondary); }
+
+/* Linear-precise heading helpers (use these instead of inline letter-spacing).
+ * NB: Inter Variable responds to BOTH font-weight and font-variation-settings,
+ * but if they disagree some browsers (older Chrome, Safari < 15) snap to the
+ * nearest static weight. We set both to keep rendering stable. */
+/* IN-APP heading scale — derived from Linear's measurements with -0.022em ratio
+ * but sized for product (not marketing) context. Linear's marketing site uses
+ * 48/40/20 because it's about persuasion; in-app issue trackers stay tighter.
+ * All weights 510 (MEASURED), letter-spacing follows -0.022em ratio,
+ * line-height ~= font-size for headings, font-feature-settings inherited. */
+.h-display   { font-size: 64px; line-height: 64px; letter-spacing: -1.408px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* splash hero only */
+.h-hero      { font-size: 48px; line-height: 48px; letter-spacing: -1.056px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* marketing-style hero */
+.h-page      { font-size: 28px; line-height: 32px; letter-spacing: -0.616px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* in-app page title */
+.h-section   { font-size: 18px; line-height: 22px; letter-spacing: -0.396px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* in-app section header */
+.h-sub       { font-size: 15px; line-height: 20px; letter-spacing: -0.18px;  font-weight: 510; font-variation-settings: 'wght' 510; }  /* sub-section */
+.h-card      { font-size: 14px; line-height: 20px; letter-spacing: -0.154px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* card title */
+.lbl-tiny    { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); font-weight: 510; font-variation-settings: 'wght' 510; }
+
+/* FF surface bg helpers (in case Tailwind misses them — explicit defs). */
+.bg-surface-1 { background-color: var(--surface-1); }
+.bg-surface-2 { background-color: var(--surface-2); }
+.bg-surface-3 { background-color: var(--surface-3); }
+.bg-surface-4 { background-color: var(--surface-4); }
+.bg-surface-5 { background-color: var(--surface-5); }
+.bg-surface-6 { background-color: var(--surface-6); }
+.bg-surface-7 { background-color: var(--surface-7); }
+.bg-surface-8 { background-color: var(--surface-8); }
+
+.shadow-surface-1 { box-shadow: var(--shadow-s1); }
+.shadow-surface-2 { box-shadow: var(--shadow-s2); }
+.shadow-surface-3 { box-shadow: var(--shadow-s3); }
+.shadow-surface-4 { box-shadow: var(--shadow-s4); }
+.shadow-surface-5 { box-shadow: var(--shadow-s5); }
+.shadow-surface-6 { box-shadow: var(--shadow-s6); }
+.shadow-surface-7 { box-shadow: var(--shadow-s7); }
+.shadow-surface-8 { box-shadow: var(--shadow-s8); }
 
 /* ─── Reduced motion ───────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {

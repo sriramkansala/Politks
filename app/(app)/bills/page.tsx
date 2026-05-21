@@ -22,11 +22,20 @@ const OUTCOME_STYLE: Record<string, { label: string; color: string; bg: string }
 
 function OutcomePill({ outcome }: { outcome: string | null }) {
   const s = OUTCOME_STYLE[outcome ?? "pending"] ?? OUTCOME_STYLE.pending
+  // Linear-monochrome: dot + label, no chip background.
   return (
     <span
-      className="inline-flex items-center px-2 py-0.5 text-[11px] font-[510] uppercase tracking-[0.04em] rounded-[3px]"
-      style={{ color: s.color, background: s.bg }}
+      className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.04em] shrink-0"
+      style={{
+        color: "var(--text-tertiary)",
+        fontVariationSettings: "'wght' 510",
+      }}
     >
+      <span
+        className="inline-block rounded-full"
+        style={{ width: 6, height: 6, background: s.color }}
+        aria-hidden="true"
+      />
       {s.label}
     </span>
   )
@@ -67,8 +76,8 @@ export default async function BillsPage() {
   return (
     <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto">
       <div className="mb-6">
-        <h1 className="text-heading mb-1" style={{ color: "var(--text-primary)" }}>Bills</h1>
-        <p className="text-body" style={{ color: "var(--text-secondary)" }}>
+        <h1 className="h-page mb-2" style={{ color: "var(--text-primary)" }}>Bills</h1>
+        <p className="text-[15px]" style={{ color: "var(--text-secondary)" }}>
           {allBills.length} bills tracked · Legislative timeline with causal forensics
         </p>
       </div>
@@ -83,16 +92,16 @@ export default async function BillsPage() {
               <TableHead className="text-[10px] uppercase tracking-wide" style={{ color: "var(--text-tertiary)" }}>
                 Bill
               </TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell" style={{ color: "var(--text-tertiary)", width: 90 }}>
+              <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 180 }}>
                 Number
               </TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell" style={{ color: "var(--text-tertiary)", width: 70 }}>
+              <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 70 }}>
                 Year
               </TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wide" style={{ color: "var(--text-tertiary)", width: 110 }}>
+              <TableHead className="text-[10px] uppercase tracking-wide whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 130 }}>
                 Stage
               </TableHead>
-              <TableHead className="text-[10px] uppercase tracking-wide" style={{ color: "var(--text-tertiary)", width: 110 }}>
+              <TableHead className="text-[10px] uppercase tracking-wide whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 130 }}>
                 Outcome
               </TableHead>
             </TableRow>
@@ -106,7 +115,7 @@ export default async function BillsPage() {
                     className="block"
                     style={{ textDecoration: "none" }}
                   >
-                    <div className="text-[13px] font-[450]" style={{ color: "var(--text-primary)" }}>
+                    <div className="text-[13px] font-book" style={{ color: "var(--text-primary)" }}>
                       {bill.short_title ?? bill.title}
                     </div>
                     {bill.house_introduced && (
@@ -117,12 +126,12 @@ export default async function BillsPage() {
                     )}
                   </Link>
                 </TableCell>
-                <TableCell className="hidden md:table-cell">
+                <TableCell className="hidden md:table-cell whitespace-nowrap">
                   <span className="text-[12px] font-mono" style={{ color: "var(--text-tertiary)" }}>
                     {bill.bill_number ?? "—"}
                   </span>
                 </TableCell>
-                <TableCell className="hidden md:table-cell">
+                <TableCell className="hidden md:table-cell whitespace-nowrap">
                   <span className="text-[12px]" style={{ color: "var(--text-tertiary)" }}>
                     {bill.introduced_date?.slice(0, 4) ?? "—"}
                   </span>
@@ -138,6 +147,20 @@ export default async function BillsPage() {
           </TableBody>
         </Table>
       </div>
+
+      {/* Caveat block — UI_RULES.md §6 */}
+      <section className="caveat-block mt-6">
+        <strong>How this works.</strong>{" "}
+        Bill metadata (number, type, dates, current stage) comes from{" "}
+        <a href="https://prsindia.org/billtrack" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>
+          PRS Legislative Research
+        </a>
+        {" "}and the Lok Sabha / Rajya Sabha digital archives. The 16-stage
+        timeline collapses procedural and committee steps into a single forward
+        bar; substantive amendments and committee dissent are surfaced on the
+        per-bill page. Outcome is set only after gazette notification (Passed),
+        explicit withdrawal, or expiry at dissolution of Parliament.
+      </section>
     </div>
   )
 }

@@ -172,7 +172,7 @@ export default async function BillDiffPage({
 
         {/* Page header */}
         <div>
-          <h1 className="text-heading mb-1" style={{ color: tokens.color.textPrimary }}>
+          <h1 className="h-page mb-2" style={{ color: tokens.color.textPrimary }}>
             Bill Diff View
           </h1>
           <p className="text-[14px]" style={{ color: tokens.color.textSecondary }}>

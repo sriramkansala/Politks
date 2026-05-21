@@ -137,6 +137,11 @@ function AttributionChain({ note, clauseTitle }: AttributionChainProps) {
 
   return (
     <div className="mt-2">
+      {/* UI_RULES.md §1 exception: 11px inline disclosure toggle nested inside
+          a clause-diff cell. The smallest <Button> variant (sm = h-7 = 28px,
+          12px text) is too tall and visually heavy — this reads as a chevron
+          link in body copy, not a CTA. Keep as a bare <button> — documented
+          exception. */}
       <button
         onClick={() => setOpen((v) => !v)}
         className="flex items-center gap-1.5 text-[11px] transition-colors duration-80"
@@ -197,8 +202,8 @@ function ClauseRow({ pair, showUnchanged }: ClauseRowProps) {
       >
         <div className="flex items-center gap-2">
           <span
-            className="text-[11px] font-mono font-[510]"
-            style={{ color: tokens.color.textPrimary }}
+            className="text-[11px] font-mono"
+            style={{ color: tokens.color.textPrimary, fontVariationSettings: fontWeights.medium }}
           >
             Clause {pair.clauseNumber}
           </span>
@@ -211,10 +216,11 @@ function ClauseRow({ pair, showUnchanged }: ClauseRowProps) {
         <div className="flex items-center gap-2">
           {pair.isPoisonPill && (
             <div
-              className="flex items-center gap-1 px-2 py-0.5 rounded-[3px] text-[10px] font-[510] uppercase tracking-wider"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-[3px] text-[10px] uppercase tracking-wider"
               style={{
                 background: `${tokens.status.broken}20`,
                 color: tokens.status.broken,
+                fontVariationSettings: fontWeights.medium,
               }}
             >
               <AlertTriangle size={10} />
@@ -222,8 +228,8 @@ function ClauseRow({ pair, showUnchanged }: ClauseRowProps) {
             </div>
           )}
           <span
-            className="text-[10px] uppercase tracking-wider font-[510]"
-            style={{ color: style.labelColor }}
+            className="text-[10px] uppercase tracking-wider"
+            style={{ color: style.labelColor, fontVariationSettings: fontWeights.medium }}
           >
             {style.label}
           </span>
@@ -323,8 +329,8 @@ export function BillDiffView({
         ].map(({ label, count, color }) => (
           <div key={label} className="flex items-center gap-1.5">
             <span
-              className="text-[18px] font-[590] leading-none"
-              style={{ color, letterSpacing: "-0.022em" }}
+              className="text-[18px] leading-none"
+              style={{ color, letterSpacing: "-0.022em", fontVariationSettings: fontWeights.semibold }}
             >
               {count}
             </span>
@@ -336,13 +342,18 @@ export function BillDiffView({
         {poison > 0 && (
           <div className="flex items-center gap-1.5">
             <AlertTriangle size={14} style={{ color: tokens.status.broken }} />
-            <span className="text-[12px] font-[510]" style={{ color: tokens.status.broken }}>
+            <span className="text-[12px]" style={{ color: tokens.status.broken, fontVariationSettings: fontWeights.medium }}>
               {poison} forensic signal{poison > 1 ? "s" : ""}
             </span>
           </div>
         )}
 
         <div className="ml-auto">
+          {/* UI_RULES.md §1 exception: 11px toggle pill matching the summary
+              row's compact 24px-tall stat-strip rhythm. The smallest <Button>
+              variant (sm = h-7 = 28px, 12px text) breaks the visual balance
+              with the inline added/removed/modified counters next to it.
+              Keep as a bare <button> — documented exception. */}
           <button
             onClick={() => setShowUnchanged((v) => !v)}
             className="text-[11px] px-2.5 py-1 rounded-[4px] transition-colors duration-80"

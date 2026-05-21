@@ -8,6 +8,7 @@ import { fontWeights } from "@/lib/font-weight"
 import { tokens } from "@/lib/tokens"
 import { useShape } from "@/lib/shape-context"
 import { Input } from "@/components/ui/input"
+import { Tooltip } from "@/components/ui/tooltip"
 import { StatusPill } from "./StatusPill"
 import {
   Table, TableHeader, TableBody, TableRow, TableHead, TableCell,
@@ -82,13 +83,13 @@ const SIG_ORDER: SignificanceKey[] = [
 
 type FilterValue = "all" | SignificanceKey
 
-const FILTERS: { value: FilterValue; label: string }[] = [
-  { value: "all",                 label: "All" },
-  { value: "fundamental_right",   label: "Fundamental Rights" },
-  { value: "directive_principle", label: "Directive Principles" },
-  { value: "welfare",             label: "Welfare" },
-  { value: "economic",            label: "Economic" },
-  { value: "aspirational",        label: "Aspirational" },
+const FILTERS: { value: FilterValue; label: string; description?: string }[] = [
+  { value: "all",                 label: "All", description: "All promises, regardless of constitutional significance." },
+  { value: "fundamental_right",   label: "Fundamental Rights",   description: SIG.fundamental_right.description },
+  { value: "directive_principle", label: "Directive Principles", description: SIG.directive_principle.description },
+  { value: "welfare",             label: "Welfare",              description: SIG.welfare.description },
+  { value: "economic",            label: "Economic",             description: SIG.economic.description },
+  { value: "aspirational",        label: "Aspirational",         description: SIG.aspirational.description },
 ]
 
 // ── Classification heuristic ────────────────────────────────────────────────
@@ -200,8 +201,6 @@ export function PromiseList({ promises }: PromiseListProps) {
     return list
   }, [classified, activeFilter, search])
 
-  const activeSig = activeFilter !== "all" ? SIG[activeFilter] : null
-
   return (
     <div className="space-y-3">
 
@@ -226,7 +225,14 @@ export function PromiseList({ promises }: PromiseListProps) {
                 const isActive = activeFilter === f.value
                 const count = counts[f.value] ?? 0
                 if (count === 0 && f.value !== "all") return null
-                return (
+                const button = (
+                  // UI_RULES.md §1 exception: this chip uses a framer-motion
+                  // `layoutId="promise-filter-pill"` for the shared-element
+                  // background-pill animation between active filters. The
+                  // <Button> wrapper renders its own `absolute inset-0` bg span
+                  // which would fight (and double-render) the motion.span pill.
+                  // It also targets 11px text + 24px height (below sm = 28px).
+                  // Keep as a bare <button> — documented exception.
                   <button
                     key={f.value}
                     onClick={() => setActiveFilter(f.value)}
@@ -252,6 +258,15 @@ export function PromiseList({ promises }: PromiseListProps) {
                     </span>
                   </button>
                 )
+                return f.description ? (
+                  <Tooltip
+                    key={f.value}
+                    side="bottom"
+                    content={<span className="block max-w-[280px] leading-snug">{f.description}</span>}
+                  >
+                    {button}
+                  </Tooltip>
+                ) : button
               })}
             </div>
           </LayoutGroup>
@@ -273,8 +288,14 @@ export function PromiseList({ promises }: PromiseListProps) {
             style={{ paddingRight: search ? 28 : undefined }}
           />
           {search && (
+            // UI_RULES.md §1 exception: 11px icon-only clear button absolutely
+            // positioned inside the <Input>'s right padding (28px). The
+            // smallest <Button> variant (icon-sm = 32x32) is larger than the
+            // Input itself (h-8 = 32px) and cannot sit inside the padding.
+            // Keep as a bare <button> — documented exception.
             <button
               onClick={() => setSearch("")}
+              aria-label="Clear search"
               className="absolute right-2 z-10"
               style={{ color: tokens.color.textDisabled }}
             >
@@ -284,22 +305,7 @@ export function PromiseList({ promises }: PromiseListProps) {
         </div>
       </div>
 
-      {/* Active filter description */}
-      {activeSig && (
-        <motion.p
-          key={activeFilter}
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={springs.moderate}
-          className="text-[11px] leading-relaxed max-w-2xl pl-2.5"
-          style={{
-            color: tokens.color.textSecondary,
-            borderLeft: `2px solid ${tokens.color.border}`,
-          }}
-        >
-          {activeSig.description}
-        </motion.p>
-      )}
+      {/* Description now shown via hover tooltip on each filter chip. */}
 
       {/* ── Table ── */}
       {filtered.length === 0 ? (
@@ -382,10 +388,11 @@ export function PromiseList({ promises }: PromiseListProps) {
                     {/* Category */}
                     <TableCell className="hidden md:table-cell">
                       <span
-                        className="text-[10px] uppercase font-[510] tracking-wide px-1.5 py-0.5 rounded-[2px]"
+                        className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[2px]"
                         style={{
                           background: tokens.color.bgElevated2,
                           color: tokens.color.textSecondary,
+                          fontVariationSettings: fontWeights.medium,
                         }}
                       >
                         {promise.category.replace(/_/g, " ")}

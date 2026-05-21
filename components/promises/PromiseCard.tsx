@@ -3,6 +3,7 @@ import { FileText, MapPin } from "lucide-react"
 import { StatusPill } from "./StatusPill"
 import type { PromiseRow } from "@/lib/db/types"
 import { cn } from "@/lib/utils"
+import { fontWeights } from "@/lib/font-weight"
 
 interface PromiseCardProps {
   promise: PromiseRow
@@ -30,8 +31,8 @@ export function PromiseCard({ promise, className }: PromiseCardProps) {
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-3">
           <span
-            className="text-[13px] font-[400] leading-snug truncate"
-            style={{ color: "var(--text-primary)" }}
+            className="text-[13px] leading-snug truncate"
+            style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.normal }}
           >
             {promise.title}
           </span>
@@ -44,10 +45,11 @@ export function PromiseCard({ promise, className }: PromiseCardProps) {
             style={{ color: "var(--text-tertiary)" }}
           >
             <span
-              className="px-1.5 py-0.5 rounded-[2px] text-[10px] uppercase font-[510] tracking-wide"
+              className="px-1.5 py-0.5 rounded-[2px] text-[10px] uppercase tracking-wide"
               style={{
                 background: "var(--bg-elevated-2)",
                 color: "var(--text-secondary)",
+                fontVariationSettings: fontWeights.medium,
               }}
             >
               {promise.category.replace(/_/g, " ")}

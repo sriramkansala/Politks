@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { StatusPill } from "@/components/promises/StatusPill"
 import { statusMeta, type PromiseStatus } from "@/lib/tokens"
@@ -70,12 +70,10 @@ export function StatusUpdateDialog({
           <div className="space-y-1.5">
             <Label className="text-caption" style={{ color: "var(--text-secondary)" }}>New Status</Label>
             <Select value={newStatus} onValueChange={(v) => setNewStatus(v as PromiseStatus)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
+              <SelectTrigger placeholder="Pick a status…" />
               <SelectContent>
-                {STATUSES.map((s) => (
-                  <SelectItem key={s} value={s}>
+                {STATUSES.map((s, i) => (
+                  <SelectItem key={s} value={s} index={i}>
                     {statusMeta[s].label}
                   </SelectItem>
                 ))}

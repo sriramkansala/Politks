@@ -9,7 +9,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-3 focus:py-1.5 focus:rounded-[6px] focus:text-[13px]"
-        style={{ background: "var(--accent)", color: "#fff" }}
+        style={{ background: "var(--accent)", color: "var(--text-on-accent)" }}
       >
         Skip to main content
       </a>

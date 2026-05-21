@@ -49,25 +49,26 @@ function SignalCard({
 
   return (
     <div
-      className="rounded-[6px] p-4"
+      className="rounded-[var(--radius-card)] p-4"
       style={{
         background: tokens.color.bgElevated,
         border: "1px solid var(--border)",
-        borderLeft: `3px solid ${color}`,
+        // Linear-mono: severity → tiny dot, not a 3px coloured border
       }}
     >
       <div className="flex items-start gap-3">
-        <Icon size={14} style={{ color, marginTop: 2, flexShrink: 0 }} />
+        <Icon size={14} strokeWidth={1.5} style={{ color: tokens.color.textTertiary, marginTop: 2, flexShrink: 0 }} />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
-            <span className="text-[12px] font-[510]" style={{ color: tokens.color.textPrimary }}>
+            <span className="text-[12px]" style={{ color: tokens.color.textPrimary, fontVariationSettings: "'wght' 510" }}>
               {title}
             </span>
-            <span className="text-[10px] font-mono uppercase" style={{ color }}>
+            <span className="inline-flex items-center gap-1 text-[10px] uppercase" style={{ color: tokens.color.textTertiary }}>
+              <span className="inline-block rounded-full" style={{ width: 6, height: 6, background: color }} aria-hidden="true" />
               {severity}
             </span>
           </div>
-          <div className="text-[11px] font-[510] mb-1" style={{ color }}>
+          <div className="text-[11px] mb-1" style={{ color: tokens.color.textSecondary, fontVariationSettings: "'wght' 510" }}>
             {signal}
           </div>
           <p className="text-[12px] leading-relaxed" style={{ color: tokens.color.textSecondary }}>
@@ -85,6 +86,11 @@ function SignalCard({
                 Thanks — your challenge has been recorded. We review all submissions.
               </p>
             ) : (
+              // UI_RULES.md §1 exception: 11px inline link-styled action. The
+              // smallest <Button> variant (sm = h-7 = 28px, 12px text) is too
+              // tall and visually heavy for an inline tertiary action that
+              // reads as a hyperlink (note the hover:underline). Keep as a
+              // bare <button> — documented exception.
               <button
                 onClick={() => setChallenged(true)}
                 className="inline-flex items-center gap-1.5 text-[11px] transition-colors duration-80 hover:underline"

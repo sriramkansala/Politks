@@ -1,0 +1,160 @@
+// Linear-monochrome row.
+//
+// Linear's actual list rows (verified from refresh-36869cc79ec19741d75a35dd2beadf5d9d58e2c8):
+//   • monochrome text in --color-fg-secondary
+//   • a single 6-7px colored dot at the START of the row as the only color
+//   • no left border, no card chrome on individual rows
+//   • subtle right-aligned secondary value
+//   • pill-shaped tab strip above for filters
+//
+// We map party identity to that single dot, keep avatar monochrome.
+
+import Link from "next/link"
+import type { Mp } from "@/lib/db/types"
+import type { Mla } from "@/lib/db/staticMlas"
+import { partyColor } from "@/lib/partyColors"
+import { fontWeights } from "@/lib/font-weight"
+
+function initials(name: string): string {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() ?? "")
+    .join("")
+}
+
+function PartyDot({ party }: { party: string | null | undefined }) {
+  if (!party) return null
+  const c = partyColor(party)
+  return (
+    <span
+      className="inline-block rounded-full shrink-0"
+      style={{ width: 7, height: 7, background: c }}
+      title={party}
+      aria-label={party}
+    />
+  )
+}
+
+function Avatar({
+  name,
+  photo_url,
+  size = 28,
+}: {
+  name: string
+  photo_url?: string | null
+  size?: number
+}) {
+  if (photo_url) {
+    return (
+      <div
+        className="shrink-0 rounded-full overflow-hidden"
+        style={{
+          width: size,
+          height: size,
+          border: `1px solid var(--border)`,
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={photo_url} alt="" className="w-full h-full object-cover" />
+      </div>
+    )
+  }
+  return (
+    <div
+      className="shrink-0 rounded-full inline-flex items-center justify-center"
+      style={{
+        width: size,
+        height: size,
+        background: "var(--bg-tertiary)",
+        color: "var(--text-tertiary)",
+        border: "1px solid var(--border)",
+        fontSize: size <= 24 ? 9 : 10,
+        fontVariationSettings: fontWeights.semibold,
+        letterSpacing: "-0.01em",
+      }}
+    >
+      {initials(name)}
+    </div>
+  )
+}
+
+function attendanceToneVar(pct: number | null | undefined): string {
+  if (pct == null) return "var(--text-tertiary)"
+  if (pct >= 80) return "var(--status-kept)"
+  if (pct >= 50) return "var(--status-compromise)"
+  return "var(--status-broken)"
+}
+
+export function MpRow({ mp }: { mp: Mp }) {
+  return (
+    <Link
+      href={`/mp/${mp.prs_slug}`}
+      className="legislator-row mono group"
+      style={{ textDecoration: "none" }}
+    >
+      <PartyDot party={mp.party_name} />
+      <Avatar name={mp.name} photo_url={mp.photo_url} size={26} />
+      <div className="min-w-0 flex-1">
+        <div
+          className="text-[13px] truncate"
+          style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.medium }}
+        >
+          {mp.name}
+        </div>
+        <div className="text-[11px] mt-0.5 truncate" style={{ color: "var(--text-tertiary)" }}>
+          {mp.party_name} · {mp.house === "rajya_sabha" ? "Rajya Sabha" : "Lok Sabha"} ·{" "}
+          {mp.constituency ?? "—"}
+          {mp.state_code ? ` · ${mp.state_code}` : ""}
+        </div>
+      </div>
+      <div
+        className="text-[12px] tabular-nums shrink-0 ml-2"
+        style={{
+          color: attendanceToneVar(mp.attendance_pct ?? undefined),
+          fontVariationSettings: fontWeights.semibold,
+        }}
+        title={mp.attendance_pct != null ? `${mp.attendance_pct}% attendance` : "Data unavailable"}
+      >
+        {mp.attendance_pct != null ? `${mp.attendance_pct.toFixed(0)}%` : "—"}
+      </div>
+    </Link>
+  )
+}
+
+export function MlaRow({ mla }: { mla: Mla }) {
+  return (
+    <div className="legislator-row mono">
+      <PartyDot party={mla.party} />
+      <Avatar name={mla.name} size={26} />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2 min-w-0">
+          <span
+            className="text-[13px] truncate"
+            style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.medium }}
+          >
+            {mla.name}
+          </span>
+          {mla.is_cm && (
+            <span
+              className="text-[9px] uppercase tracking-[0.07em] px-1 py-px rounded-[2px] shrink-0"
+              style={{
+                color: "var(--text-tertiary)",
+                background: "var(--bg-tertiary)",
+                border: "1px solid var(--border)",
+                fontVariationSettings: fontWeights.semibold,
+              }}
+            >
+              CM
+            </span>
+          )}
+        </div>
+        <div className="text-[11px] mt-0.5 truncate" style={{ color: "var(--text-tertiary)" }}>
+          {mla.party} · MLA · {mla.constituency} · {mla.state_code}
+          {mla.cabinet_role ? ` · ${mla.cabinet_role}` : ""}
+        </div>
+      </div>
+    </div>
+  )
+}

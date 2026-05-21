@@ -41,7 +41,7 @@ export default function MethodologyPage() {
     <>
       <div className="px-6 py-8 max-w-[860px] mx-auto space-y-8">
         <div>
-          <h1 className="text-heading mb-2" style={{ color: "var(--text-primary)" }}>
+          <h1 className="h-page mb-2" style={{ color: "var(--text-primary)" }}>
             Tracking Methodology
           </h1>
           <p className="text-body" style={{ color: "var(--text-secondary)" }}>
@@ -52,10 +52,10 @@ export default function MethodologyPage() {
         </div>
 
         <section
-          className="rounded-[6px] p-5"
-          style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)", borderLeft: "3px solid var(--accent)" }}
+          className="rounded-[var(--radius-card)] p-5"
+          style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
         >
-          <p className="text-subheading mb-2" style={{ color: "var(--text-primary)" }}>Core rule</p>
+          <p className="h-section mb-2" style={{ color: "var(--text-primary)" }}>Core rule</p>
           <p className="text-body" style={{ color: "var(--text-secondary)" }}>
             We rate promises on{" "}
             <strong style={{ color: "var(--text-primary)" }}>verifiable outcomes, not intentions or effort</strong>.
@@ -65,7 +65,7 @@ export default function MethodologyPage() {
         </section>
 
         <section>
-          <h2 className="text-subheading mb-4" style={{ color: "var(--text-primary)" }}>The Six Statuses</h2>
+          <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>The Six Statuses</h2>
           <div className="space-y-3">
             {STATUSES.map(({ status, definition, example }) => (
               <div
@@ -87,7 +87,7 @@ export default function MethodologyPage() {
           className="rounded-[6px] p-5"
           style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
         >
-          <h2 className="text-subheading mb-3" style={{ color: "var(--text-primary)" }}>Data Sources</h2>
+          <h2 className="h-section mb-3" style={{ color: "var(--text-primary)" }}>Data Sources</h2>
           <p className="text-body" style={{ color: "var(--text-secondary)" }}>
             Evidence drawn from: data.gov.in, NITI Aayog NDAP & DMEO dashboards, RBI DBIE,
             Press Information Bureau, PMAY-G, Jal Jeevan Mission, PRS Legislative Research (CC-BY-4.0),

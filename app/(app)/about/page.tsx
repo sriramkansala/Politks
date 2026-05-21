@@ -7,7 +7,7 @@ export default function AboutPage() {
     <>
       <div className="px-6 py-8 max-w-[860px] mx-auto space-y-8">
         <div>
-          <h1 className="text-heading mb-2" style={{ color: "var(--text-primary)" }}>
+          <h1 className="h-page mb-2" style={{ color: "var(--text-primary)" }}>
             About Bharat Manifesto Watch
           </h1>
           <p className="text-body" style={{ color: "var(--text-secondary)" }}>
@@ -48,13 +48,13 @@ export default function AboutPage() {
             className="rounded-[6px] p-5"
             style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
           >
-            <h2 className="text-subheading mb-2" style={{ color: "var(--text-primary)" }}>{title}</h2>
+            <h2 className="h-section mb-2" style={{ color: "var(--text-primary)" }}>{title}</h2>
             <p className="text-body" style={{ color: "var(--text-secondary)" }}>{content}</p>
           </section>
         ))}
 
         <section>
-          <h2 className="text-subheading mb-3" style={{ color: "var(--text-primary)" }}>Attribution</h2>
+          <h2 className="h-section mb-3" style={{ color: "var(--text-primary)" }}>Attribution</h2>
           <div className="space-y-2">
             {[
               { label: "Methodology", href: "https://www.politifact.com/truth-o-meter/promises/", text: "PolitiFact Promise Tracker" },

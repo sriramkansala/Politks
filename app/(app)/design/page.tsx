@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { statusMeta, type PromiseStatus } from "@/lib/tokens"
+import { fontWeights } from "@/lib/font-weight"
 
 const statuses: PromiseStatus[] = [
   "not_yet_rated",
@@ -22,7 +23,7 @@ export default function DesignPage() {
 
         {/* Colors */}
         <section>
-          <h2 className="text-subheading mb-4" style={{ color: "var(--text-primary)" }}>Surface palette</h2>
+          <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Surface palette</h2>
           <div className="flex gap-3 flex-wrap">
             {[
               { label: "bg-base", color: "var(--bg-base)" },
@@ -54,7 +55,7 @@ export default function DesignPage() {
 
         {/* Typography */}
         <section>
-          <h2 className="text-subheading mb-4" style={{ color: "var(--text-primary)" }}>Typography</h2>
+          <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Typography</h2>
           <div className="space-y-3">
             {[
               { cls: "text-display",    sample: "Display — Bharat" },
@@ -76,15 +77,15 @@ export default function DesignPage() {
 
         {/* Status pills */}
         <section>
-          <h2 className="text-subheading mb-4" style={{ color: "var(--text-primary)" }}>Status pills (PolitiFact taxonomy)</h2>
+          <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Status pills (PolitiFact taxonomy)</h2>
           <div className="flex flex-wrap gap-2">
             {statuses.map((s) => {
               const meta = statusMeta[s]
               return (
                 <span
                   key={s}
-                  className="inline-flex items-center px-2 py-0.5 text-[11px] font-[510] uppercase tracking-[0.04em]"
-                  style={{ color: meta.color, background: meta.bg, borderRadius: "2px" }}
+                  className="inline-flex items-center px-2 py-0.5 text-[11px] uppercase tracking-[0.04em]"
+                  style={{ color: meta.color, background: meta.bg, borderRadius: "2px", fontVariationSettings: fontWeights.medium }}
                 >
                   {meta.label}
                 </span>
@@ -97,7 +98,7 @@ export default function DesignPage() {
 
         {/* Buttons */}
         <section>
-          <h2 className="text-subheading mb-4" style={{ color: "var(--text-primary)" }}>Buttons</h2>
+          <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Buttons</h2>
           <div className="flex gap-3 flex-wrap items-center">
             <Button>Primary</Button>
             <Button variant="tertiary">Outline</Button>
@@ -112,11 +113,11 @@ export default function DesignPage() {
 
         {/* Cards */}
         <section>
-          <h2 className="text-subheading mb-4" style={{ color: "var(--text-primary)" }}>Cards</h2>
+          <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Cards</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
               <CardHeader>
-                <CardTitle className="text-subheading">BJP — Sankalp Patra 2024</CardTitle>
+                <CardTitle className="h-section">BJP — Sankalp Patra 2024</CardTitle>
               </CardHeader>
               <CardContent>
                 <p style={{ color: "var(--text-secondary)" }}>
@@ -130,7 +131,7 @@ export default function DesignPage() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className="text-subheading">Skeleton state</CardTitle>
+                <CardTitle className="h-section">Skeleton state</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <Skeleton className="h-4 w-full" />
@@ -145,7 +146,7 @@ export default function DesignPage() {
 
         {/* Inputs */}
         <section>
-          <h2 className="text-subheading mb-4" style={{ color: "var(--text-primary)" }}>Inputs</h2>
+          <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Inputs</h2>
           <div className="max-w-sm space-y-3">
             <Input placeholder="Search promises…" />
             <Input placeholder="Disabled" disabled />

@@ -141,6 +141,37 @@ export interface Mp {
   photo_url: string | null
   myneta_id: string | null
   created_at: string
+  // ── BMW-130 extensions (PRS + ADR/MyNeta + MPLADS) ─────────────────────
+  prs_slug?: string | null                    // matches prsindia.org/mptrack/18th-lok-sabha/<slug>
+  lok_sabha_term?: string | null              // e.g. "17" or "18"
+  attendance_pct?: number | null              // 0-100; null = data unavailable
+  attendance_note?: string | null             // e.g. "Ministers exempt"
+  session_attendance?: Record<string, number> // { "Budget 2024": 40, "Winter 2024": 35, ... }
+  questions_asked?: number | null
+  debates_participated?: number | null
+  private_member_bills?: number | null
+  national_avg_attendance?: number | null
+  national_avg_questions?: number | null
+  national_avg_debates?: number | null
+  // Financial / criminal (MyNeta-sourced)
+  myneta_url?: string | null
+  assets_inr?: number | null                  // total declared assets, rupees
+  liabilities_inr?: number | null
+  criminal_cases_any?: number | null          // count of any cases
+  criminal_cases_serious?: number | null      // murder/rape/kidnap/etc.
+  is_crorepati?: boolean | null
+  education_level?: string | null             // "Post Graduate" | "Graduate" | ...
+  age_at_election?: number | null
+  // MPLADS spending
+  mplads_sanctioned_inr?: number | null
+  mplads_released_inr?: number | null
+  mplads_spent_inr?: number | null
+  mplads_unspent_inr?: number | null
+  // Misc derived
+  is_minister?: boolean | null                // attendance register exemption
+  pin_codes?: string[]                        // PINs that route to this MP's constituency
+  data_confidence?: "high" | "medium" | "low" | "unavailable"
+  data_sources?: string[]                     // URLs cited
 }
 
 export interface Bill {

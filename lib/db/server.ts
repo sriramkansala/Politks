@@ -2,8 +2,14 @@ import { createServerClient } from "@supabase/ssr"
 import { createClient as createSupabaseClient } from "@supabase/supabase-js"
 import { cookies } from "next/headers"
 import type { Database } from "./types"
+import { createMockClient, isPlaceholderEnv } from "./mockClient"
 
 export function createPublicClient() {
+  if (isPlaceholderEnv()) {
+    return createMockClient() as unknown as ReturnType<
+      typeof createSupabaseClient<Database>
+    >
+  }
   return createSupabaseClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!

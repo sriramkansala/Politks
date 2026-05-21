@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { BookOpen, Plus, BarChart3 } from "lucide-react"
+import { fontWeights } from "@/lib/font-weight"
 
 export default function AdminDashboard() {
   return (
@@ -50,10 +51,10 @@ export default function AdminDashboard() {
               className="w-8 h-8 rounded-[6px] flex items-center justify-center"
               style={{ background: accent ? "var(--accent)" : "var(--bg-elevated-2)" }}
             >
-              <Icon size={15} strokeWidth={1.5} style={{ color: accent ? "#fff" : "var(--text-secondary)" }} />
+              <Icon size={15} strokeWidth={1.5} style={{ color: accent ? "var(--text-on-accent)" : "var(--text-secondary)" }} />
             </div>
             <div>
-              <p className="text-[14px] font-[510]" style={{ color: "var(--text-primary)", letterSpacing: "-0.015em" }}>
+              <p className="text-[14px]" style={{ color: "var(--text-primary)", letterSpacing: "-0.015em", fontVariationSettings: fontWeights.medium }}>
                 {label}
               </p>
               <p className="text-caption mt-0.5" style={{ color: "var(--text-secondary)" }}>

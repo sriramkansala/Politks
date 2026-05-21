@@ -1,31 +1,45 @@
 "use client"
 
+// Linear/FF Input — single 1px border, single focus indicator.
+// Wraps the input in a label only when an icon is needed (otherwise plain).
+// All styling lives in `.linear-input` in app/globals.css — keeps Tailwind
+// variant gotchas (focus-within with arbitrary CSS vars) out of the picture.
+
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { useShape } from "@/lib/shape-context"
+import type { IconComponent } from "@/lib/icon-context"
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
-  ({ className, type, ...props }, ref) => {
-    const shape = useShape()
+interface InputProps extends React.ComponentProps<"input"> {
+  leadingIcon?: IconComponent
+  trailingIcon?: IconComponent
+}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  (
+    { className, type, leadingIcon: LeadingIcon, trailingIcon: TrailingIcon, ...props },
+    ref
+  ) => {
+    // Always wrap in <label> so .linear-input's flex layout is correctly
+    // applied to a *container*, not the bare <input> itself — otherwise
+    // the placeholder loses vertical centering and looks clipped.
     return (
-      <input
-        type={type}
-        className={cn(
-          "flex h-8 w-full border px-3 py-1.5 text-[13px] outline-none",
-          "transition-[border-color,box-shadow] duration-80",
-          "border-[var(--border)] bg-[var(--bg-elevated-2)]",
-          "placeholder:text-[var(--text-disabled)] text-[var(--text-primary)]",
-          "focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]",
-          "disabled:opacity-50 disabled:pointer-events-none",
-          shape.input,
-          className
+      <label className={cn("linear-input", className)}>
+        {LeadingIcon && (
+          <span className="lead-icon inline-flex items-center">
+            <LeadingIcon size={14} strokeWidth={1.5} />
+          </span>
         )}
-        ref={ref}
-        {...props}
-      />
+        <input ref={ref} type={type} {...props} />
+        {TrailingIcon && (
+          <span className="trail-icon inline-flex items-center">
+            <TrailingIcon size={14} strokeWidth={1.5} />
+          </span>
+        )}
+      </label>
     )
   }
 )
 Input.displayName = "Input"
 
 export { Input }
+export type { InputProps }

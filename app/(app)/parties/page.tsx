@@ -29,7 +29,7 @@ export default async function PartiesPage() {
     <>
       <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto">
         <div className="mb-6">
-          <h1 className="text-heading mb-1" style={{ color: "var(--text-primary)" }}>
+          <h1 className="h-page mb-2" style={{ color: "var(--text-primary)" }}>
             Parties
           </h1>
           <p className="text-body" style={{ color: "var(--text-secondary)" }}>
@@ -37,11 +37,25 @@ export default async function PartiesPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {partyStats.map(({ party, promiseCount, keptCount }) => (
             <PartyCard key={party.id} party={party} promiseCount={promiseCount} keptCount={keptCount} />
           ))}
         </div>
+
+        {/* Caveat block — UI_RULES.md §6 */}
+        <section className="caveat-block mt-6">
+          <strong>How this works.</strong>{" "}
+          Party metadata (founded year, alliance, leadership) comes from each
+          party&apos;s self-declared profile filed with the{" "}
+          <a href="https://eci.gov.in" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>
+            Election Commission of India
+          </a>
+          . Promise counts reflect manifesto pledges editors have catalogued so
+          far — not every line in every manifesto is tracked. &ldquo;Kept&rdquo;
+          counts are based on cited post-election evidence; absence of a count
+          means rating is still pending, not that the party failed.
+        </section>
       </div>
     </>
   )

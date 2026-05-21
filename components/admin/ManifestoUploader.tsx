@@ -5,8 +5,9 @@ import { Upload, FileText, Loader2, CheckCircle2, XCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
+import { fontWeights } from "@/lib/font-weight"
 
 type IngestionStep = {
   message: string
@@ -98,12 +99,10 @@ export function ManifestoUploader() {
           <div className="space-y-1.5">
             <Label className="text-caption" style={{ color: "var(--text-secondary)" }}>Party</Label>
             <Select value={partySlug} onValueChange={setPartySlug}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select party…" />
-              </SelectTrigger>
+              <SelectTrigger placeholder="Select party…" />
               <SelectContent>
-                {PARTIES.map((p) => (
-                  <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
+                {PARTIES.map((p, i) => (
+                  <SelectItem key={p.value} value={p.value} index={i}>{p.label}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -112,13 +111,11 @@ export function ManifestoUploader() {
           <div className="space-y-1.5">
             <Label className="text-caption" style={{ color: "var(--text-secondary)" }}>Election Type</Label>
             <Select value={electionType} onValueChange={setElectionType}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
+              <SelectTrigger placeholder="Election type…" />
               <SelectContent>
-                <SelectItem value="lok_sabha">Lok Sabha</SelectItem>
-                <SelectItem value="vidhan_sabha">Vidhan Sabha</SelectItem>
-                <SelectItem value="local">Local Body</SelectItem>
+                <SelectItem value="lok_sabha"    index={0}>Lok Sabha</SelectItem>
+                <SelectItem value="vidhan_sabha" index={1}>Vidhan Sabha</SelectItem>
+                <SelectItem value="local"        index={2}>Local Body</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -178,7 +175,7 @@ export function ManifestoUploader() {
             className="px-4 py-3 flex items-center justify-between"
             style={{ borderBottom: "1px solid var(--border)", background: "var(--bg-elevated)" }}
           >
-            <span className="text-caption font-[510] uppercase tracking-wide" style={{ color: "var(--text-tertiary)" }}>
+            <span className="text-caption uppercase tracking-wide" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.medium }}>
               Extraction Log
             </span>
             {status === "done" && (

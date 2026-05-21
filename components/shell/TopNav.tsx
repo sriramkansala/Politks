@@ -1,5 +1,7 @@
 "use client"
 
+import { fontWeights } from "@/lib/font-weight"
+
 export function TopNav({ title }: { title?: string }) {
   return (
     <header
@@ -16,8 +18,8 @@ export function TopNav({ title }: { title?: string }) {
       <div className="flex items-center gap-2">
         {title && (
           <span
-            className="text-[14px] font-[510]"
-            style={{ color: "var(--text-primary)", letterSpacing: "-0.015em" }}
+            className="text-[14px]"
+            style={{ color: "var(--text-primary)", letterSpacing: "-0.015em", fontVariationSettings: fontWeights.medium }}
           >
             {title}
           </span>

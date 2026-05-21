@@ -1,0 +1,965 @@
+[
+  {
+    "key": "bjp:1",
+    "url": "https://pib.gov.in/PressReleseDetailm.aspx?PRID=1981885",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "bjp:1",
+    "url": "https://www.thehindu.com/news/national/cabinet-extends-pradhan-mantri-garib-kalyan-anna-yojana-for-5-years/article67577345.ece",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "bjp:2",
+    "url": "https://pmaymis.gov.in/",
+    "status": 200,
+    "reachable": true,
+    "page_title": "PMAY-HFA(Urban)",
+    "keywords_match": true,
+    "error": null
+  },
+  {
+    "key": "bjp:2",
+    "url": "https://pib.gov.in/PressReleseDetailm.aspx?PRID=2042033",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "bjp:3",
+    "url": "https://pmsuryaghar.gov.in/",
+    "status": 200,
+    "reachable": true,
+    "page_title": "National Portal for Rooftop Solar - Ministry of New and Renewable Energy",
+    "keywords_match": false,
+    "error": null
+  },
+  {
+    "key": "bjp:3",
+    "url": "https://pib.gov.in/PressReleseDetailm.aspx?PRID=2008466",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "bjp:4",
+    "url": "https://pib.gov.in/PressReleseDetailm.aspx?PRID=2002989",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "bjp:4",
+    "url": "https://nrlm.gov.in/lakhpatiDidi.do",
+    "status": 200,
+    "reachable": true,
+    "page_title": "National Rural Livelihoods Mission",
+    "keywords_match": false,
+    "error": null
+  },
+  {
+    "key": "bjp:5",
+    "url": "https://prsindia.org/billtrack/the-constitution-128th-amendment-bill-2023",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "bjp:5",
+    "url": "https://www.thehindu.com/news/national/womens-reservation-bill-when-will-it-become-reality/article67459471.ece",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "bjp:6",
+    "url": "https://www.thehindu.com/news/national/uniform-civil-code-status/article68119820.ece",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "bjp:6",
+    "url": "https://prsindia.org/billtrack",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Bills Track",
+    "keywords_match": false,
+    "error": null
+  },
+  {
+    "key": "bjp:7",
+    "url": "https://prsindia.org/billtrack/the-constitution-129th-amendment-bill-2024",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "bjp:7",
+    "url": "https://pib.gov.in/PressReleasePage.aspx?PRID=2086156",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "bjp:8",
+    "url": "https://www.imf.org/en/Publications/WEO/Issues/2025/04/22/world-economic-outlook-april-2025",
+    "status": 200,
+    "reachable": true,
+    "page_title": "World Economic Outlook, April 2025: A Critical Juncture amid Policy Shifts",
+    "keywords_match": true,
+    "error": null
+  },
+  {
+    "key": "bjp:8",
+    "url": "https://www.business-standard.com/economy/news/india-to-become-fourth-largest-economy-by-fy26-imf-projection-124042500486_1.html",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "inc:1",
+    "url": "https://kar.nic.in/wcd/gruhalakshmi.html",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://kar.nic.in/wcd/gruhalakshmi.html\nCall log:\n\u001b[2m  - navigating to \"https://kar.nic.in/wcd/gruhalakshmi.html\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "inc:1",
+    "url": "https://manifesto.inc.in/en/",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Introduction | Nyay Patra | Manifesto | Lok Sabha Elections 2024 | Indian National Congress",
+    "keywords_match": false,
+    "error": null
+  },
+  {
+    "key": "inc:2",
+    "url": "https://manifesto.inc.in/en/",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Introduction | Nyay Patra | Manifesto | Lok Sabha Elections 2024 | Indian National Congress",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "inc:3",
+    "url": "https://manifesto.inc.in/en/",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Introduction | Nyay Patra | Manifesto | Lok Sabha Elections 2024 | Indian National Congress",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "inc:4",
+    "url": "https://pib.gov.in/PressReleseDetailm.aspx?PRID=2125876",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "inc:4",
+    "url": "https://manifesto.inc.in/en/",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Introduction | Nyay Patra | Manifesto | Lok Sabha Elections 2024 | Indian National Congress",
+    "keywords_match": false,
+    "error": null
+  },
+  {
+    "key": "inc:5",
+    "url": "https://manifesto.inc.in/en/",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Introduction | Nyay Patra | Manifesto | Lok Sabha Elections 2024 | Indian National Congress",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "inc:6",
+    "url": "https://www.mod.gov.in/index.php",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Home | Ministry of Defence",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "inc:7",
+    "url": "https://www.thehindu.com/news/national/other-states/jammu-and-kashmir-statehood-restoration/article68782451.ece",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Muslim men have the right to register multiple marriages: Bombay High Court  - The Hindu",
+    "keywords_match": false,
+    "error": null
+  },
+  {
+    "key": "aap:1",
+    "url": "https://www.aamaadmiparty.org",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://www.aamaadmiparty.org/\nCall log:\n\u001b[2m  - navigating to \"https://www.aamaadmiparty.org/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "aap:1",
+    "url": "https://eci.gov.in/files/file/16550-delhi-assembly-2025/",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "aap:2",
+    "url": "https://www.aamaadmiparty.org",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://www.aamaadmiparty.org/\nCall log:\n\u001b[2m  - navigating to \"https://www.aamaadmiparty.org/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "aap:3",
+    "url": "https://www.aamaadmiparty.org",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://www.aamaadmiparty.org/\nCall log:\n\u001b[2m  - navigating to \"https://www.aamaadmiparty.org/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "aap:4",
+    "url": "https://www.aamaadmiparty.org",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://www.aamaadmiparty.org/\nCall log:\n\u001b[2m  - navigating to \"https://www.aamaadmiparty.org/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "aap:5",
+    "url": "https://www.aamaadmiparty.org",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://www.aamaadmiparty.org/\nCall log:\n\u001b[2m  - navigating to \"https://www.aamaadmiparty.org/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "aap:6",
+    "url": "https://www.aamaadmiparty.org",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://www.aamaadmiparty.org/\nCall log:\n\u001b[2m  - navigating to \"https://www.aamaadmiparty.org/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "dmk:1",
+    "url": "https://www.thehindu.com/news/national/other-states/jammu-and-kashmir-statehood-restoration/article68782451.ece",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Muslim men have the right to register multiple marriages: Bombay High Court  - The Hindu",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "dmk:2",
+    "url": "https://www.thehindu.com/news/national/tamil-nadu/anti-neet-bill-status-president-assent/article65762011.ece",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "dmk:3",
+    "url": "https://www.thehindu.com/news/national/citizenship-amendment-act-rules-notified/article67949301.ece",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "dmk:4",
+    "url": "https://www.thehindu.com/news/national/unified-pension-scheme-approved/article68552851.ece",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "dmk:5",
+    "url": "https://www.thehindu.com/news/national/tamil-nadu/cauvery-water-dispute/article-archive/",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "dmk:6",
+    "url": "https://fincomindia.nic.in/",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpim:1",
+    "url": "https://cpim.org",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Communist Party Of India (Marxist)",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpim:2",
+    "url": "https://www.education.gov.in/budget",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpim:3",
+    "url": "https://dipam.gov.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Home | Department of Investment and Public Asset Management | Ministry of Finance | Government of India",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpim:4",
+    "url": "https://www.thehindu.com/news/national/unified-pension-scheme-approved/article68552851.ece",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpim:5",
+    "url": "https://www.thehindu.com/news/national/citizenship-amendment-act-rules-notified/article67949301.ece",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpim:6",
+    "url": "https://nrega.nic.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpim:7",
+    "url": "https://www.indiabudget.gov.in",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpim:8",
+    "url": "https://prsindia.org/billtrack/the-constitution-128th-amendment-bill-2023",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpim:9",
+    "url": "https://cpim.org",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Communist Party Of India (Marxist)",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpim:10",
+    "url": "https://cpim.org",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Communist Party Of India (Marxist)",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpi:1",
+    "url": "https://www.communistparty.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Home | CPI Official App",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpi:2",
+    "url": "https://www.thehindu.com/news/national/citizenship-amendment-act-rules-notified/article67949301.ece",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpi:3",
+    "url": "https://www.communistparty.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Home | CPI Official App",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpi:4",
+    "url": "https://nrega.nic.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpi:5",
+    "url": "https://www.communistparty.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Home | CPI Official App",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpi:6",
+    "url": "https://niti.gov.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "NITI AAYOG, India",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpi:7",
+    "url": "https://www.indiabudget.gov.in",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpi:8",
+    "url": "https://www.communistparty.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Home | CPI Official App",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "cpi:9",
+    "url": "https://www.communistparty.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Home | CPI Official App",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "aitc:1",
+    "url": "https://nrega.nic.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "aitc:2",
+    "url": "https://aitcofficial.org/manifesto/",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Manifesto – All India Trinamool Congress",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "aitc:3",
+    "url": "https://wbkanyashree.gov.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Kanyashree",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "aitc:4",
+    "url": "https://www.thehindu.com/news/national/citizenship-amendment-act-rules-notified/article67949301.ece",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "aitc:5",
+    "url": "https://pmaymis.gov.in/",
+    "status": 200,
+    "reachable": true,
+    "page_title": "PMAY-HFA(Urban)",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "aitc:6",
+    "url": "https://pmuy.gov.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "PMUY : Home",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "aitc:7",
+    "url": "https://aitcofficial.org/manifesto/",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "aitc:8",
+    "url": "https://scholarships.gov.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "NSP : National Scholarship Portal",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "aitc:9",
+    "url": "https://www.thehindu.com/news/national/other-states/jammu-and-kashmir-statehood-restoration/article68782451.ece",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Muslim men have the right to register multiple marriages: Bombay High Court  - The Hindu",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "aitc:10",
+    "url": "https://pib.gov.in/PressReleseDetailm.aspx?PRID=2125876",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "sp:1",
+    "url": "https://pib.gov.in/PressReleseDetailm.aspx?PRID=2125876",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "sp:2",
+    "url": "https://samajwadiparty.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Samajwadi Party",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "sp:3",
+    "url": "https://www.education.gov.in/budget",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "sp:4",
+    "url": "https://samajwadiparty.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Samajwadi Party",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "sp:5",
+    "url": "https://prsindia.org",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Home | PRSIndia",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "sp:6",
+    "url": "https://samajwadiparty.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Samajwadi Party",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "sp:7",
+    "url": "https://www.mod.gov.in/index.php",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Home | Ministry of Defence",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "sp:8",
+    "url": "https://www.thehindu.com/news/national/unified-pension-scheme-approved/article68552851.ece",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "sp:9",
+    "url": "https://samajwadiparty.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Samajwadi Party",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "ncp-sp:1",
+    "url": "https://ncpspeaks.org",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://ncpspeaks.org/\nCall log:\n\u001b[2m  - navigating to \"https://ncpspeaks.org/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "ncp-sp:2",
+    "url": "https://www.indiabudget.gov.in",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "ncp-sp:3",
+    "url": "https://ncpspeaks.org",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://ncpspeaks.org/\nCall log:\n\u001b[2m  - navigating to \"https://ncpspeaks.org/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "ncp-sp:4",
+    "url": "https://pib.gov.in/PressReleseDetailm.aspx?PRID=2125876",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "ncp-sp:5",
+    "url": "https://www.mod.gov.in/index.php",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Home | Ministry of Defence",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "ncp-sp:6",
+    "url": "https://ncpspeaks.org",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://ncpspeaks.org/\nCall log:\n\u001b[2m  - navigating to \"https://ncpspeaks.org/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "ncp-sp:7",
+    "url": "https://www.thehindu.com/news/national/other-states/jammu-and-kashmir-statehood-restoration/article68782451.ece",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Muslim men have the right to register multiple marriages: Bombay High Court  - The Hindu",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "ncp-sp:8",
+    "url": "https://prsindia.org/billtrack/the-constitution-129th-amendment-bill-2024",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "ncp-sp:9",
+    "url": "https://www.thehindu.com/news/national/citizenship-amendment-act-rules-notified/article67949301.ece",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "ncp-sp:10",
+    "url": "https://main.sci.gov.in/judgments",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://main.sci.gov.in/judgments\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "shs-ubt:1",
+    "url": "https://www.thehindu.com/news/national/other-states/mahayuti-wins-maharashtra-assembly-election/article68895781.ece",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "shs-ubt:2",
+    "url": "https://www.gst.gov.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Goods & Services Tax (GST) | Home",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "shs-ubt:3",
+    "url": "https://mospi.gov.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "Ministry of Statistics and Program Implementation | Government Of India",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "shs-ubt:4",
+    "url": "https://shivsenaubt.in",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://shivsenaubt.in/\nCall log:\n\u001b[2m  - navigating to \"https://shivsenaubt.in/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "shs-ubt:5",
+    "url": "https://shivsenaubt.in",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://shivsenaubt.in/\nCall log:\n\u001b[2m  - navigating to \"https://shivsenaubt.in/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "shs-ubt:6",
+    "url": "https://shivsenaubt.in",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://shivsenaubt.in/\nCall log:\n\u001b[2m  - navigating to \"https://shivsenaubt.in/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "shs-ubt:7",
+    "url": "https://www.business-standard.com/companies/news/dharavi-redevelopment",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "shs-ubt:8",
+    "url": "https://shivsenaubt.in",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://shivsenaubt.in/\nCall log:\n\u001b[2m  - navigating to \"https://shivsenaubt.in/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "ysrcp:1",
+    "url": "https://eci.gov.in",
+    "status": 403,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "ysrcp:2",
+    "url": "https://www.thehindu.com/news/national/andhra-pradesh/amaravati-restored-as-sole-capital/article68312891.ece",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "ysrcp:3",
+    "url": "https://www.ysrcongress.com",
+    "status": 200,
+    "reachable": true,
+    "page_title": "YSR Congress Party - Yuvajana Sramika Rythu Congress Party Official Site",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "ysrcp:4",
+    "url": "https://www.ysrcongress.com",
+    "status": 200,
+    "reachable": true,
+    "page_title": "YSR Congress Party - Yuvajana Sramika Rythu Congress Party Official Site",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "ysrcp:5",
+    "url": "https://www.ysrcongress.com",
+    "status": 200,
+    "reachable": true,
+    "page_title": "YSR Congress Party - Yuvajana Sramika Rythu Congress Party Official Site",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "ysrcp:6",
+    "url": "https://www.ysrcongress.com",
+    "status": 200,
+    "reachable": true,
+    "page_title": "YSR Congress Party - Yuvajana Sramika Rythu Congress Party Official Site",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "ysrcp:7",
+    "url": "https://www.ysrcongress.com",
+    "status": 200,
+    "reachable": true,
+    "page_title": "YSR Congress Party - Yuvajana Sramika Rythu Congress Party Official Site",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "bsp:1",
+    "url": "https://www.bspindia.org",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.bspindia.org/\nCall log:\n\u001b[2m  - navigating to \"https://www.bspindia.org/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "bsp:2",
+    "url": "https://www.bspindia.org",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.bspindia.org/\nCall log:\n\u001b[2m  - navigating to \"https://www.bspindia.org/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "bsp:3",
+    "url": "https://www.bspindia.org",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.bspindia.org/\nCall log:\n\u001b[2m  - navigating to \"https://www.bspindia.org/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "bsp:4",
+    "url": "https://upcane.gov.in",
+    "status": 200,
+    "reachable": true,
+    "page_title": "चीनी उद्योग एवं गन्ना विकास विभाग उत्तर प्रदेश सरकार",
+    "keywords_match": null,
+    "error": null
+  },
+  {
+    "key": "bsp:5",
+    "url": "https://www.bspindia.org",
+    "status": null,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.bspindia.org/\nCall log:\n\u001b[2m  - navigating to \"https://www.bspindia.org/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "key": "bsp:6",
+    "url": "https://www.thehindu.com/news/national/unified-pension-scheme-approved/article68552851.ece",
+    "status": 404,
+    "reachable": false,
+    "page_title": null,
+    "keywords_match": null,
+    "error": null
+  }
+]

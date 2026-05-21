@@ -90,7 +90,7 @@ export function StageTimeline({ stageEvents, currentStage, coveredCount }: Stage
                     {String(stage).padStart(2, "0")}
                   </span>
                   <span
-                    className="text-[12px] font-[450]"
+                    className="text-[12px] font-book"
                     style={{
                       color: hasEvents ? "var(--text-primary)" : "var(--text-disabled)",
                       fontVariationSettings: hasEvents ? "'wght' 510" : "'wght' 400",

@@ -4,8 +4,11 @@ import { FileDiff } from "lucide-react"
 import { IssueGraph, type GraphNode, type GraphEdge } from "@/components/forensic/IssueGraph"
 import { StageTimeline } from "@/components/forensic/StageTimeline"
 import { ForensicSignals } from "@/components/forensic/ForensicSignalCard"
+import { BillStorySection, BillStoryEmptyState } from "@/components/forensic/BillStorySection"
 import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
 import { createPublicClient } from "@/lib/db/server"
+import { getBillStory } from "@/lib/db/billStory"
+import { fontWeights } from "@/lib/font-weight"
 import type { Bill, StageEvent, IssueGraphEdge, Mp } from "@/lib/db/types"
 
 export const revalidate = 21600
@@ -156,6 +159,7 @@ export default async function BillDetailPage({
     : { nodes: [], edges: [] }
 
   const year = typedBill.introduced_date?.slice(0, 4) ?? "—"
+  const story = getBillStory(typedBill.slug)
 
   return (
     <>
@@ -176,16 +180,29 @@ export default async function BillDetailPage({
               {typedBill.bill_number ?? slug}
             </span>
           </div>
-          <h1 className="text-heading-xl mb-2" style={{ color: "var(--text-primary)" }}>
-            {typedBill.title}
-          </h1>
-          <div className="flex flex-wrap items-center gap-3">
+          {/* Title row — status pill anchored opposite the title for clarity */}
+          <div className="flex items-start justify-between gap-6 mb-2">
+            <h1 className="h-page" style={{ color: "var(--text-primary)" }}>
+              {typedBill.title}
+            </h1>
             <span
-              className="inline-flex items-center px-2 py-0.5 text-[11px] font-[510] uppercase tracking-[0.04em] rounded-[3px]"
-              style={{ color: outcomeStyle.color, background: `${outcomeStyle.color}18` }}
+              className="inline-flex items-center px-3 py-1.5 text-[13px] uppercase tracking-[0.06em] rounded-[var(--radius-pill)] shrink-0 self-start whitespace-nowrap"
+              style={{
+                color: outcomeStyle.color,
+                background: `${outcomeStyle.color}22`,
+                border: `1px solid ${outcomeStyle.color}55`,
+                fontVariationSettings: fontWeights.semibold,
+              }}
             >
+              <span
+                className="inline-block rounded-full mr-2"
+                style={{ width: 7, height: 7, background: outcomeStyle.color }}
+                aria-hidden
+              />
               {outcomeStyle.label}
             </span>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
             {typedBill.bill_number && (
               <span className="text-[12px] font-mono" style={{ color: "var(--text-tertiary)" }}>
                 {typedBill.bill_number}
@@ -211,11 +228,12 @@ export default async function BillDetailPage({
             <div className="mt-4">
               <Link
                 href={`/bills/${slug}/diff`}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[12px] font-[510] transition-colors duration-80"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[12px] transition-colors duration-80"
                 style={{
                   background: "var(--bg-elevated-2)",
                   border: "1px solid var(--border)",
                   color: "var(--text-secondary)",
+                  fontVariationSettings: fontWeights.medium,
                 }}
               >
                 <FileDiff size={13} strokeWidth={1.5} />
@@ -225,11 +243,16 @@ export default async function BillDetailPage({
           )}
         </div>
 
+        {/* Contextual story — explainer, stakeholders, narrative timeline, stats, sources */}
+        <AnimateIn delay={0.05}>
+          {story ? <BillStorySection story={story} /> : <BillStoryEmptyState />}
+        </AnimateIn>
+
         {/* Issue Graph (WRB series only) */}
         {isWrbSeries && graphNodes.length > 0 && (
           <AnimateIn>
           <section>
-            <h2 className="text-subheading mb-1" style={{ color: "var(--text-primary)" }}>
+            <h2 className="h-section mb-1" style={{ color: "var(--text-primary)" }}>
               Causal Graph
             </h2>
             <p className="text-[12px] mb-4" style={{ color: "var(--text-tertiary)" }}>
@@ -253,7 +276,7 @@ export default async function BillDetailPage({
         {/* Forensic Signals (WRB only) */}
         {slug === "wrb-2023" && (
           <section>
-            <h2 className="text-subheading mb-1" style={{ color: "var(--text-primary)" }}>
+            <h2 className="h-section mb-1" style={{ color: "var(--text-primary)" }}>
               Forensic Signals
             </h2>
             <p className="text-[12px] mb-4" style={{ color: "var(--text-tertiary)" }}>
