@@ -9,7 +9,7 @@ import { FilterDropdown } from "@/components/mp/FilterDropdown"
 import { fontWeights } from "@/lib/font-weight"
 
 export const revalidate = 21600
-export const metadata = { title: "Manifestos · Bharat Manifesto Watch" }
+export const metadata = { title: "Manifestos · Neo Nīti" }
 
 interface PageProps {
   searchParams: Promise<{ year?: string; party?: string; level?: string }>

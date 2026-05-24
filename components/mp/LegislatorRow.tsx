@@ -9,7 +9,10 @@
 //
 // We map party identity to that single dot, keep avatar monochrome.
 
+"use client"
+
 import Link from "next/link"
+import { motion } from "framer-motion"
 import type { Mp } from "@/lib/db/types"
 import type { Mla } from "@/lib/db/staticMlas"
 import { partyColor } from "@/lib/partyColors"
@@ -89,72 +92,80 @@ function attendanceToneVar(pct: number | null | undefined): string {
 
 export function MpRow({ mp }: { mp: Mp }) {
   return (
-    <Link
-      href={`/mp/${mp.prs_slug}`}
-      className="legislator-row mono group"
-      style={{ textDecoration: "none" }}
+    <motion.div
+      whileHover={{ x: 2 }}
+      transition={{ type: "spring", stiffness: 600, damping: 30 }}
     >
-      <PartyDot party={mp.party_name} />
-      <Avatar name={mp.name} photo_url={mp.photo_url} size={26} />
-      <div className="min-w-0 flex-1">
-        <div
-          className="text-[13px] truncate"
-          style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.medium }}
-        >
-          {mp.name}
-        </div>
-        <div className="text-[11px] mt-0.5 truncate" style={{ color: "var(--text-tertiary)" }}>
-          {mp.party_name} · {mp.house === "rajya_sabha" ? "Rajya Sabha" : "Lok Sabha"} ·{" "}
-          {mp.constituency ?? "—"}
-          {mp.state_code ? ` · ${mp.state_code}` : ""}
-        </div>
-      </div>
-      <div
-        className="text-[12px] tabular-nums shrink-0 ml-2"
-        style={{
-          color: attendanceToneVar(mp.attendance_pct ?? undefined),
-          fontVariationSettings: fontWeights.semibold,
-        }}
-        title={mp.attendance_pct != null ? `${mp.attendance_pct}% attendance` : "Data unavailable"}
+      <Link
+        href={`/mp/${mp.prs_slug}`}
+        className="legislator-row mono group"
+        style={{ textDecoration: "none" }}
       >
-        {mp.attendance_pct != null ? `${mp.attendance_pct.toFixed(0)}%` : "—"}
-      </div>
-    </Link>
+        <Avatar name={mp.name} photo_url={mp.photo_url} size={26} />
+        <div className="min-w-0 flex-1">
+          <div
+            className="text-[13px] truncate"
+            style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.medium }}
+          >
+            {mp.name}
+          </div>
+          <div className="text-[11px] mt-0.5 truncate" style={{ color: "var(--text-tertiary)" }}>
+            {mp.party_name} · {mp.house === "rajya_sabha" ? "Rajya Sabha" : "Lok Sabha"} ·{" "}
+            {mp.constituency ?? "—"}
+            {mp.state_code ? ` · ${mp.state_code}` : ""}
+          </div>
+        </div>
+        <div
+          className="text-[12px] tabular-nums shrink-0 ml-2"
+          style={{
+            color: attendanceToneVar(mp.attendance_pct ?? undefined),
+            fontVariationSettings: fontWeights.semibold,
+          }}
+          title={mp.attendance_pct != null ? `${mp.attendance_pct}% attendance` : "Data unavailable"}
+        >
+          {mp.attendance_pct != null ? `${mp.attendance_pct.toFixed(0)}%` : "—"}
+        </div>
+      </Link>
+    </motion.div>
   )
 }
 
 export function MlaRow({ mla }: { mla: Mla }) {
   return (
-    <div className="legislator-row mono">
-      <PartyDot party={mla.party} />
-      <Avatar name={mla.name} size={26} />
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2 min-w-0">
-          <span
-            className="text-[13px] truncate"
-            style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.medium }}
-          >
-            {mla.name}
-          </span>
-          {mla.is_cm && (
+    <motion.div
+      whileHover={{ x: 2 }}
+      transition={{ type: "spring", stiffness: 600, damping: 30 }}
+    >
+      <div className="legislator-row mono">
+        <Avatar name={mla.name} size={26} />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 min-w-0">
             <span
-              className="text-[9px] uppercase tracking-[0.07em] px-1 py-px rounded-[2px] shrink-0"
-              style={{
-                color: "var(--text-tertiary)",
-                background: "var(--bg-tertiary)",
-                border: "1px solid var(--border)",
-                fontVariationSettings: fontWeights.semibold,
-              }}
+              className="text-[13px] truncate"
+              style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.medium }}
             >
-              CM
+              {mla.name}
             </span>
-          )}
-        </div>
-        <div className="text-[11px] mt-0.5 truncate" style={{ color: "var(--text-tertiary)" }}>
-          {mla.party} · MLA · {mla.constituency} · {mla.state_code}
-          {mla.cabinet_role ? ` · ${mla.cabinet_role}` : ""}
+            {mla.is_cm && (
+              <span
+                className="text-[9px] uppercase tracking-[0.07em] px-1 py-px rounded-[2px] shrink-0"
+                style={{
+                  color: "var(--text-tertiary)",
+                  background: "var(--bg-tertiary)",
+                  border: "1px solid var(--border)",
+                  fontVariationSettings: fontWeights.semibold,
+                }}
+              >
+                CM
+              </span>
+            )}
+          </div>
+          <div className="text-[11px] mt-0.5 truncate" style={{ color: "var(--text-tertiary)" }}>
+            {mla.party} · MLA · {mla.constituency} · {mla.state_code}
+            {mla.cabinet_role ? ` · ${mla.cabinet_role}` : ""}
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }

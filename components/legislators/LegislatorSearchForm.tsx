@@ -14,6 +14,9 @@ interface LegislatorSearchFormProps {
   house?: string
   state?: string
   party?: string
+  /** When rendered inside a tabbed layout, pass the active tab value so the
+   *  form submit doesn't accidentally navigate away from the tab. */
+  tab?: string
 }
 
 export function LegislatorSearchForm({
@@ -21,6 +24,7 @@ export function LegislatorSearchForm({
   house,
   state,
   party,
+  tab,
 }: LegislatorSearchFormProps) {
   return (
     <form method="get" className="flex flex-col md:flex-row gap-2 max-w-2xl">
@@ -31,6 +35,7 @@ export function LegislatorSearchForm({
         leadingIcon={Search}
         className="flex-1"
       />
+      {tab   && <input type="hidden" name="tab"   value={tab} />}
       {house && <input type="hidden" name="house" value={house} />}
       {state && <input type="hidden" name="state" value={state} />}
       {party && <input type="hidden" name="party" value={party} />}

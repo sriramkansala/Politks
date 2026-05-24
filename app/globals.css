@@ -188,6 +188,10 @@
   --shadow-s7: 0 24px 72px rgba(0,0,0,0.55), 0 8px 20px rgba(0,0,0,0.38);
   --shadow-s8: 0 32px 96px rgba(0,0,0,0.60), 0 10px 24px rgba(0,0,0,0.40);
 
+  /* Row / list-item hover overlays — used by framer-motion whileHover and CSS :hover */
+  --hover-row:        rgba(255,255,255,0.02);
+  --hover-row-strong: rgba(255,255,255,0.04);
+
   /* Linear-precise letter-spacing per text scale (tracks Inter Display) */
   --tracking-display: -0.022em;
   --tracking-heading: -0.018em;
@@ -460,6 +464,35 @@ h1, h2 { font-feature-settings: 'ss01' 1, 'ss02' 1, 'cv11' 1; }
 }
 .btn-primary-inverse:hover { background: #ffffff; border-color: #ffffff; }
 .btn-primary-inverse:active { transform: scale(0.98); }
+
+/* Secondary pill — matches .btn-primary-inverse footprint but bordered + neutral.
+ * Used for "Browse all", "View bill diff", and other low-emphasis CTAs that
+ * live in server components where <Button asChild> would cross the RSC
+ * boundary. Pair with .btn-primary-inverse for the standard CTA row. */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-variation-settings: 'wght' 510;
+  font-weight: 510;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background var(--duration) var(--ease-out-quart),
+    border-color var(--duration) var(--ease-out-quart),
+    color var(--duration) var(--ease-out-quart),
+    transform 100ms var(--ease-out-quart);
+}
+.btn-secondary:hover { background: var(--bg-elevated-2); border-color: var(--border-strong); color: var(--text-primary); }
+.btn-secondary:active { transform: scale(0.98); }
 
 /* Linear-style input wrapper: single 1px border, single focus indicator.
  * Tailwind v4 arbitrary `focus-within:border-[var(--accent)]` doesn't always
@@ -754,6 +787,7 @@ a[style*="--bg-elevated)"]:hover {
 .filter-dropdown-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: space-between;
   height: 22px;
   padding: 0 8px;
   min-width: 130px;

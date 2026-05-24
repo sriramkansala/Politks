@@ -18,9 +18,10 @@ import { fileURLToPath } from "node:url"
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, "..")
 
-const PRS_PATH = join(ROOT, "data", "prs-mps.json")
+const PRS_PATH    = join(ROOT, "data", "prs-mps.json")
 const MYNETA_PATH = join(ROOT, "data", "myneta-2024-ls.json")
-const OUT_PATH = join(ROOT, "lib", "db", "staticMps.generated.ts")
+const ADR_PATH    = join(ROOT, "data", "adr-2024.json")
+const OUT_PATH    = join(ROOT, "lib", "db", "staticMps.generated.ts")
 
 function pid(seed) {
   const h = (s, salt) => {
@@ -60,14 +61,30 @@ async function readJson(p) {
 async function main() {
   const prs = await readJson(PRS_PATH)
   const myn = await readJson(MYNETA_PATH)
+  const adrRaw = await readJson(ADR_PATH)
+  const adr = Array.isArray(adrRaw) ? adrRaw : (adrRaw.winners ?? [])
 
   console.log(`PRS:    ${prs.length} MPs`)
   console.log(`MyNeta: ${myn.length} candidates`)
+  console.log(`ADR:    ${adr.length} records`)
 
-  // Join on (name + constituency) when possible, else fall back to name.
+  // Three lookup maps for MyNeta — tried in order:
+  //  1. nameSlug(name)            — exact normalised name
+  //  2. nameSlug(slug-derived)    — for PRS records with blank name field
+  //  3. constituency (upper)      — last resort dedup by seat
   const mynByName = new Map()
+  const mynByConstituency = new Map()
   for (const r of myn) {
     if (r.name) mynByName.set(nameSlug(r.name), r)
+    if (r.constituency) mynByConstituency.set(r.constituency.toUpperCase().trim(), r)
+  }
+
+  // ADR lookup maps (same priority order)
+  const adrByName = new Map()
+  const adrByConstituency = new Map()
+  for (const r of adr) {
+    if (r.name) adrByName.set(nameSlug(r.name), r)
+    if (r.constituency) adrByConstituency.set(r.constituency.toUpperCase().trim(), r)
   }
 
   // Helpers to clean PRS-scraped artifacts.
@@ -137,8 +154,19 @@ async function main() {
   }
 
   const merged = prs.map((p) => {
-    const m = mynByName.get(nameSlug(p.name)) ?? {}
     const slug = p.prs_slug ?? nameSlug(p.name)
+    // Try: 1) PRS name  2) slug-derived name  3) constituency seat
+    const slugName = slugToName(slug)
+    const constituency = (p.constituency ?? "").replace(/\s*\(\s*\d+\s*more\s*MPs?\s*\)\s*$/i, "").trim().toUpperCase()
+    const m = mynByName.get(nameSlug(p.name))
+           ?? mynByName.get(nameSlug(slugName))
+           ?? mynByConstituency.get(constituency)
+           ?? {}
+    // ADR enriches criminal_cases_serious + state + age
+    const a = adrByName.get(nameSlug(p.name))
+           ?? adrByName.get(nameSlug(slugName))
+           ?? adrByConstituency.get(constituency)
+           ?? {}
     const resolvedName = (p.name && p.name.trim()) || slugToName(slug)
     return {
       id: pid("mp:18-ls:" + slug),
@@ -154,13 +182,13 @@ async function main() {
       debates_participated: p.debates_participated ?? null,
       private_member_bills: p.private_member_bills ?? null,
       session_attendance: p.session_attendance ?? {},
-      assets_inr: m.assets_inr ?? null,
-      liabilities_inr: m.liabilities_inr ?? null,
-      criminal_cases_any: m.criminal_cases_any ?? null,
-      criminal_cases_serious: m.criminal_cases_serious ?? null,
-      is_crorepati: m.assets_inr != null ? m.assets_inr >= 1_00_00_000 : null,
-      education_level: m.education ?? null,
-      age_at_election: m.age ?? null,
+      assets_inr: m.assets_inr ?? a.assets_inr ?? null,
+      liabilities_inr: m.liabilities_inr ?? a.liabilities_inr ?? null,
+      criminal_cases_any: m.criminal_cases_any ?? a.criminal_cases_any ?? null,
+      criminal_cases_serious: a.criminal_cases_serious ?? m.criminal_cases_serious ?? null,
+      is_crorepati: (m.assets_inr ?? a.assets_inr) != null ? (m.assets_inr ?? a.assets_inr) >= 1_00_00_000 : null,
+      education_level: m.education ?? a.education ?? null,
+      age_at_election: m.age ?? a.age ?? null,
       myneta_url: m.myneta_url ?? null,
       data_confidence: p.attendance_pct != null ? "high" : "medium",
       data_sources: [

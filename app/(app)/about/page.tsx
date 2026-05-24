@@ -8,7 +8,7 @@ export default function AboutPage() {
       <div className="px-6 py-8 max-w-[860px] mx-auto space-y-8">
         <div>
           <h1 className="h-page mb-2" style={{ color: "var(--text-primary)" }}>
-            About Bharat Manifesto Watch
+            About Neo Nīti
           </h1>
           <p className="text-body" style={{ color: "var(--text-secondary)" }}>
             A citizen accountability dashboard tracking political promises across India.
@@ -20,7 +20,7 @@ export default function AboutPage() {
           {
             title: "Mission",
             content:
-              "We believe voters deserve to know whether their elected representatives kept their promises. Bharat Manifesto Watch indexes election manifestos, extracts specific, verifiable commitments, and tracks their delivery using publicly available data.",
+              "We believe voters deserve to know whether their elected representatives kept their promises. Neo Nīti indexes election manifestos, extracts specific, verifiable commitments, and tracks their delivery using publicly available data.",
           },
           {
             title: "Neutrality",

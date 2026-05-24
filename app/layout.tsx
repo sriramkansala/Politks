@@ -5,11 +5,11 @@ import { ShapeProvider } from "@/lib/shape-context"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Bharat Manifesto Watch",
+  title: "Neo Nīti",
   description:
     "A citizen accountability dashboard tracking political promises across India.",
   openGraph: {
-    title: "Bharat Manifesto Watch",
+    title: "Neo Nīti",
     description: "Track what was promised. See what was delivered.",
     type: "website",
   },

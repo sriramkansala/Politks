@@ -1,40 +1,32 @@
 "use client"
 
-// Client wrapper around the MP-hub search form. Required because lucide
-// icons are function-typed React components that cannot be serialised
-// across the React Server Components boundary as props.
+// Unified single-input search — accepts PIN codes, MP names, or constituencies.
+// Detection happens server-side in /mp/page.tsx (6 digits → PIN lookup, else → text search).
 
-import { MapPin, Search } from "lucide-react"
+import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 export function MpSearchForm({
-  defaultPin = "",
-  defaultQ = "",
+  defaultValue = "",
+  className,
 }: {
-  defaultPin?: string
-  defaultQ?: string
+  defaultValue?: string
+  className?: string
 }) {
   return (
-    <form method="get" className="flex flex-col md:flex-row gap-2 max-w-2xl">
-      <Input
-        name="pin"
-        defaultValue={defaultPin}
-        placeholder="PIN code (e.g. 160001)"
-        inputMode="numeric"
-        maxLength={6}
-        leadingIcon={MapPin}
-        className="flex-1"
-      />
+    <form method="get" className={cn("flex items-center gap-2", className)}>
       <Input
         name="q"
-        defaultValue={defaultQ}
-        placeholder="MP name or constituency"
+        defaultValue={defaultValue}
+        placeholder="PIN code, MP name, or constituency…"
+        autoComplete="off"
         leadingIcon={Search}
         className="flex-1"
       />
       <Button type="submit" variant="primary" size="md">
-        Find
+        Search
       </Button>
     </form>
   )

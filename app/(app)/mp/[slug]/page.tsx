@@ -1,13 +1,14 @@
-// /mp/[slug] — Single MP dossier (BMW-130, 134, 138, 140, 281).
-// Sections: HonestyCard → Attendance heatmap → Financials → Compare → Act.
+// /mp/[slug] — Single MP dossier.
+// Header: name + party + house. Below: 5-tab layout via MpPageTabs (client).
 
 import Link from "next/link"
+import Image from "next/image"
 import { notFound } from "next/navigation"
-import { ArrowLeft, ExternalLink, Mail, Share2 } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import { MP_BY_SLUG, STATIC_MPS_BMW } from "@/lib/db/staticMps"
-import { HonestyCard } from "@/components/mp/HonestyCard"
-import { AttendanceHeatmap } from "@/components/mp/AttendanceHeatmap"
+import { MpPageTabs } from "@/components/mp/MpPageTabs"
 import type { Mp } from "@/lib/db/types"
+import { fontWeights } from "@/lib/font-weight"
 
 export async function generateStaticParams() {
   return STATIC_MPS_BMW.map((mp) => ({ slug: mp.prs_slug! }))
@@ -16,118 +17,13 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const mp = MP_BY_SLUG[slug]
-  if (!mp) return { title: "MP not found · BMW" }
-  return { title: `${mp.name} · ${mp.party_name} · BMW` }
+  if (!mp) return { title: "MP not found · Neo Nīti" }
+  return { title: `${mp.name} · ${mp.party_name} · Neo Nīti` }
 }
 
-import { formatINR as fmtINR } from "@/lib/format"
-import { fontWeights } from "@/lib/font-weight"
-// fmtINR is now provided by lib/format so /mp dossier shares the same
-// Indian-numbering treatment as the rest of the app (no inline divergences).
-
-function SectionCard({
-  title,
-  children,
-  hint,
-}: {
-  title: string
-  children: React.ReactNode
-  hint?: string
-}) {
-  return (
-    <section
-      className="rounded-[6px] p-5"
-      style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
-    >
-      <div className="flex items-baseline justify-between mb-3">
-        <h3 className="text-subheading" style={{ color: "var(--text-primary)" }}>
-          {title}
-        </h3>
-        {hint && (
-          <span className="text-[11px]" style={{ color: "var(--text-tertiary)" }}>
-            {hint}
-          </span>
-        )}
-      </div>
-      {children}
-    </section>
-  )
-}
-
-function ComparisonBar({
-  label,
-  value,
-  reference,
-  unit = "",
-}: {
-  label: string
-  value: number | null | undefined
-  reference: number | null | undefined
-  unit?: string
-}) {
-  if (value == null || reference == null) return null
-  const max = Math.max(value, reference) * 1.1 || 1
-  const wA = Math.min(100, (value / max) * 100)
-  const wB = Math.min(100, (reference / max) * 100)
-  const tone = value >= reference ? "var(--status-kept)" : "var(--status-broken)"
-  return (
-    <div className="flex flex-col gap-1.5 py-2">
-      <div className="flex items-baseline justify-between">
-        <span className="text-[12px]" style={{ color: "var(--text-secondary)" }}>
-          {label}
-        </span>
-        <span className="text-[11px]" style={{ color: "var(--text-tertiary)" }}>
-          MP <strong style={{ color: tone }}>{value}{unit}</strong> · nat avg {reference}{unit}
-        </span>
-      </div>
-      <div className="space-y-1">
-        <div className="h-2 rounded-[1px] overflow-hidden" style={{ background: "var(--bg-elevated-2)" }}>
-          <div style={{ width: `${wA}%`, height: "100%", background: tone }} />
-        </div>
-        <div className="h-2 rounded-[1px] overflow-hidden" style={{ background: "var(--bg-elevated-2)" }}>
-          <div style={{ width: `${wB}%`, height: "100%", background: "var(--border-strong)" }} />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ActionTile({
-  icon: Icon,
-  title,
-  desc,
-  href,
-}: {
-  icon: React.ElementType
-  title: string
-  desc: string
-  href?: string
-}) {
-  const inner = (
-    <div
-      className="p-4 rounded-[var(--radius-card)] h-full flex flex-col gap-2 transition-colors hover:border-[var(--border-strong)]"
-      style={{
-        background: "var(--bg-elevated-2)",
-        border: "1px solid var(--border)",
-      }}
-    >
-      <Icon size={14} strokeWidth={1.5} style={{ color: "var(--text-tertiary)" }} />
-      <div className="text-[13px]" style={{ color: "var(--text-primary)", fontVariationSettings: "'wght' 510" }}>
-        {title}
-      </div>
-      <div className="text-[11px]" style={{ color: "var(--text-tertiary)" }}>
-        {desc}
-      </div>
-    </div>
-  )
-  if (href) {
-    return (
-      <Link href={href} style={{ textDecoration: "none" }}>
-        {inner}
-      </Link>
-    )
-  }
-  return <div>{inner}</div>
+function Initials({ name }: { name: string }) {
+  const parts = name.split(/\s+/).filter(Boolean)
+  return <>{parts.slice(0, 2).map((w) => w[0]?.toUpperCase() ?? "").join("")}</>
 }
 
 export default async function MpDossierPage({
@@ -139,153 +35,70 @@ export default async function MpDossierPage({
   const mp = MP_BY_SLUG[slug] as Mp | undefined
   if (!mp) notFound()
 
+  const house = mp.house === "rajya_sabha" ? "Rajya Sabha" : "Lok Sabha"
+
   return (
-    <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-6">
+    <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto">
       {/* Back link */}
+      {/* Breadcrumb back-link — documented body-copy exception per UI_RULES.md §1. */}
       <Link
         href="/mp"
-        className="inline-flex items-center gap-1 text-[12px] transition-colors hover:text-[var(--text-primary)]"
+        className="inline-flex items-center gap-1 text-[12px] mb-6 transition-colors hover:text-[var(--text-primary)]"
         style={{ color: "var(--text-tertiary)", textDecoration: "none" }}
       >
         <ArrowLeft size={12} />
         All legislators
       </Link>
 
-      {/* Honesty card — the headline */}
-      <HonestyCard mp={mp} />
-
-      {/* Attendance heatmap */}
-      <AttendanceHeatmap mp={mp} />
-
-      {/* Financials */}
-      <SectionCard title="Financials" hint="Self-declared affidavit + MPLADS portal">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div>
-            <div className="text-caption mb-1" style={{ color: "var(--text-tertiary)" }}>
-              Declared assets
-            </div>
-            <div className="text-[18px]" style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold }}>
-              {fmtINR(mp.assets_inr)}
-            </div>
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-8">
+        {mp.photo_url ? (
+          <div
+            className="shrink-0 rounded-full overflow-hidden"
+            style={{ width: 56, height: 56, border: "1px solid var(--border)" }}
+          >
+            <Image
+              src={mp.photo_url}
+              alt=""
+              width={56}
+              height={56}
+              className="w-full h-full object-cover"
+              unoptimized
+            />
           </div>
-          <div>
-            <div className="text-caption mb-1" style={{ color: "var(--text-tertiary)" }}>
-              Liabilities
-            </div>
-            <div className="text-[18px]" style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold }}>
-              {fmtINR(mp.liabilities_inr)}
-            </div>
+        ) : (
+          <div
+            className="shrink-0 rounded-full inline-flex items-center justify-center"
+            style={{
+              width: 56,
+              height: 56,
+              background: "var(--bg-tertiary)",
+              color: "var(--text-tertiary)",
+              border: "1px solid var(--border)",
+              fontSize: 16,
+              fontVariationSettings: fontWeights.semibold,
+            }}
+          >
+            <Initials name={mp.name} />
           </div>
-          <div>
-            <div className="text-caption mb-1" style={{ color: "var(--text-tertiary)" }}>
-              MPLADS released
-            </div>
-            <div className="text-[18px]" style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold }}>
-              {fmtINR(mp.mplads_released_inr)}
-            </div>
-          </div>
-          <div>
-            <div className="text-caption mb-1" style={{ color: "var(--text-tertiary)" }}>
-              MPLADS unspent
-            </div>
-            <div
-              className="text-[18px]"
-              style={{
-                color:
-                  mp.mplads_unspent_inr != null && mp.mplads_unspent_inr >= 5_00_00_000
-                    ? "var(--status-broken)"
-                    : "var(--text-primary)",
-                fontVariationSettings: fontWeights.semibold,
-              }}
-            >
-              {fmtINR(mp.mplads_unspent_inr)}
-            </div>
-          </div>
+        )}
+        <div>
+          <h1
+            className="text-[22px] leading-tight"
+            style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold, letterSpacing: "-0.02em" }}
+          >
+            {mp.name}
+          </h1>
+          <p className="text-[13px] mt-0.5" style={{ color: "var(--text-tertiary)" }}>
+            {mp.party_name} · {house}
+            {mp.constituency ? ` · ${mp.constituency}` : ""}
+            {mp.state_code ? ` · ${mp.state_code}` : ""}
+          </p>
         </div>
-        <p className="text-[11px] mt-4" style={{ color: "var(--text-disabled)" }}>
-          Asset figures are nominal (not CPI-adjusted). MPLADS distinguishes sanctioned,
-          released and spent — we show released and unspent.
-        </p>
-      </SectionCard>
+      </div>
 
-      {/* Compare vs averages */}
-      <SectionCard title="vs national average" hint="PRS 17th/18th LS aggregates">
-        <ComparisonBar
-          label="Attendance"
-          value={mp.attendance_pct}
-          reference={mp.national_avg_attendance}
-          unit="%"
-        />
-        <ComparisonBar
-          label="Questions asked"
-          value={mp.questions_asked}
-          reference={mp.national_avg_questions}
-        />
-        <ComparisonBar
-          label="Debates participated"
-          value={mp.debates_participated}
-          reference={mp.national_avg_debates}
-        />
-      </SectionCard>
-
-      {/* Act tab */}
-      <SectionCard title="Act" hint="BMW-211 to BMW-225">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          <ActionTile
-            icon={Mail}
-            title="Write to this MP"
-            desc="Pre-filled letter with their PRS stats auto-attached."
-            href={`/act?to=${slug}&template=letter`}
-          />
-          <ActionTile
-            icon={Share2}
-            title="Share Honesty Card"
-            desc="Generate a 1080×1080 WhatsApp PNG with QR back to source."
-            href={`/act?to=${slug}&template=share`}
-          />
-          <ActionTile
-            icon={ExternalLink}
-            title="Track this MP"
-            desc="Weekly digest of speeches, questions, votes and scheme work."
-            href={`/act?to=${slug}&template=subscribe`}
-          />
-          <ActionTile
-            icon={Mail}
-            title="File a Question Hour draft"
-            desc="Draft a Question Hour query for this MP to file."
-            href={`/act?to=${slug}&template=question`}
-          />
-        </div>
-      </SectionCard>
-
-      {/* Caveats */}
-      <section className="text-[11px] leading-relaxed" style={{ color: "var(--text-disabled)" }}>
-        <p>
-          Coverage caveat: This MP is part of the BMW-130 marquee set. Full 543-MP
-          coverage from PRS is being ingested. Where a stat is unavailable we show
-          “—”, not a zero.
-          {(mp.data_sources?.length ?? 0) > 0 && (
-            <>
-              {" "}Sources:{" "}
-              {(mp.data_sources ?? []).map((url, i) => (
-                <span key={url}>
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline"
-                    style={{ color: "var(--text-tertiary)" }}
-                  >
-                    {new URL(url).hostname}
-                  </a>
-                  {i < (mp.data_sources!.length - 1) ? " · " : ""}
-                </span>
-              ))}
-              .
-            </>
-          )}
-        </p>
-      </section>
+      {/* 5-tab layout */}
+      <MpPageTabs mp={mp} />
     </div>
   )
 }

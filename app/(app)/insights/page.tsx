@@ -2,7 +2,7 @@
 // Server component. Filter by category via ?category=parliamentary etc.
 
 import { DykCard } from "@/components/insights/DykCard"
-import { FilterDropdown } from "@/components/mp/FilterDropdown"
+import { CategoryTabs } from "@/components/insights/CategoryTabs"
 import {
   FACTS,
   FACT_CATEGORIES,
@@ -10,7 +10,7 @@ import {
   type FactCategory,
 } from "@/lib/insights/facts"
 
-export const metadata = { title: "Insights · Bharat Manifesto Watch" }
+export const metadata = { title: "Insights · Neo Nīti" }
 export const revalidate = 21600
 
 interface PageProps {
@@ -57,23 +57,18 @@ export default async function InsightsPage({ searchParams }: PageProps) {
         <DykCard fact={today} />
       </section>
 
-      {/* Category filter */}
-      <section>
-        <h2 className="text-subheading mb-3" style={{ color: "var(--text-primary)" }}>
-          Browse {filtered.length} facts
-        </h2>
-        <FilterDropdown
-          paramKey="category"
-          label="Category"
-          value={category ?? null}
-          options={FACT_CATEGORIES.map(({ key, label }) => ({ value: key, label }))}
-          preserveParams={{ era }}
-          allLabel="All categories"
+      {/* Category tab strip + grid */}
+      <section className="space-y-5">
+        <CategoryTabs
+          categories={FACT_CATEGORIES.map(({ key, label }) => ({
+            key,
+            label,
+            count: FACTS.filter((f) => f.category === key).length,
+          }))}
+          selected={category}
+          totalCount={FACTS.length}
         />
-      </section>
 
-      {/* All facts grid */}
-      <section>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {filtered.map((fact) => (
             <DykCard key={fact.id} fact={fact} />

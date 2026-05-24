@@ -1,7 +1,6 @@
 import { Sidebar, MobileNav } from "@/components/shell/Sidebar"
 import { CommandPalette } from "@/components/shell/CommandPalette"
 import { MccBanner } from "@/components/shell/MccBanner"
-
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen overflow-hidden">
@@ -17,7 +16,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex flex-col flex-1 overflow-hidden min-w-0">
         <MccBanner />
         <MobileNav />
-        <main id="main-content" className="flex-1 overflow-y-auto">{children}</main>
+        <main id="main-content" className="flex-1 overflow-y-auto pb-6">{children}</main>
       </div>
       <CommandPalette />
     </div>

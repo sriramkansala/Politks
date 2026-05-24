@@ -10,7 +10,6 @@ import Link from "next/link"
 import { MapPin, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { fontWeights } from "@/lib/font-weight"
 
 export function PinSearchForm({
   defaultPin = "",
@@ -34,17 +33,7 @@ export function PinSearchForm({
         Find
       </Button>
       {showBrowseAll && (
-        <Link
-          href="/mp"
-          className="inline-flex items-center justify-center gap-1.5 h-8 px-4 text-[13px] rounded-[var(--radius-card)] border transition-colors"
-          style={{
-            background: "var(--bg-elevated-2)",
-            borderColor: "var(--border)",
-            color: "var(--text-secondary)",
-            textDecoration: "none",
-            fontVariationSettings: fontWeights.medium,
-          }}
-        >
+        <Link href="/mp" className="btn-secondary">
           <Search size={13} strokeWidth={1.5} />
           Browse all
         </Link>

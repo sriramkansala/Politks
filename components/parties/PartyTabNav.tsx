@@ -8,10 +8,11 @@
 // want shareable URLs (so the user can paste /parties/bjp?tab=donors and
 // land on the right tab without a flicker).
 //
-// BUT per UI_RULES.md §9 (Fluid Functionalism), the active indicator must
-// slide between tabs using framer-motion's `layoutId` + a spring transition.
-// Marking the file "use client" purely for the motion animation — the routing
-// itself stays SSR-driven via real <Link>s, so this is still URL-shareable.
+// Visually, the active state matches the <Tabs> primitive (components/ui/tabs.tsx):
+// a rounded "pill" sits behind the active tab and slides between tabs via
+// framer-motion's `layoutId`. Per UI_RULES.md §9: structural transitions use
+// FF springs, not CSS class swaps. Marking the file "use client" purely for
+// this motion — the routing itself stays SSR-driven via real <Link>s.
 
 import Link from "next/link"
 import { motion, LayoutGroup } from "framer-motion"
@@ -41,7 +42,6 @@ export function PartyTabNav({ tabs, active, basePath, preserveParams = {} }: Pro
         role="tablist"
         aria-label="Party profile sections"
         className="flex items-center gap-0 overflow-x-auto relative"
-        style={{ borderBottom: "1px solid var(--border)" }}
       >
         {tabs.map((tab) => {
           const isActive = active === tab.value
@@ -59,33 +59,30 @@ export function PartyTabNav({ tabs, active, basePath, preserveParams = {} }: Pro
               aria-selected={isActive}
               href={href}
               scroll={false}
-              className="relative px-3 py-2 text-[13px] whitespace-nowrap transition-colors"
+              className="relative px-3 py-1.5 rounded-[var(--radius-card)] text-[13px] whitespace-nowrap transition-colors"
               style={{
                 color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
-                marginBottom: -1,
                 textDecoration: "none",
                 fontVariationSettings: isActive
                   ? fontWeights.semibold
-                  : fontWeights.medium,
+                  : fontWeights.normal,
               }}
             >
-              <span className="relative z-10">{tab.label}</span>
-              {/* Animated active underline — slides between tabs via framer-motion
-                  layoutId. Per UI_RULES.md §9: structural state changes use FF
-                  springs, not CSS transitions. */}
+              {/* Animated active pill — slides between tabs via framer-motion
+                  layoutId. Mirrors the <Tabs> primitive (components/ui/tabs.tsx)
+                  active-segment indicator so all tab strips share one visual
+                  language. Per UI_RULES.md §9: structural transitions use FF
+                  springs, not CSS class swaps. */}
               {isActive && (
                 <motion.span
-                  layoutId="party-tab-underline"
-                  className="absolute left-0 right-0"
-                  style={{
-                    bottom: -1,
-                    height: 1.5,
-                    background: "var(--text-primary)",
-                  }}
+                  layoutId="party-tab-pill"
+                  className="absolute inset-0 rounded-[var(--radius-card)]"
+                  style={{ background: "var(--bg-tertiary)" }}
                   transition={springs.moderate}
                   aria-hidden
                 />
               )}
+              <span className="relative z-10">{tab.label}</span>
             </Link>
           )
         })}

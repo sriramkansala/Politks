@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { fontWeights } from "@/lib/font-weight"
 
 export const metadata: Metadata = {
-  title: "Admin — Bharat Manifesto Watch",
+  title: "Admin — Neo Nīti",
   robots: { index: false, follow: false },
 }
 
@@ -23,7 +23,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             className="w-4 h-4 rounded-[3px] flex items-center justify-center"
             style={{ background: "var(--accent)" }}
           >
-            <span className="text-[9px]" style={{ color: "var(--text-on-accent)", fontVariationSettings: fontWeights.semibold }}>B</span>
+            <span className="text-[9px]" style={{ color: "var(--text-on-accent)", fontVariationSettings: fontWeights.semibold }}>N</span>
           </div>
           <span
             className="text-[13px]"

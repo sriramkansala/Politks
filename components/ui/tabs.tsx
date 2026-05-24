@@ -290,12 +290,12 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
           )}
           {...props}
         >
-          {/* Active segment indicator */}
+          {/* Active segment indicator — single flat grey, no border, no shadow.
+              All tab strips in the app share this exact visual. */}
           {selectedRect && (
             <motion.div
               className={cn(
-                "absolute pointer-events-none",
-                surfaceClasses(indicatorLevel),
+                "absolute pointer-events-none bg-[var(--bg-tertiary)]",
                 shape.bg
               )}
               initial={false}

@@ -8,11 +8,17 @@
 // Used by /legislators where PARTY (30+ options) and STATE (30+ options)
 // don't fit as chip strips.
 
+import { useRef } from "react"
 import { useRouter } from "next/navigation"
 import { ChevronDown } from "lucide-react"
-import { useState, useRef, useEffect } from "react"
 import { fontWeights } from "@/lib/font-weight"
 import { cn } from "@/lib/utils"
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select"
 
 interface Option {
   value: string
@@ -45,127 +51,136 @@ export function FilterDropdown({
   allLabel = "All",
 }: FilterDropdownProps) {
   const router = useRouter()
-  const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-  const selected = options.find((o) => o.value === value) ?? null
+  const hiddenTriggerRef = useRef<HTMLButtonElement>(null)
+
+  // Normalize value: null/undefined → "" (the "All" sentinel)
+  const currentValue = value ?? ""
+  const selected = options.find((o) => o.value === currentValue) ?? null
   const displayLabel = selected?.label ?? allLabel
 
-  function navigate(next: string | null) {
+  function navigate(next: string) {
+    // "__all__" is the internal sentinel for the "All" option (Radix forbids value="")
+    const real = next === "__all__" ? "" : next
     const params = new URLSearchParams()
     for (const [k, v] of Object.entries(preserveParams)) {
       if (v != null && v !== "") params.set(k, v)
     }
-    if (next) params.set(paramKey, next)
+    // empty string means "All" — don't add to params
+    if (real) params.set(paramKey, real)
     const qs = params.toString()
     const base = window.location.pathname
     router.push(qs ? `${base}?${qs}` : base)
-    setOpen(false)
   }
 
-  // Close on click outside
-  useEffect(() => {
-    if (!open) return
-    function onDocClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
-    }
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false)
-    }
-    document.addEventListener("mousedown", onDocClick)
-    document.addEventListener("keydown", onKey)
-    return () => {
-      document.removeEventListener("mousedown", onDocClick)
-      document.removeEventListener("keydown", onKey)
-    }
-  }, [open])
+  // All items with sequential indices (SelectItem requires explicit index prop)
+  const allItems: Array<Option & { idx: number }> = [
+    { value: "", label: allLabel, idx: 0 },
+    ...options.map((opt, i) => ({ ...opt, idx: i + 1 })),
+  ]
 
   return (
-    <div className="filter-row" style={{ width: "fit-content", position: "relative" }} ref={ref}>
+    <div className="filter-row" style={{ width: "fit-content" }}>
+      {/* Label prefix ("Party", "State", etc.) */}
       <span className="label-prefix">{label}</span>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="filter-dropdown-btn"
-        data-state={open ? "open" : "closed"}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-      >
-        <span className="inline-flex items-center gap-2 min-w-0">
-          {selected?.color && (
-            <span
-              className="inline-block rounded-full shrink-0"
-              style={{ width: 7, height: 7, background: selected.color }}
-            />
-          )}
-          <span
-            className="truncate"
-            style={{ fontVariationSettings: fontWeights.medium }}
-          >
-            {displayLabel}
-          </span>
-        </span>
-        <ChevronDown
-          size={12}
-          strokeWidth={1.5}
-          className={cn(
-            "shrink-0 ml-1.5 transition-transform duration-[180ms] ease-[var(--ease-out-quart)]",
-            open && "rotate-180"
-          )}
-          style={{ color: "var(--text-tertiary)" }}
-        />
-      </button>
 
-      {open && (
-        <ul
-          role="listbox"
-          className="filter-dropdown-menu"
-          style={{
-            position: "absolute",
-            top: "calc(100% + 4px)",
-            left: 0,
-            zIndex: 50,
+      <Select value={currentValue === "" ? "__all__" : currentValue} onValueChange={navigate}>
+        {/*
+          Hidden SelectTrigger: zero-size, aria-hidden. It owns the Radix open
+          state, keyboard handling, and accessibility roles. Our visible button
+          below delegates clicks to it.
+        */}
+        <SelectTrigger
+          ref={hiddenTriggerRef}
+          className="sr-only"
+          aria-hidden="true"
+          tabIndex={-1}
+          placeholder={allLabel}
+        />
+
+        {/*
+          Visible custom trigger styled to match .filter-dropdown-btn.
+          Clicking it programmatically clicks the hidden SelectTrigger so
+          Radix manages all open/close/keyboard state — no useState needed.
+        */}
+        <button
+          type="button"
+          className={cn("filter-dropdown-btn", "inline-flex items-center justify-between gap-2")}
+          style={{ minWidth: 130 }}
+          onClick={() => hiddenTriggerRef.current?.click()}
+          onKeyDown={(e) => {
+            if (
+              e.key === "Enter" ||
+              e.key === " " ||
+              e.key === "ArrowDown" ||
+              e.key === "ArrowUp"
+            ) {
+              e.preventDefault()
+              hiddenTriggerRef.current?.click()
+            }
           }}
+          aria-haspopup="listbox"
         >
-          <li>
-            <button
-              type="button"
-              role="option"
-              aria-selected={!value}
-              onClick={() => navigate(null)}
-              className={cn(
-                "filter-dropdown-item",
-                !value && "is-active"
-              )}
+          <span className="inline-flex items-center gap-[6px] min-w-0 flex-1">
+            {selected?.color && (
+              <span
+                aria-hidden="true"
+                className="inline-block rounded-full shrink-0"
+                style={{ width: 7, height: 7, background: selected.color }}
+              />
+            )}
+            <span
+              className="truncate"
+              style={{ fontVariationSettings: fontWeights.medium }}
             >
-              {allLabel}
-            </button>
-          </li>
-          {options.map((opt) => (
-            <li key={opt.value}>
-              <button
-                type="button"
-                role="option"
-                aria-selected={value === opt.value}
-                onClick={() => navigate(opt.value)}
-                className={cn(
-                  "filter-dropdown-item",
-                  value === opt.value && "is-active"
-                )}
-              >
-                {opt.color && (
+              {displayLabel}
+            </span>
+          </span>
+          <ChevronDown
+            size={12}
+            strokeWidth={1.5}
+            className="shrink-0 transition-transform duration-[180ms] ease-[var(--ease-out-quart)]"
+            style={{ color: "var(--text-tertiary)" }}
+          />
+        </button>
+
+        <SelectContent>
+          {allItems.map((item) => (
+            <SelectItem
+              key={item.value === "" ? "__all__" : item.value}
+              value={item.value === "" ? "__all__" : item.value}
+              index={item.idx}
+            >
+              {/*
+                Render as string so SelectItem registers the label in labelMap
+                (its useEffect checks `typeof children === "string"`). The swatch
+                is rendered outside the string but inside a flex wrapper — however
+                since SelectItem wraps children in <span className="flex-1 min-w-0 truncate">,
+                we use a React fragment with the swatch as a sibling via a data-swatch
+                span that lives BEFORE the text in a flex container.
+
+                The outer span here IS the children prop — it's a React element, not
+                a string, so labelMap won't auto-populate. We rely on our own
+                displayLabel computation above for the trigger; labelMap is not needed.
+              */}
+              <span className="inline-flex items-center gap-[6px] min-w-0 w-full">
+                {item.color && (
                   <span
+                    aria-hidden="true"
                     className="inline-block rounded-full shrink-0"
-                    style={{ width: 7, height: 7, background: opt.color }}
+                    style={{ width: 7, height: 7, background: item.color }}
                   />
                 )}
-                <span style={{ fontVariationSettings: fontWeights.medium }}>
-                  {opt.label}
+                <span
+                  className="truncate"
+                  style={{ fontVariationSettings: fontWeights.medium }}
+                >
+                  {item.label}
                 </span>
-              </button>
-            </li>
+              </span>
+            </SelectItem>
           ))}
-        </ul>
-      )}
+        </SelectContent>
+      </Select>
     </div>
   )
 }

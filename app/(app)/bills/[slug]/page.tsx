@@ -1,11 +1,9 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { FileDiff } from "lucide-react"
-import { IssueGraph, type GraphNode, type GraphEdge } from "@/components/forensic/IssueGraph"
-import { StageTimeline } from "@/components/forensic/StageTimeline"
-import { ForensicSignals } from "@/components/forensic/ForensicSignalCard"
-import { BillStorySection, BillStoryEmptyState } from "@/components/forensic/BillStorySection"
-import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
+import { type GraphNode, type GraphEdge } from "@/components/forensic/IssueGraph"
+import { BillPageTabs } from "@/components/forensic/BillPageTabs"
+import { AnimateIn } from "@/components/ui/animate-in"
 import { createPublicClient } from "@/lib/db/server"
 import { getBillStory } from "@/lib/db/billStory"
 import { fontWeights } from "@/lib/font-weight"
@@ -163,7 +161,7 @@ export default async function BillDetailPage({
 
   return (
     <>
-      <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-10">
+      <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-8">
 
         {/* Header */}
         <div>
@@ -180,7 +178,6 @@ export default async function BillDetailPage({
               {typedBill.bill_number ?? slug}
             </span>
           </div>
-          {/* Title row — status pill anchored opposite the title for clarity */}
           <div className="flex items-start justify-between gap-6 mb-2">
             <h1 className="h-page" style={{ color: "var(--text-primary)" }}>
               {typedBill.title}
@@ -223,19 +220,9 @@ export default async function BillDetailPage({
               {typedBill.claude_summary}
             </p>
           )}
-          {/* Bill Diff CTA — shown if bill has a predecessor */}
           {typedBill.predecessor_bill_id && (
             <div className="mt-4">
-              <Link
-                href={`/bills/${slug}/diff`}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[12px] transition-colors duration-80"
-                style={{
-                  background: "var(--bg-elevated-2)",
-                  border: "1px solid var(--border)",
-                  color: "var(--text-secondary)",
-                  fontVariationSettings: fontWeights.medium,
-                }}
-              >
+              <Link href={`/bills/${slug}/diff`} className="btn-secondary">
                 <FileDiff size={13} strokeWidth={1.5} />
                 View Bill Diff — what changed from the previous version?
               </Link>
@@ -243,54 +230,23 @@ export default async function BillDetailPage({
           )}
         </div>
 
-        {/* Contextual story — explainer, stakeholders, narrative timeline, stats, sources */}
+        {/* Tabbed content */}
         <AnimateIn delay={0.05}>
-          {story ? <BillStorySection story={story} /> : <BillStoryEmptyState />}
-        </AnimateIn>
-
-        {/* Issue Graph (WRB series only) */}
-        {isWrbSeries && graphNodes.length > 0 && (
-          <AnimateIn>
-          <section>
-            <h2 className="h-section mb-1" style={{ color: "var(--text-primary)" }}>
-              Causal Graph
-            </h2>
-            <p className="text-[12px] mb-4" style={{ color: "var(--text-tertiary)" }}>
-              Relationships between bills, MPs, and blocking events in this legislative series
-            </p>
-            <div
-              className="rounded-[6px] overflow-hidden p-4"
-              style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
-            >
-              <IssueGraph
-                nodes={graphNodes}
-                edges={graphEdgesForComponent}
-                width={920}
-                height={480}
-              />
-            </div>
-          </section>
-          </AnimateIn>
-        )}
-
-        {/* Forensic Signals (WRB only) */}
-        {slug === "wrb-2023" && (
-          <section>
-            <h2 className="h-section mb-1" style={{ color: "var(--text-primary)" }}>
-              Forensic Signals
-            </h2>
-            <p className="text-[12px] mb-4" style={{ color: "var(--text-tertiary)" }}>
-              Automated signals detected by the BMW forensic engine
-            </p>
-            <ForensicSignals />
-          </section>
-        )}
-
-        <AnimateIn delay={0.1}>
-          <StageTimeline
+          <BillPageTabs
+            story={story}
             stageEvents={stageEvents}
             currentStage={typedBill.current_stage}
             coveredCount={coveredStages.size}
+            isWrbSeries={isWrbSeries}
+            graphNodes={graphNodes}
+            graphEdges={graphEdgesForComponent}
+            showForensicSignals={slug === "wrb-2023"}
+            billVotes={{
+              lok_sabha_ayes: typedBill.lok_sabha_ayes,
+              lok_sabha_noes: typedBill.lok_sabha_noes,
+              rajya_sabha_ayes: typedBill.rajya_sabha_ayes,
+              rajya_sabha_noes: typedBill.rajya_sabha_noes,
+            }}
           />
         </AnimateIn>
       </div>

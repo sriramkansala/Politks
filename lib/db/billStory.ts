@@ -497,13 +497,345 @@ const CAA_2019: BillStory = {
   ],
 }
 
+// ─── WRB chain — individual bills ─────────────────────────────────────────
+
+const WRB_1996: BillStory = {
+  what_it_does:
+    "The Constitution (81st Amendment) Bill, 1996 proposed reserving one-third of all seats in the Lok Sabha and state legislative assemblies for women, to be allotted by rotation across constituencies. It was the first parliamentary attempt to codify 33% reservation for women in the national legislature, mirroring reservations already granted in Panchayati Raj institutions by the 73rd Amendment (1992).",
+  why_it_matters:
+    "India had just granted 33% reservation to women in local self-government but women held under 8% of Lok Sabha seats in 1996. The United Front government introduced the bill as a signal of intent, but the debate immediately fractured along caste lines — several parties demanded a sub-quota within the 33% for OBC women, a demand that would shadow every subsequent WRB attempt for 27 years.",
+  where_it_stands:
+    "The bill lapsed with the dissolution of the 11th Lok Sabha (1997). A Joint Parliamentary Committee chaired by Geeta Mukherjee (CPI) examined it and submitted seven recommendations on 9 December 1996, but none were debated on the floor. The bill is now of historical record; its successor is the 2023 Women's Reservation Act.",
+  stakeholders: [
+    { side: "support", actor: "United Front Government (H.D. Deve Gowda)", position: "Introduced the bill as a flagship women's-empowerment measure in the first session of the 11th Lok Sabha.", source_pending: true },
+    { side: "support", actor: "All major women's organisations", position: "Broadly supported the 33% quota, citing evidence from panchayat elections where reserved seats had increased substantive representation.", source_pending: true },
+    { side: "oppose", actor: "RJD, SP, JD factions", position: "Demanded a sub-quota within the 33% for Other Backward Classes, arguing the bill would only benefit upper-caste women.", source_pending: true },
+    { side: "neutral", actor: "JPC chaired by Geeta Mukherjee", position: "Heard 102 memoranda and made 7 recommendations. The committee broadly supported passage but flagged the need for an OBC sub-quota debate.", source_pending: true },
+  ],
+  events: [
+    { date: "1996-01-01", headline: "33% women's reservation appears in BJP, INC and United Front manifestos for the 1996 general election", source_pending: true },
+    { date: "1996-09-12", headline: "CAB-81/1996 introduced in Lok Sabha by H.D. Deve Gowda government", source_pending: true },
+    { date: "1996-09-12", headline: "Bill referred to Joint Parliamentary Committee chaired by Geeta Mukherjee (CPI)", source_pending: true },
+    { date: "1996-12-09", headline: "JPC submits report with 7 recommendations; OBC sub-quota demand recorded as dissent", source_pending: true },
+    { date: "1997-01-01", headline: "Bill lapses with dissolution of 11th Lok Sabha — never debated on the floor", source_pending: true },
+  ],
+  stats: [
+    { value: "< 8%", label: "Women's share of Lok Sabha seats in 1996" },
+    { value: "33%", label: "Proposed reservation in Parliament" },
+    { value: "102", label: "Memoranda received by the Geeta Mukherjee JPC" },
+    { value: "7", label: "JPC recommendations — none debated on the floor" },
+  ],
+  further_reading: [
+    { domain: "prsindia.org", headline: "Women's Reservation Bill — legislative history", date: "2023", source: "https://prsindia.org" },
+    { domain: "eparlib.sansad.in", headline: "JPC Report on the Constitution (81st Amendment) Bill, 1996", date: "1996", source: "https://eparlib.sansad.in" },
+  ],
+}
+
+const WRB_1998: BillStory = {
+  what_it_does:
+    "The Constitution (84th Amendment) Bill, 1998 was the Vajpayee NDA government's re-introduction of the 33% women's reservation proposal. Identical in substance to the 1996 bill, it sought to insert new articles into the Constitution reserving one-third of Lok Sabha and state assembly seats for women by rotation.",
+  why_it_matters:
+    "The 1998 bill is remembered less for its content than for the dramatic scene on the Lok Sabha floor: RJD MP Surendra Prakash Yadav snatched the bill from Law Minister M. Thambidurai and tore it at the Speaker's table, an act that encapsulated the ferocity of OBC-bloc opposition. Lalu Prasad Yadav declared the bill could only pass 'over my dead body.' The 'Yadav triumvirate' (Mulayam Singh Yadav, Lalu Prasad Yadav, Sharad Yadav) consistently demanded a sub-quota for OBC women within the 33%.",
+  where_it_stands:
+    "The bill lapsed with the dissolution of the 12th Lok Sabha (1999). No committee was constituted; the disruptions effectively prevented any substantive debate. The tearing incident is widely cited as the nadir of the 27-year legislative journey.",
+  stakeholders: [
+    { side: "support", actor: "BJP-led NDA Government (Vajpayee)", position: "Re-introduced the bill in the spirit of cross-party commitment made in 1996 manifestos.", source_pending: true },
+    { side: "oppose", actor: "RJD, SP, JD(U) — the 'Yadav triumvirate'", position: "Physically disrupted proceedings; demanded OBC sub-quota within the 33% reservation.", source_pending: true, quote: "The present form of Women's Reservation Bill can only be passed in the Lok Sabha over my dead body." },
+    { side: "support", actor: "Indian National Congress", position: "Supported the bill in principle while navigating alliance pressures with regional OBC parties.", source_pending: true },
+  ],
+  events: [
+    { date: "1998-01-01", headline: "CAB-84/1998 introduced by Vajpayee government in Lok Sabha", source_pending: true },
+    { date: "1998-01-01", headline: "RJD MP Surendra Prakash Yadav tears the bill on the Lok Sabha floor", source_pending: true },
+    { date: "1999-01-01", headline: "Bill lapses with dissolution of 12th Lok Sabha", source_pending: true },
+  ],
+  stats: [
+    { value: "0", label: "Committee sittings held — disruptions blocked all debate" },
+    { value: "1", label: "Bills torn on the floor of the Lok Sabha (unprecedented)" },
+    { value: "3", label: "Years of the Vajpayee government that attempted re-introduction" },
+  ],
+  further_reading: [
+    { domain: "prsindia.org", headline: "Women's Reservation Bill — history and analysis", date: "2023", source: "https://prsindia.org" },
+    { domain: "thehindu.com", headline: "The long road to women's reservation", date: "2023", source_pending: true },
+  ],
+}
+
+const WRB_1999: BillStory = {
+  what_it_does:
+    "The Constitution (85th Amendment) Bill, 1999 was the third attempt to legislate 33% reservation for women in Parliament and state assemblies. Introduced by Law Minister Ram Jethmalani on 23 December 1999 in the newly constituted 13th Lok Sabha, it was substantively identical to the 1996 and 1998 bills.",
+  why_it_matters:
+    "The 1999 re-introduction showed the Vajpayee government's continued commitment to the reservation, but also the futility of introduction without a floor strategy. The OBC sub-quota demand persisted, and the government lacked the numbers to override the blocking coalition. The bill did not progress beyond introduction.",
+  where_it_stands:
+    "Lapsed with the dissolution of the 13th Lok Sabha (2004). The 1999 bill is notable mainly as a placeholder — keeping the legislative momentum alive while the government awaited a political opening that never arrived.",
+  stakeholders: [
+    { side: "support", actor: "BJP-led NDA Government (Vajpayee / Ram Jethmalani)", position: "Introduced for the third consecutive parliament; signalled continued commitment without resolving the OBC deadlock.", source_pending: true },
+    { side: "oppose", actor: "SP, RJD, JD(U)", position: "Continued to demand OBC sub-quota and blocked floor listing through disruptions.", source_pending: true },
+    { side: "neutral", actor: "INC and Congress-led opposition", position: "Largely supportive in principle; unwilling to push the government into crisis over the bill.", source_pending: true },
+  ],
+  events: [
+    { date: "1999-12-23", headline: "CAB-85/1999 introduced in Lok Sabha by Law Minister Ram Jethmalani", source_pending: true },
+    { date: "2004-01-01", headline: "Bill lapses with dissolution of 13th Lok Sabha without any debate", source_pending: true },
+  ],
+  stats: [
+    { value: "3rd", label: "Consecutive parliament in which the reservation bill was introduced" },
+    { value: "0", label: "Days of substantive floor debate before lapse" },
+    { value: "8 years", label: "Elapsed since first introduction (1996–2004) without passage" },
+  ],
+  further_reading: [
+    { domain: "prsindia.org", headline: "Women's Reservation Bill — legislative history", date: "2023", source: "https://prsindia.org" },
+  ],
+}
+
+const WRB_2008: BillStory = {
+  what_it_does:
+    "The Constitution (108th Amendment) Bill, 2008 was the UPA-II government's attempt to break the deadlock by strategically introducing the 33% women's reservation bill in the Rajya Sabha — which does not dissolve when the Lok Sabha is dissolved — thereby preventing automatic lapse. It passed the Rajya Sabha by 186 votes to 1 on 9 March 2010 but was never brought to the Lok Sabha floor.",
+  why_it_matters:
+    "The 2008 bill's Rajya Sabha passage was a historic achievement — a near-unanimous upper house vote after 14 years of failure. But its greatest significance is what followed: the UPA government chose not to list the bill for Lok Sabha debate despite holding a comfortable majority, apparently calculating that the disruptions it would trigger were not worth the political cost. The bill then lapsed with the 15th and 16th Lok Sabhas (2014 and 2019), a 13-year stall that critics called deliberate.",
+  where_it_stands:
+    "Lapsed with the dissolution of the 16th Lok Sabha (2019). The bill's successor — the Constitution (128th Amendment) Act 2023 — finally passed both houses but added the Article 334A delimitation precondition, pushing effective implementation to 2029-2034.",
+  stakeholders: [
+    { side: "support", actor: "UPA-II Government (Manmohan Singh)", position: "Introduced strategically in the Rajya Sabha; shepherded to a 186-1 vote but did not bring to Lok Sabha.", source_pending: true },
+    { side: "oppose", actor: "Samajwadi Party — dissent note", position: "SP MPs Virendra Bhatia and Shailendra Kumar filed a dissent note in the Standing Committee demanding OBC sub-quota.", source_pending: true },
+    { side: "neutral", actor: "BJP (in opposition)", position: "Voted for the bill in the Rajya Sabha while noting the government's failure to list it in the Lok Sabha.", source_pending: true },
+    { side: "neutral", actor: "Standing Committee (Jayanthi Natarajan, INC)", position: "Recommended passage 'without further delay' in the 36th Report (December 2009).", source_pending: true },
+  ],
+  events: [
+    { date: "2008-05-06", headline: "CAB-108/2008 introduced in Rajya Sabha — strategic venue to prevent lapse on LS dissolution", source_pending: true },
+    { date: "2009-12-14", headline: "Standing Committee 36th Report recommends passage; SP files dissent note on OBC sub-quota", source_pending: true },
+    { date: "2010-03-09", headline: "Rajya Sabha passes the bill 186-1 — historic near-unanimous vote", source_pending: true },
+    { date: "2014-05-01", headline: "Bill lapses with dissolution of 15th Lok Sabha — never tabled in Lok Sabha by UPA", source_pending: true },
+    { date: "2019-05-01", headline: "Bill lapses again with dissolution of 16th Lok Sabha — a 13-year stall", source_pending: true },
+  ],
+  stats: [
+    { value: "186–1", label: "Rajya Sabha vote (9 March 2010)" },
+    { value: "0", label: "Times listed for Lok Sabha debate by UPA government" },
+    { value: "13 years", label: "Gap between Rajya Sabha passage and final Act (2010–2023)" },
+    { value: "4", label: "Lok Sabhas in which WRB variants lapsed (1996–2019)" },
+  ],
+  further_reading: [
+    { domain: "prsindia.org", headline: "The Constitution (108th Amendment) Bill 2008", date: "2010", source: "https://prsindia.org/billtrack/the-constitution-one-hundred-and-eighth-amendment-bill-2008" },
+    { domain: "eparlib.sansad.in", headline: "Standing Committee 36th Report — Women's Reservation Bill", date: "2009", source: "https://eparlib.sansad.in" },
+  ],
+}
+
+// ─── Other major bills ─────────────────────────────────────────────────────
+
+const TELECOM_2023: BillStory = {
+  what_it_does:
+    "The Telecommunications Act, 2023 replaces the colonial-era Indian Telegraph Act of 1885, the Indian Wireless Telegraphy Act of 1933 and the Telegraph Wires (Unlawful Possession) Act of 1950. It establishes a new framework for spectrum assignment, licensing, and the regulation of telecom services including satellite broadband. The Act authorises the government to take over any telecom network in the interest of national security or in a public emergency.",
+  why_it_matters:
+    "India's ₹8.4 lakh crore telecom sector had been governed by a law written for telegraph wires. The Act modernises the regime but drew sharp criticism on two fronts: expanded interception powers (including 'any person' authorised to intercept messages), and the exclusion of OTT communication services (WhatsApp, Signal) from the licensing framework in a manner critics found inconsistent. Satellite spectrum allocation provisions directly affect the emerging Starlink-vs-Jio debate.",
+  where_it_stands:
+    "Presidential assent on 24 December 2023. Brought into force in phases through 2024. The Digital Communications Commission has notified some rules; several provisions including the Right of Way framework and the new interception procedure are still being operationalised as of 2026.",
+  stakeholders: [
+    { side: "support", actor: "Ministry of Communications (Jyotiraditya Scindia)", position: "Characterised the Act as a once-in-a-century modernisation of telecom law, removing redundant licensing tiers.", source: "https://dot.gov.in" },
+    { side: "oppose", actor: "Civil-society and digital-rights groups", position: "Flagged Section 20 (interception by 'any person authorised') as broader than the existing Section 5(2) of the 1885 Act; warned of surveillance overreach.", source_pending: true },
+    { side: "neutral", actor: "OTT platforms (WhatsApp, Signal, Zoom)", position: "Sought clarity on whether OTT communication services would be brought under the licensing regime; the Act currently excludes them.", source_pending: true },
+    { side: "neutral", actor: "TRAI", position: "Retains its advisory and regulatory role; the Act introduces a new 'spectrum assignment' framework that modifies the auction-vs-administrative allocation debate.", source_pending: true },
+  ],
+  events: [
+    { date: "2022-09-01", headline: "Draft Telecommunications Bill 2022 released for public consultation", source_pending: true },
+    { date: "2023-12-18", headline: "Telecommunications Bill 2023 introduced in Lok Sabha", source_pending: true },
+    { date: "2023-12-20", headline: "Passed by Lok Sabha; passed by Rajya Sabha same day", source_pending: true },
+    { date: "2023-12-24", headline: "Presidential assent — The Telecommunications Act, 2023", source_pending: true },
+    { date: "2024-06-26", headline: "First tranche of provisions brought into force via gazette notification", source_pending: true },
+  ],
+  stats: [
+    { value: "1885", label: "Year of the Act it replaces (Indian Telegraph Act)" },
+    { value: "138 years", label: "Age of the primary law being replaced" },
+    { value: "₹8.4 lakh cr", label: "India's telecom sector valuation (approx.)" },
+    { value: "3", label: "Legacy Acts repealed by the 2023 Act" },
+  ],
+  further_reading: [
+    { domain: "dot.gov.in", headline: "The Telecommunications Act, 2023 — official text", date: "2023", source: "https://dot.gov.in" },
+    { domain: "prsindia.org", headline: "Telecommunications Bill, 2023 — PRS summary", date: "2023", source: "https://prsindia.org" },
+    { domain: "internetfreedom.in", headline: "Analysis of the Telecom Act — interception and surveillance provisions", date: "2024", source_pending: true },
+  ],
+}
+
+const WAQF_2024: BillStory = {
+  what_it_does:
+    "The Waqf (Amendment) Bill, 2024 proposes sweeping changes to the Waqf Act, 1995 governing the management of Islamic charitable endowments (waqf properties) across India. Key changes include: requiring non-Muslim members on Central and State Waqf Boards; removing the Waqf Tribunal's power to determine whether a property is waqf (vesting that power in a District Collector); and changing the procedure for designating 'waqf by user' properties.",
+  why_it_matters:
+    "India's waqf system manages an estimated 8.7 lakh properties — one of the largest land portfolios managed by any religious community in the world. The government argued the amendment would improve transparency and protect poor beneficiaries; opposition parties and Muslim community bodies argued it was an unconstitutional intrusion on the autonomy of a religious institution and that transferring adjudication to Collectors (government officers) undermined judicial independence. The bill was referred to a Joint Parliamentary Committee amid large protests.",
+  where_it_stands:
+    "The JPC chaired by BJP's Jagdambika Pal submitted its report in February 2025. The amended bill was then passed by Lok Sabha (288-232) and Rajya Sabha (128-95) in April 2025 and received Presidential assent. Multiple High Courts and the Supreme Court are hearing challenges to its constitutionality as of 2026.",
+  stakeholders: [
+    { side: "support", actor: "BJP-led NDA Government (Ministry of Minority Affairs)", position: "Argues the amendment will end mismanagement, corruption and encroachments on waqf property by entrenching accountability.", source_pending: true },
+    { side: "oppose", actor: "INDIA bloc (INC, SP, TMC, DMK, AIMIM)", position: "Called the bill 'unconstitutional' and an attack on Muslim property rights; all INDIA-bloc members on JPC filed dissent notes.", source_pending: true },
+    { side: "oppose", actor: "All India Muslim Personal Law Board", position: "Demanded withdrawal; argued that inclusion of non-Muslims on Waqf Boards violates Articles 25-26 (freedom of religion).", source_pending: true },
+    { side: "neutral", actor: "Supreme Court of India", position: "Agreed to hear petitions; directed that no appointments under the amended Act be made until further orders (interim stay on specific provisions).", source_pending: true },
+  ],
+  events: [
+    { date: "2024-08-08", headline: "Waqf (Amendment) Bill, 2024 introduced in Lok Sabha", source_pending: true },
+    { date: "2024-08-08", headline: "Bill referred to Joint Parliamentary Committee chaired by Jagdambika Pal (BJP)", source_pending: true },
+    { date: "2025-02-01", headline: "JPC submits report; INDIA-bloc members file dissent notes", source_pending: true },
+    { date: "2025-04-02", headline: "Lok Sabha passes amended bill 288-232", source_pending: true },
+    { date: "2025-04-04", headline: "Rajya Sabha passes bill 128-95", source_pending: true },
+    { date: "2025-04-05", headline: "Presidential assent granted", source_pending: true },
+    { date: "2025-05-01", headline: "Supreme Court agrees to hear constitutional challenges; issues interim directions", source_pending: true },
+  ],
+  stats: [
+    { value: "8.7 lakh", label: "Waqf properties in India (estimated)", caveat: "Waqf Board surveys; exact number disputed" },
+    { value: "288–232", label: "Lok Sabha vote margin" },
+    { value: "128–95", label: "Rajya Sabha vote margin" },
+    { value: "44", label: "JPC members — largest JPC in recent parliamentary history" },
+  ],
+  further_reading: [
+    { domain: "prsindia.org", headline: "Waqf (Amendment) Bill, 2024 — PRS analysis", date: "2024", source: "https://prsindia.org" },
+    { domain: "thehindu.com", headline: "What the Waqf Amendment Bill proposes", date: "2024", source_pending: true },
+    { domain: "barandbench.com", headline: "Supreme Court on Waqf Amendment — interim orders", date: "2025", source_pending: true },
+  ],
+}
+
+const ONOE_2024: BillStory = {
+  what_it_does:
+    "The Constitution (129th Amendment) Bill, 2024 — the 'One Nation, One Election' bill — proposes synchronising Lok Sabha and all state assembly elections to be held simultaneously. It amends Articles 82A, 83, 172 and 327 to allow a 'appointed date' from which a single electoral cycle would govern both Parliament and states. A companion bill amends the Union Territories Acts to bring UT legislatures into the same cycle. If an assembly is dissolved early, elections would be held only for the remainder of the term, not for a fresh five-year cycle.",
+  why_it_matters:
+    "India holds elections almost continuously — between 2019 and 2024, there were state elections in 30 of the 60 months. The government argues simultaneous elections would reduce the Model Code of Conduct disruptions that freeze policy action and cut election expenditure. Critics argue it centralises power, undermines federalism (states lose the right to call mid-term elections), requires two-thirds majority plus ratification by half the states — a near-impossible bar — and concentrates electoral administration pressure in a single cycle.",
+  where_it_stands:
+    "Introduced in December 2024 and referred to a 39-member Joint Parliamentary Committee. The bill requires: a two-thirds majority in Parliament, ratification by at least half the 28 state legislatures, and amendments to multiple articles. Given the NDA's current seat strength, the two-thirds threshold is not achievable without significant opposition support — which has not materialised as of 2026.",
+  stakeholders: [
+    { side: "support", actor: "BJP-led NDA Government (Law Minister Arjun Ram Meghwal)", position: "Argues simultaneous elections reduce governance disruption, Model Code freezes, and election expenditure.", source_pending: true },
+    { side: "support", actor: "High-Level Committee (Ram Nath Kovind)", position: "2024 committee report recommended simultaneous elections as feasible and beneficial for policy continuity.", source_pending: true },
+    { side: "oppose", actor: "INDIA bloc (INC, TMC, AAP, SP, DMK)", position: "Opposed on federal grounds — states lose the right to early dissolution; also flags practical impossibility of synchronising all EVMs and personnel.", source_pending: true },
+    { side: "oppose", actor: "Election Commission of India (partial)", position: "Flagged logistical constraints: simultaneous elections would require doubling of EVM stock and deployment of central forces across all states simultaneously.", source_pending: true },
+    { side: "neutral", actor: "Joint Parliamentary Committee", position: "39 members examining the bill; INDIA-bloc members are participating but have indicated they will file dissent notes.", source_pending: true },
+  ],
+  events: [
+    { date: "2024-09-01", headline: "Ram Nath Kovind High-Level Committee submits report recommending simultaneous elections", source_pending: true },
+    { date: "2024-12-12", headline: "Union Cabinet approves the Constitution (129th Amendment) Bill", source_pending: true },
+    { date: "2024-12-17", headline: "Bill introduced in Lok Sabha; passes on a division vote of 269-198 (short of two-thirds majority)", source_pending: true },
+    { date: "2024-12-18", headline: "Bill referred to 39-member Joint Parliamentary Committee", source_pending: true },
+  ],
+  stats: [
+    { value: "269–198", label: "Lok Sabha division on the motion to introduce", caveat: "Below the two-thirds threshold of ~362 needed for passage" },
+    { value: "~362", label: "Lok Sabha votes needed (two-thirds majority) for constitutional amendment" },
+    { value: "14", label: "State legislatures that would need to ratify (half of 28 states)" },
+    { value: "30/60", label: "Months between 2019-2024 in which a state election was held" },
+  ],
+  further_reading: [
+    { domain: "prsindia.org", headline: "Constitution (129th Amendment) Bill, 2024 — PRS analysis", date: "2024", source: "https://prsindia.org" },
+    { domain: "thehindu.com", headline: "One Nation One Election — what the bill proposes", date: "2024", source_pending: true },
+    { domain: "eci.gov.in", headline: "Election Commission note on simultaneous elections", date: "2024", source_pending: true },
+  ],
+}
+
+const BROADCASTING_2023: BillStory = {
+  what_it_does:
+    "The Broadcasting Services (Regulation) Bill, 2023 is a draft regulatory framework proposed to replace the Cable Television Networks (Regulation) Act, 1995 and consolidate rules for broadcast services — including traditional TV and radio, OTT video platforms (Netflix, Hotstar), and, in a controversial second draft, individual digital news creators and social-media commentators with large followings. The draft would require content evaluation committees and a self-regulatory framework for OTT platforms.",
+  why_it_matters:
+    "The bill sought to bring OTT platforms and digital news under a broadcast-style regulatory regime at a time when India is one of the world's largest streaming markets. The second draft (July 2024), which explicitly included digital news broadcasters and creators with 'substantial' viewership, drew sharp backlash from journalists, platforms and digital-rights advocates who argued it would impose television-era content rules on the internet and enable pre-broadcast censorship through self-regulatory committees.",
+  where_it_stands:
+    "The Ministry of Information & Broadcasting withdrew the second draft in August 2024 following industry pushback. As of 2026 a revised third draft is being prepared internally; no bill has been introduced in Parliament. The 1995 Cable TV Act continues to govern traditional broadcast.",
+  stakeholders: [
+    { side: "support", actor: "Ministry of Information & Broadcasting (Ashwini Vaishnaw)", position: "Argued the 1995 Act is obsolete and a single window regulator for all broadcast services is needed for the streaming era.", source_pending: true },
+    { side: "oppose", actor: "OTT platforms (Netflix, Disney+Hotstar, Amazon Prime)", position: "Opposed content evaluation committees and Programme Code applicability; argued existing self-regulation under the IT Rules 2021 was sufficient.", source_pending: true },
+    { side: "oppose", actor: "Digital news publishers and journalists' bodies", position: "Strongly opposed inclusion of digital news creators; characterised it as an attempt to regulate online speech under a broadcast model.", source_pending: true },
+    { side: "neutral", actor: "TRAI", position: "Has previously recommended a unified regulatory framework; role in the revised draft remains to be clarified.", source_pending: true },
+  ],
+  events: [
+    { date: "2023-11-10", headline: "First draft of Broadcasting Bill 2023 released for public consultation", source_pending: true },
+    { date: "2024-07-01", headline: "Second draft released — expands scope to digital news creators and social media commentators", source_pending: true },
+    { date: "2024-08-01", headline: "MIB withdraws second draft amid industry and journalism community backlash", source_pending: true },
+    { date: "2026-01-01", headline: "Third draft under preparation; timeline for Parliament introduction unclear", source_pending: true },
+  ],
+  stats: [
+    { value: "1995", label: "Year of the Cable TV Act the bill seeks to replace" },
+    { value: "~900 mn", label: "Indian internet users — scale of the regulatory perimeter being considered" },
+    { value: "2", label: "Drafts released and withdrawn without Parliament introduction" },
+  ],
+  further_reading: [
+    { domain: "mib.gov.in", headline: "Broadcasting Services (Regulation) Bill — draft consultation", date: "2023", source: "https://mib.gov.in" },
+    { domain: "internetfreedom.in", headline: "Analysis of the Broadcasting Bill 2023", date: "2024", source_pending: true },
+    { domain: "prsindia.org", headline: "Cable Television Networks Act 1995 — existing framework", date: "2023", source: "https://prsindia.org" },
+  ],
+}
+
+const SEDITION_REPEAL: BillStory = {
+  what_it_does:
+    "Section 124A of the Indian Penal Code — the sedition provision, introduced by the British in 1870 — was formally deleted when the Bharatiya Nyaya Sanhita (BNS) replaced the IPC on 1 July 2024. The BNS does not contain a provision titled 'sedition.' However, Section 152 of the BNS introduces a new offence: 'acts endangering the sovereignty, unity and integrity of India' — carrying the same punishment of life imprisonment — which critics call 'sedition-plus' as it removes the requirement to prove incitement to violence.",
+  why_it_matters:
+    "Sedition (§124A) was a tool used by colonial authorities and, critics argue, by successive Indian governments to silence journalists, activists and dissenters. The Supreme Court had stayed all sedition trials in May 2022 while a Constitution Bench reviewed its constitutionality. The formal deletion was welcomed by civil-liberties advocates, but the simultaneous insertion of §152 BNS — with a broader, vaguer scope — has led most legal scholars and the Supreme Court's stay to continue operating, since §152 remains subject to challenge.",
+  where_it_stands:
+    "§124A IPC formally deleted from 1 July 2024. The Supreme Court's May 2022 stay on sedition trials was not automatically vacated when §124A was deleted — the Court is examining whether §152 BNS is the functional equivalent. As of 2026, petitions challenging §152 are pending before the Supreme Court.",
+  stakeholders: [
+    { side: "support", actor: "Government of India (Ministry of Home Affairs)", position: "Presented the deletion of §124A as a colonial relic being cleared; described BNS §152 as a modernised, sovereignty-protection provision.", source_pending: true },
+    { side: "oppose", actor: "Press Freedom and civil-liberties groups (Editors Guild, IFF)", position: "Argued that §152 BNS is broader than §124A IPC — it does not require proof of incitement to imminent violence and could capture more speech.", source_pending: true },
+    { side: "neutral", actor: "Supreme Court of India", position: "Has not vacated the 2022 stay; is separately examining §152 BNS. Key question: is the new provision constitutionally valid under Articles 19(1)(a) and 19(2)?", source_pending: true },
+    { side: "oppose", actor: "Opposition parties (INC, TMC, AAP)", position: "Argued that the passage of the BNS itself was tainted — voted by a Parliament from which 146 opposition MPs had been suspended.", source_pending: true },
+  ],
+  events: [
+    { date: "1870-01-01", headline: "Section 124A (sedition) added to the Indian Penal Code by British colonial government", source_pending: true },
+    { date: "1962-01-01", headline: "Supreme Court in Kedar Nath Singh vs. State of Bihar upholds §124A subject to the incitement-to-violence test", source_pending: true },
+    { date: "2022-05-11", headline: "Supreme Court stays all §124A trials pending Constitution Bench review", source_pending: true },
+    { date: "2023-08-11", headline: "Bharatiya Nyaya Sanhita introduced in Lok Sabha — §152 (sovereignty offence) included; §124A equivalent absent", source_pending: true },
+    { date: "2023-12-25", headline: "BNS receives Presidential assent; §152 enacted", source_pending: true },
+    { date: "2024-07-01", headline: "BNS comes into force; §124A IPC formally deleted from Indian law", source_pending: true },
+  ],
+  stats: [
+    { value: "154 years", label: "Age of sedition provision at deletion (1870–2024)" },
+    { value: "Life", label: "Maximum sentence under both §124A IPC and §152 BNS" },
+    { value: "2022", label: "Year Supreme Court stayed all §124A prosecutions" },
+    { value: "0", label: "Explicit mention of 'sedition' in BNS — but §152 covers equivalent acts", caveat: "Legal scholars dispute whether §152 is narrower or broader in practice" },
+  ],
+  further_reading: [
+    { domain: "prsindia.org", headline: "Bharatiya Nyaya Sanhita — section-by-section analysis", date: "2023", source: "https://prsindia.org" },
+    { domain: "thehindu.com", headline: "Sedition deleted, but §152 BNS raises questions", date: "2024", source_pending: true },
+    { domain: "internetfreedom.in", headline: "From sedition to §152 — what changed?", date: "2024", source_pending: true },
+  ],
+}
+
+const MSP_GUARANTEE: BillStory = {
+  what_it_does:
+    "The MSP Legal Guarantee Bill (pending) would make it a statutory obligation for the government to purchase agricultural produce at or above the Minimum Support Price (MSP) — the government-announced floor price for 23 crops. Currently MSP is an administrative price announcement with no legal backing; farmers selling below MSP have no statutory remedy. The bill has not been introduced in Parliament; what exists is a Sanjay Agrawal Committee constituted in July 2022 following commitments made to end the farmer protests.",
+  why_it_matters:
+    "The demand for a legal guarantee on MSP was the primary surviving demand of the 2020-21 farmer protests — which lasted 378 days and saw the government repeal three farm laws. Prime Minister Modi's November 2021 announcement that a committee would examine MSP guarantee was seen as a face-saving exit for protesters. As of 2026, the committee has not delivered a final recommendation, and no bill draft has been circulated. Multiple INDIA-bloc parties have promised passage in the next parliament.",
+  where_it_stands:
+    "The Sanjay Agrawal Committee, formed in July 2022, has not published a final report as of 2026. No bill has been introduced in Parliament. The issue remains a live political demand — farmers' unions staged renewed protests in early 2024 ahead of the general election, with 'legal MSP guarantee' as the lead demand.",
+  stakeholders: [
+    { side: "support", actor: "Samyukta Kisan Morcha and farmer unions", position: "Primary demand since the farm-law repeal — argue that without legal backing, MSP announcements are meaningless and private mandis routinely transact below MSP.", source_pending: true },
+    { side: "support", actor: "INDIA-bloc parties (INC, AAP, SP, Left)", position: "Have committed to introducing the bill if elected to government; several manifestos specifically mention a 'C2+50% formula' for MSP.", source_pending: true },
+    { side: "neutral", actor: "Government of India (Sanjay Agrawal Committee)", position: "Constituted the committee as a political commitment but has not acted on it; argues a blanket legal guarantee could distort markets and inflate the food subsidy bill.", source_pending: true },
+    { side: "oppose", actor: "Finance Ministry and NITI Aayog (informal position)", position: "Reportedly opposed a blanket legal guarantee, citing fiscal cost estimates of ₹10-17 lakh crore annually if the government is obligated to procure all 23 crops at MSP.", source_pending: true },
+  ],
+  events: [
+    { date: "2020-11-26", headline: "Farmer protest begins at Delhi borders — MSP legal guarantee is a central demand", source_pending: true },
+    { date: "2021-11-19", headline: "PM Modi announces repeal of three farm laws; promises an MSP committee", source_pending: true },
+    { date: "2021-11-29", headline: "Farm Laws Repeal Act passed; written commitment on MSP committee made to farmer unions", source_pending: true },
+    { date: "2022-07-18", headline: "Sanjay Agrawal Committee constituted to study MSP legal guarantee", source_pending: true },
+    { date: "2024-02-13", headline: "Farmers renew protest march toward Delhi; MSP legal guarantee remains the lead demand", source_pending: true },
+    { date: "2026-01-01", headline: "Committee has not published a final report; no bill drafted or introduced", source_pending: true },
+  ],
+  stats: [
+    { value: "23", label: "Crops covered by existing MSP announcements" },
+    { value: "₹10–17 lakh cr", label: "Estimated annual fiscal cost of universal MSP procurement (NITI/MoF estimates)", caveat: "Estimate depends on methodology; disputed by farmer groups" },
+    { value: "378 days", label: "Duration of 2020-21 farmer protest — one of India's longest" },
+    { value: "0", label: "Bills introduced on MSP legal guarantee since 2022 committee formation" },
+  ],
+  further_reading: [
+    { domain: "prsindia.org", headline: "Minimum Support Price — policy overview", date: "2023", source: "https://prsindia.org" },
+    { domain: "thehindu.com", headline: "What a legal guarantee for MSP would mean", date: "2024", source_pending: true },
+    { domain: "cacp.dacnet.nic.in", headline: "Commission for Agricultural Costs & Prices — MSP data", date: "2024", source: "https://cacp.dacnet.nic.in" },
+  ],
+}
+
 export const BILL_STORIES: Record<string, BillStory> = {
   "agnipath-no-bill": AGNIPATH,
+  "wrb-1996": WRB_1996,
+  "wrb-1998": WRB_1998,
+  "wrb-1999": WRB_1999,
+  "wrb-2008": WRB_2008,
   "wrb-2023": WRB_2023,
   "farm-laws-repeal-2021": FARM_LAWS,
   "three-criminal-laws-2023": BNS_BNSS_BSA,
   "dpdp-2023": DPDP,
   "caa-2019": CAA_2019,
+  "telecom-act-2023": TELECOM_2023,
+  "waqf-amendment-2024": WAQF_2024,
+  "onoe-2024": ONOE_2024,
+  "broadcasting-2023": BROADCASTING_2023,
+  "ipc-sedition-deletion-2023": SEDITION_REPEAL,
+  "msp-guarantee-pending": MSP_GUARANTEE,
 }
 
 /** Returns chronologically-sorted events for rendering. */

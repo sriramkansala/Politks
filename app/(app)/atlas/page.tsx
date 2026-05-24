@@ -2,7 +2,7 @@
 // left sidebar (Overview / Parties / Manifestos / Bills / …) stays visible.
 // The atlas itself owns its own internal left + right panels around the globe.
 
-export const metadata = { title: "Atlas · Bharat Manifesto Watch" }
+export const metadata = { title: "Atlas · Neo Nīti" }
 
 export default function AtlasPage() {
   return (

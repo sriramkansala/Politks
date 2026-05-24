@@ -56,6 +56,33 @@ const SEED: Seed[] = [
     criminal_cases_serious: 0,
     is_crorepati: true,
     education_level: "Post Graduate",
+    national_avg_attendance: 85,
+    national_avg_questions: 103,
+    national_avg_debates: 20.4,
+    session_attendance: {
+      "First Session of 18th LS": 95,
+      "Budget Session 2024": 92,
+      "Winter Session 2024": 90,
+      "Budget Session 2025": 93,
+    },
+    questions_detail: [
+      { date: "2024-02-05", session: "Budget Session 2024", type: "unstarred", subject: "Regulation of social media platforms", ministry: "Electronics & IT", source: "https://prsindia.org" },
+      { date: "2024-02-12", session: "Budget Session 2024", type: "starred",   subject: "Status of Chandigarh Municipal Corporation funds", ministry: "Home Affairs", source: "https://prsindia.org" },
+      { date: "2024-03-04", session: "Budget Session 2024", type: "unstarred", subject: "Delay in implementation of Smart Cities Mission in Chandigarh", ministry: "Housing & Urban Affairs", source: "https://prsindia.org" },
+      { date: "2024-07-22", session: "Monsoon Session 2024", type: "starred",  subject: "India-China border situation", ministry: "External Affairs", source: "https://prsindia.org" },
+      { date: "2024-07-29", session: "Monsoon Session 2024", type: "unstarred",subject: "UAPA cases pending trial", ministry: "Home Affairs", source: "https://prsindia.org" },
+      { date: "2024-08-05", session: "Monsoon Session 2024", type: "unstarred",subject: "Farmer MSP guarantee legislation", ministry: "Agriculture", source: "https://prsindia.org" },
+      { date: "2024-11-25", session: "Winter Session 2024",  type: "unstarred",subject: "Press freedom index — India's ranking", ministry: "Information & Broadcasting", source: "https://prsindia.org" },
+      { date: "2024-12-02", session: "Winter Session 2024",  type: "starred",  subject: "One Nation One Election — constitutional implications", ministry: "Law & Justice", source: "https://prsindia.org" },
+      { date: "2025-02-10", session: "Budget Session 2025",  type: "unstarred",subject: "Defence procurement indigenisation targets", ministry: "Defence", source: "https://prsindia.org" },
+      { date: "2025-03-17", session: "Budget Session 2025",  type: "unstarred",subject: "Cybercrime helpline 1930 — conviction rate", ministry: "Home Affairs", source: "https://prsindia.org" },
+    ],
+    criminal_cases_detail: [],
+    education_history: [
+      { degree: "LLB", institution: "Panjab University", year: 1985, field: "Law", source: "https://myneta.info" },
+      { degree: "MA (Political Science)", institution: "Panjab University", year: 1983, field: "Political Science", source: "https://myneta.info" },
+      { degree: "BA (Hons)", institution: "St. Stephen's College, Delhi", year: 1981, field: "Political Science", source: "https://myneta.info" },
+    ],
     pin_codes: ["160001", "160002", "160003", "160017"],
     data_confidence: "high",
     data_sources: ["https://prsindia.org/mptrack/18th-lok-sabha/manish-tewari"],
@@ -549,6 +576,10 @@ export const STATIC_MPS_BMW: Mp[] = SEED.map((s) => ({
   pin_codes: s.pin_codes ?? [],
   data_confidence: s.data_confidence ?? "medium",
   data_sources: s.data_sources ?? [],
+  // Detail lists for tab views
+  questions_detail: s.questions_detail ?? [],
+  criminal_cases_detail: s.criminal_cases_detail ?? [],
+  education_history: s.education_history ?? [],
 }))
 
 // ── Merge marquee + generated full PRS roster ────────────────────────────

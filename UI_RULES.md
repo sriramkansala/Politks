@@ -1,4 +1,4 @@
-# UI Rules — Bharat Manifesto Watch
+# UI Rules — Neo Nīti
 
 **Read this file before building any UI. Re-read it during audit.** This is not a style guide; it is a checklist of what NOT to do because we have been caught doing it.
 
@@ -42,7 +42,10 @@ Sometimes a shadcn primitive can't be used directly — e.g. tabs that must be S
 **Existing legitimate custom implementations:**
 - `components/parties/PartyTabNav.tsx` — SSR-friendly URL-driven tabs (shadcn `<Tabs>` is client-only)
 - `components/mp/FilterDropdown.tsx` — URL-driven single-select (shadcn `<Select>`'s `onValueChange` is a client callback)
-- `components/mp/MpSearchForm.tsx` — uses shadcn `<Input>` but adds form-submit semantics
+- `components/mp/MpSearchForm.tsx` — uses shadcn `<Input>` and `<Button>` with form-submit semantics
+- `components/shell/AskBar.tsx` — composite chat input (icon-button + input + send button in one bordered bar); wrapping the inner field in `<Input>` would double-frame against the outer bar's border (§7)
+- `components/compare/CompareShell.tsx` — `InlineSlotPicker` popover uses a compact bare `<input>` for in-popover search (32px `<Input>` would double-frame within the 240px popover); chip remove-X buttons and listbox option buttons inside the popover are bare for the same reason
+- `.btn-primary-inverse` / `.btn-secondary` (in `app/globals.css`) — CSS utility classes for styling `<Link>` as a button in **server components**, where importing the client `<Button>` would force a needless RSC boundary (§10)
 
 ## 2. Tokens, not hex
 

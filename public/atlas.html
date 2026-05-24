@@ -3,19 +3,20 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Bharat Civic Atlas</title>
+<title>Neo Nīti Atlas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:wght@500;600;700&display=swap" rel="stylesheet" />
 <style>
   /* ─────────────────────────────────────────────────────────────────────────
-     Bharat Civic Atlas — Bloomberg Terminal meets newsroom
+     Neo Nīti Atlas — Bloomberg Terminal meets newsroom
      ─────────────────────────────────────────────────────────────────────── */
 
   :root {
     --bg:               #07090c;
     --bg-elev-1:        #0e1218;
     --bg-elev-2:        #141a23;
+    --bg-elev-3:        #232326; /* exact match for main app's --bg-tertiary — used by active tab pill */
     --border:           #1d2530;
     --border-strong:    #2c3848;
     --text-primary:     #e8edf3;
@@ -857,35 +858,43 @@
   .approval-gauge .trend.down { color: var(--bad); }
   .approval-gauge .trend.flat { color: var(--neutral); }
 
-  /* Tabs */
+  /* Tabs — match the shadcn <Tabs> primitive in components/ui/tabs.tsx:
+     simple grey rounded-rect background on the active tab, no underline,
+     no border, no shadow. */
   .tabs {
     display: flex;
-    gap: 0;
+    gap: 2px;
     margin-top: 14px;
-    border-bottom: 1px solid var(--border);
     overflow-x: auto;
     scrollbar-width: none;
   }
   .tabs::-webkit-scrollbar { display: none; }
+  /* Match components/ui/tabs.tsx TabItem dimensions exactly:
+       padding: px-3 py-1.5 = 12px / 6px
+       text:    13px / 510 (idle) / 600 (active)
+       radius:  rounded-md = 8px
+       bg:      var(--bg-elev-3) = #232326 (= main app's --bg-tertiary)
+     One visual language across the whole product. */
   .tab-btn {
     background: transparent;
     border: none;
     color: var(--text-tertiary);
     cursor: pointer;
-    padding: 9px 12px;
+    padding: 6px 12px;
     font-family: inherit;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
+    font-size: 13px;
+    font-weight: 510;
+    line-height: 1.5;
+    letter-spacing: 0;
+    border-radius: 8px;
     white-space: nowrap;
-    transition: color var(--transition), border-color var(--transition);
+    transition: color var(--transition), background-color var(--transition);
   }
   .tab-btn:hover { color: var(--text-primary); }
   .tab-btn.active {
     color: var(--text-primary);
-    border-bottom-color: var(--accent);
+    background: var(--bg-elev-3);
+    font-weight: 600;
   }
   .tab-body {
     padding-top: 16px;
@@ -1236,21 +1245,10 @@
 
 <div class="loading" id="loading">
   <div class="spinner"></div>
-  <div class="txt">Loading Bharat Civic Atlas…</div>
+  <div class="txt">Loading Neo Nīti Atlas…</div>
 </div>
 
 <div id="globeViz"></div>
-
-<div class="top-overlay">
-  <div class="brand">
-    <span class="dot"></span>
-    BHARAT CIVIC ATLAS
-    <span class="tag">v0.1 · Demo</span>
-  </div>
-  <div class="breadcrumb" id="breadcrumb">
-    <span class="crumb current">India</span>
-  </div>
-</div>
 
 <div class="status-pill">
   <span class="dot"></span>
@@ -2585,16 +2583,18 @@ function updateBreadcrumb() {
       crumbs.push(`<span class="crumb${NAV_STATE.level==='politician'?' current':''}" data-go="politician">${p.name}</span>`);
     }
   }
-  breadcrumbEl.innerHTML = crumbs.join(' ');
-  breadcrumbEl.querySelectorAll('.crumb').forEach(el => {
-    el.addEventListener('click', () => {
-      const tgt = el.dataset.go;
-      if (tgt === 'india') closePanel();
-      if (tgt === 'state' && NAV_STATE.stateName) openState(NAV_STATE.stateName, findFeatureByState(NAV_STATE.stateName));
-      if (tgt === 'constituency' && NAV_STATE.constituency) openConstituency(NAV_STATE.stateName, NAV_STATE.constituency);
-      if (tgt === 'politician' && NAV_STATE.politicianId) openPolitician(NAV_STATE.politicianId);
+  if (breadcrumbEl) {
+    breadcrumbEl.innerHTML = crumbs.join(' ');
+    breadcrumbEl.querySelectorAll('.crumb').forEach(el => {
+      el.addEventListener('click', () => {
+        const tgt = el.dataset.go;
+        if (tgt === 'india') closePanel();
+        if (tgt === 'state' && NAV_STATE.stateName) openState(NAV_STATE.stateName, findFeatureByState(NAV_STATE.stateName));
+        if (tgt === 'constituency' && NAV_STATE.constituency) openConstituency(NAV_STATE.stateName, NAV_STATE.constituency);
+        if (tgt === 'politician' && NAV_STATE.politicianId) openPolitician(NAV_STATE.politicianId);
+      });
     });
-  });
+  }
 
   // Update level indicator
   levelInd.textContent = ({
@@ -2772,14 +2772,6 @@ function openState(stateName, feature, noData = false) {
         <span style="color:var(--text-tertiary);margin-left:8px;font-size:11px;">${party.name}</span>
       </div>
 
-      <div class="cm-card" data-goto-p="${data.cm}">
-        <div class="avatar" style="background-image:url('${cm.photo}');"></div>
-        <div class="info">
-          <div class="name">${cm.name}</div>
-          <div class="role">Chief Minister · ${stateName}</div>
-        </div>
-      </div>
-
       <div class="stat-grid">
         <div class="stat"><div class="v">${data.mpCount}</div><div class="k">MP seats</div></div>
         <div class="stat"><div class="v">${data.mlaCount}</div><div class="k">MLA seats</div></div>
@@ -2830,10 +2822,9 @@ function openState(stateName, feature, noData = false) {
     });
   });
 
-  // Wire the CM card (still at top of panel, outside tabs)
-  panelLeftBody.querySelectorAll('.cm-card[data-goto-p]').forEach(el => {
-    el.addEventListener('click', () => openPolitician(el.dataset.gotoP));
-  });
+  // CM card was previously rendered at the top of the left panel; removed
+  // because the right panel already shows the CM profile in full. The
+  // constituency view (openConstituency) still renders cm-card for MLA/MP.
 
   // Initial tab
   renderLeftTab('org');

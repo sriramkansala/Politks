@@ -167,6 +167,32 @@ export interface Mp {
   mplads_released_inr?: number | null
   mplads_spent_inr?: number | null
   mplads_unspent_inr?: number | null
+  // Detail lists (for tab views)
+  questions_detail?: Array<{
+    date: string           // "YYYY-MM-DD"
+    session: string        // e.g. "Budget Session 2024"
+    type: "starred" | "unstarred"
+    subject: string
+    ministry: string
+    source?: string
+  }>
+  criminal_cases_detail?: Array<{
+    case_number?: string
+    court?: string
+    year?: number
+    offence: string
+    section?: string
+    status: "pending" | "acquitted" | "convicted" | "discharged"
+    is_serious: boolean
+    source?: string
+  }>
+  education_history?: Array<{
+    degree: string
+    institution: string
+    year?: number
+    field?: string
+    source?: string
+  }>
   // Misc derived
   is_minister?: boolean | null                // attendance register exemption
   pin_codes?: string[]                        // PINs that route to this MP's constituency

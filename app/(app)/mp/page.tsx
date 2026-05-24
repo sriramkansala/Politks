@@ -1,38 +1,114 @@
-// /mp — Legislator Hub landing (BMW-130 entry point).
-// User flow: enter PIN / constituency / MP name → land on /mp/[slug].
+// /mp — Know Your Politician hub (BMW-130 entry point).
+// Tab 1 "Find MP":  search by PIN / name / constituency → /mp/[slug].
+// Tab 2 "Legislators": full browseable MP + MLA roster with filters.
 
 import Link from "next/link"
 import { findMpByPin, findMpByQuery, STATIC_MPS_ALL } from "@/lib/db/staticMps"
+import { STATIC_MLAS, type Mla } from "@/lib/db/staticMlas"
+import type { Mp } from "@/lib/db/types"
 import { MpSearchForm } from "@/components/mp/MpSearchForm"
-import { MpRow } from "@/components/mp/LegislatorRow"
+import { MpRow, MlaRow } from "@/components/mp/LegislatorRow"
+import { MpHubTabs } from "@/components/mp/MpHubTabs"
+import { FilterDropdown } from "@/components/mp/FilterDropdown"
+import { partyColor } from "@/lib/partyColors"
 import { fontWeights } from "@/lib/font-weight"
 
-export const metadata = { title: "Know your politician · Bharat Manifesto Watch" }
+export const metadata = { title: "Know your politician · Neo Nīti" }
 
 interface PageProps {
-  searchParams: Promise<{ pin?: string; q?: string }>
+  searchParams: Promise<{
+    q?: string
+    pin?: string
+    tab?: string
+    house?: string
+    state?: string
+    party?: string
+  }>
 }
 
+// ─── Legislators tab data ─────────────────────────────────────────────────────
+
+type Row =
+  | { kind: "mp"; mp: Mp }
+  | { kind: "mla"; mla: Mla }
+
+function buildLegislatorsData(filters: {
+  house?: string
+  state?: string
+  party?: string
+  q?: string
+}) {
+  const { house, state, party, q } = filters
+
+  const allRows: Row[] = [
+    ...STATIC_MPS_ALL.map((mp): Row => ({ kind: "mp", mp })),
+    ...STATIC_MLAS.map((mla): Row => ({ kind: "mla", mla })),
+  ]
+
+  const filtered = allRows.filter((r) => {
+    if (house === "lok_sabha"   && !(r.kind === "mp" && r.mp.house === "lok_sabha"))   return false
+    if (house === "rajya_sabha" && !(r.kind === "mp" && r.mp.house === "rajya_sabha")) return false
+    if (house === "mla"         && r.kind !== "mla") return false
+    if (state) {
+      const rowState = r.kind === "mp" ? r.mp.state_code : r.mla.state_code
+      if (rowState !== state) return false
+    }
+    if (party) {
+      const rowParty = r.kind === "mp" ? r.mp.party_name : r.mla.party
+      if ((rowParty ?? "").toLowerCase() !== party.toLowerCase()) return false
+    }
+    if (q) {
+      const needle = q.toLowerCase()
+      const text =
+        r.kind === "mp"
+          ? `${r.mp.name} ${r.mp.constituency ?? ""}`
+          : `${r.mla.name} ${r.mla.constituency} ${r.mla.cabinet_role ?? ""}`
+      if (!text.toLowerCase().includes(needle)) return false
+    }
+    return true
+  })
+
+  const states = Array.from(
+    new Set(allRows.map((r) => (r.kind === "mp" ? r.mp.state_code : r.mla.state_code)).filter(Boolean))
+  ).sort() as string[]
+
+  const parties = Array.from(
+    new Set(allRows.map((r) => (r.kind === "mp" ? r.mp.party_name : r.mla.party)).filter(Boolean))
+  ).sort() as string[]
+
+  const mpCount  = allRows.filter((r) => r.kind === "mp").length
+  const mlaCount = allRows.filter((r) => r.kind === "mla").length
+
+  return { allRows, filtered, states, parties, mpCount, mlaCount }
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 export default async function MpHubPage({ searchParams }: PageProps) {
-  const { pin, q } = await searchParams
+  const sp = await searchParams
+  const activeTab = sp.tab === "legislators" ? "legislators" : "find"
+
+  // ── Find MP tab ──────────────────────────────────────────────────────────────
+  const raw = (sp.q ?? sp.pin ?? "").trim()
+  const isPin = /^\d{6}$/.test(raw)
 
   let resolved: ReturnType<typeof findMpByQuery> = []
-  let pinMatched: ReturnType<typeof findMpByPin> = null
   let notice: string | null = null
 
-  if (pin) {
-    pinMatched = findMpByPin(pin)
-    if (pinMatched) {
-      resolved = [pinMatched]
+  if (raw && activeTab === "find") {
+    if (isPin) {
+      const pinMatch = findMpByPin(raw)
+      if (pinMatch) {
+        resolved = [pinMatch]
+      } else {
+        notice = `No MP currently mapped to PIN ${raw}. PIN→constituency mapping for the full 543-seat roster is still being wired in — try searching by name or constituency instead.`
+      }
     } else {
-      notice = `No MP currently mapped to PIN ${pin}. PIN→constituency rolls for the full 543-MP dataset are still being wired in — try searching by name or constituency instead.`
+      resolved = findMpByQuery(raw)
+      if (resolved.length === 0) notice = `No MP found for "${raw}".`
     }
-  } else if (q) {
-    resolved = findMpByQuery(q)
-    if (resolved.length === 0) notice = `No MP found for "${q}".`
   }
 
-  // Pick 8 high-profile MPs to feature on landing — those named in BMW-130.
   const featuredSlugs = [
     "manish-tewari", "praveen-patel", "rahul-gandhi", "nakul-nath",
     "abhishek-banerjee", "arvind-sawant", "priyanka-gandhi-vadra", "anant-kumar-singh",
@@ -41,31 +117,23 @@ export default async function MpHubPage({ searchParams }: PageProps) {
     .map((s) => STATIC_MPS_ALL.find((mp) => mp.prs_slug === s))
     .filter(Boolean) as typeof STATIC_MPS_ALL
 
-  return (
-    <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-10">
-      <section>
-        <h1 className="h-page mb-2" style={{ color: "var(--text-primary)" }}>
-          Know your politician
-        </h1>
-        <p className="text-[15px] max-w-xl" style={{ color: "var(--text-secondary)" }}>
-          Enter your PIN code, constituency, or MP name. See attendance, questions
-          asked, criminal cases, declared assets and MPLADS spending — in one card.
+  // ── Legislators tab ──────────────────────────────────────────────────────────
+  const { house, state, party } = sp
+  const legQ = activeTab === "legislators" ? sp.q : undefined
+  const { filtered, states, parties, mpCount, mlaCount } = buildLegislatorsData({
+    house, state, party, q: legQ,
+  })
+
+  // ── Panels ───────────────────────────────────────────────────────────────────
+
+  const findPanel = (
+    <div className="space-y-10">
+      {/* Search notice — the search form itself now lives beside the page title. */}
+      {notice && (
+        <p className="text-[12px] max-w-2xl" style={{ color: "var(--text-tertiary)" }}>
+          {notice}
         </p>
-      </section>
-
-      {/* Search form */}
-      <section>
-        <MpSearchForm defaultPin={pin ?? ""} defaultQ={q ?? ""} />
-
-        {notice && (
-          <p
-            className="mt-3 text-[12px] max-w-2xl"
-            style={{ color: "var(--text-tertiary)" }}
-          >
-            {notice}
-          </p>
-        )}
-      </section>
+      )}
 
       {/* Results */}
       {resolved.length > 0 && (
@@ -79,17 +147,10 @@ export default async function MpHubPage({ searchParams }: PageProps) {
                 key={mp.id}
                 href={`/mp/${mp.prs_slug}`}
                 className="flex items-center justify-between p-4 rounded-[var(--radius-card)] transition-colors hover:border-[var(--border-strong)]"
-                style={{
-                  background: "var(--bg-elevated)",
-                  border: "1px solid var(--border)",
-                  textDecoration: "none",
-                }}
+                style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)", textDecoration: "none" }}
               >
                 <div>
-                  <div
-                    className="text-[14px]"
-                    style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.medium }}
-                  >
+                  <div className="text-[14px]" style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.medium }}>
                     {mp.name}
                   </div>
                   <div className="text-[12px] mt-0.5" style={{ color: "var(--text-secondary)" }}>
@@ -111,15 +172,15 @@ export default async function MpHubPage({ searchParams }: PageProps) {
         </section>
       )}
 
-      {/* Featured */}
+      {/* Featured MPs */}
       <section>
         <h2 className="h-section mb-3" style={{ color: "var(--text-primary)" }}>
           Featured MPs
         </h2>
         <p className="text-caption mb-4" style={{ color: "var(--text-tertiary)" }}>
           A handful of widely-covered 18th Lok Sabha members. Browse the full
-          18th LS roster of {STATIC_MPS_ALL.length} MPs at{" "}
-          <Link href="/legislators" style={{ color: "var(--accent)" }}>/legislators</Link>.
+          {" "}{STATIC_MPS_ALL.length}-MP roster in the{" "}
+          <span style={{ color: "var(--accent)" }}>Legislators</span> tab above.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {featured.map((mp) => (
@@ -142,6 +203,100 @@ export default async function MpHubPage({ searchParams }: PageProps) {
         . Ministers and the Speaker are exempt from signing the attendance
         register — flagged on individual cards.
       </section>
+    </div>
+  )
+
+  const legislatorsPanel = (
+    <div className="space-y-6">
+      <p className="text-[15px] max-w-2xl" style={{ color: "var(--text-secondary)" }}>
+        {mpCount} MPs · {mlaCount} ruling-party MLAs · all major Indian states.
+        Use the search in the page header above, or filter by house, state and party below.
+      </p>
+
+      {/* Filter dropdowns */}
+      <div className="flex flex-wrap gap-2">
+        <FilterDropdown
+          paramKey="house"
+          label="House"
+          value={house ?? null}
+          options={[
+            { value: "lok_sabha",   label: "Lok Sabha" },
+            { value: "rajya_sabha", label: "Rajya Sabha" },
+            { value: "mla",         label: "MLAs" },
+          ]}
+          preserveParams={{ tab: "legislators", state, party, q: legQ }}
+          allLabel="All houses"
+        />
+        <FilterDropdown
+          paramKey="state"
+          label="State"
+          value={state ?? null}
+          options={states.map((s) => ({ value: s, label: s }))}
+          preserveParams={{ tab: "legislators", house, party, q: legQ }}
+          allLabel="All states"
+        />
+        <FilterDropdown
+          paramKey="party"
+          label="Party"
+          value={party ?? null}
+          options={parties.map((p) => ({ value: p, label: p, color: partyColor(p) }))}
+          preserveParams={{ tab: "legislators", house, state, q: legQ }}
+          allLabel="All parties"
+        />
+      </div>
+
+      {/* Results */}
+      <section>
+        <div className="flex items-baseline justify-between mb-3">
+          <h2 className="text-subheading" style={{ color: "var(--text-primary)" }}>
+            {filtered.length} result{filtered.length === 1 ? "" : "s"}
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {filtered.map((row, i) =>
+            row.kind === "mp" ? (
+              <MpRow key={i} mp={row.mp} />
+            ) : (
+              <MlaRow key={i} mla={row.mla} />
+            )
+          )}
+        </div>
+        {filtered.length === 0 && (
+          <p className="text-[13px]" style={{ color: "var(--text-tertiary)" }}>
+            No legislators match these filters.
+          </p>
+        )}
+      </section>
+
+      {/* Coverage caveat */}
+      <section
+        className="rounded-[6px] p-4 text-[12px] leading-relaxed"
+        style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)", color: "var(--text-tertiary)" }}
+      >
+        <strong style={{ color: "var(--text-secondary)" }}>Coverage.</strong>{" "}
+        MP list shows the 25 marquee 18th Lok Sabha members hand-seeded from the
+        BMW-130 spec — the full 543-MP roster is being ingested and will appear
+        once the PRS scrape finishes. MLA coverage spans 10 states&apos;
+        ruling parties. Opposition MLAs and remaining states land in a later phase.
+      </section>
+    </div>
+  )
+
+  return (
+    <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-8">
+      <section className="flex items-center justify-between gap-6 flex-wrap">
+        <h1 className="h-page" style={{ color: "var(--text-primary)" }}>
+          Know your politician
+        </h1>
+        <MpSearchForm defaultValue={raw} className="flex-1 min-w-[280px] max-w-xl" />
+      </section>
+
+      <MpHubTabs
+        activeTab={activeTab}
+        findPanel={findPanel}
+        legislatorsPanel={legislatorsPanel}
+        legislatorsLabel={`Legislators (${mpCount + mlaCount})`}
+      />
     </div>
   )
 }

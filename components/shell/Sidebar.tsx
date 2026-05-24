@@ -5,41 +5,37 @@ import { motion, LayoutGroup } from "framer-motion"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
-  BarChart3,
   BookOpen,
   GitCompare,
   Globe,
   Home,
   Info,
   Landmark,
-  Lightbulb,
   Menu,
   ScrollText,
-  Search,
+  Settings,
   Shield,
   User,
-  Users,
 } from "lucide-react"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { useCommandPalette } from "@/hooks/use-command-palette"
 import { springs } from "@/lib/springs"
 import { fontWeights } from "@/lib/font-weight"
 
 const navItems = [
-  { href: "/",            label: "Overview",    icon: Home },
-  { href: "/mp",          label: "Know your politician", icon: User },
-  { href: "/legislators", label: "Legislators", icon: Users },
-  { href: "/parties",     label: "Parties",     icon: Shield },
+  { href: "/",        label: "Overview",             icon: Home },
+  { href: "/mp",      label: "Know your politician", icon: User },
+  { href: "/parties", label: "Parties",              icon: Shield },
   { href: "/manifestos",  label: "Manifestos",  icon: BookOpen },
   { href: "/bills",       label: "Bills",       icon: Landmark },
   { href: "/compare",     label: "Compare",     icon: GitCompare },
-  { href: "/tracker",     label: "Tracker",     icon: BarChart3 },
   { href: "/atlas",       label: "Atlas",       icon: Globe },
-  { href: "/insights",    label: "Insights",    icon: Lightbulb },
 ] as const
 
 const bottomItems = [
+  { href: "/settings",    label: "Settings",     icon: Settings },
   { href: "/methodology", label: "Methodology", icon: ScrollText },
   { href: "/about",       label: "About",        icon: Info },
 ] as const
@@ -71,16 +67,17 @@ function NavItem({
         //   font-size 13px, weight 510, gap 8px, padding 0 6px,
         //   height 28px, radius 6px, color #d0d6e0 (idle), no accent bar.
         "relative flex items-center gap-2 px-1.5 h-[28px] rounded-[var(--radius-card)] text-[13px] transition-colors duration-100",
-        active ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+        active ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgb(var(--overlay,0_0_0)/0.06)]"
       )}
-      style={{ fontVariationSettings: "'wght' 510" }}
+      style={{ fontVariationSettings: "'wght' 510", transition: "color 80ms, background 80ms" }}
     >
       {active && (
         <motion.div
           layoutId="sidebar-active-bg"
           className="absolute inset-0 rounded-[var(--radius-card)]"
-          // Linear's active state is just a subtle bg-tint, no accent bar.
-          style={{ background: "var(--bg-elevated)" }}
+          // Same flat grey we use for the active tab pill — keeps the
+          // "selected" language consistent across sidebar nav + tab strips.
+          style={{ background: "var(--bg-tertiary)" }}
           transition={springs.moderate}
         />
       )}
@@ -101,13 +98,13 @@ function Wordmark() {
         className="w-5 h-5 rounded-[4px] flex items-center justify-center shrink-0"
         style={{ background: "var(--accent)" }}
       >
-        <span className="text-[10px]" style={{ color: "var(--text-on-accent)", fontVariationSettings: fontWeights.semibold }}>B</span>
+        <span className="text-[10px]" style={{ color: "var(--text-on-accent)", fontVariationSettings: fontWeights.semibold }}>N</span>
       </div>
       <span
         className="text-[13px] truncate"
         style={{ color: "var(--text-primary)", letterSpacing: "-0.015em", fontVariationSettings: fontWeights.medium }}
       >
-        Manifesto Watch
+        Neo Nīti
       </span>
     </div>
   )
@@ -115,32 +112,13 @@ function Wordmark() {
 
 function NavContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname()
-  const { open } = useCommandPalette()
+  useCommandPalette() // keep hook for palette availability
 
   return (
-    <div className="flex flex-col flex-1 overflow-y-auto">
+    <div className="flex flex-col flex-1 overflow-hidden">
       <LayoutGroup id="sidebar-nav">
-        <nav className="flex flex-col gap-0.5 px-2 py-3 flex-1">
-          {/* UI_RULES.md §1 exception: command-palette trigger row. Sized at
-              h-[26px]/12px to match the NavItem rows directly below it (also
-              h-[28px]/13px — measured from linear.app sidebar). The smallest
-              <Button> variant (sm = h-7 = 28px) is taller and has different
-              hover semantics (filled bg pill vs sidebar's flat hover-tint).
-              Converting would visually break the sidebar's column rhythm. */}
-          <button
-            onClick={() => { open(); onNavigate?.() }}
-            className="flex items-center gap-2 px-2 h-[26px] rounded-[var(--radius-4)] text-[12px] transition-colors duration-100 w-full mb-1 hover:bg-[var(--bg-elevated-2)]"
-            style={{
-              color: "var(--text-tertiary)",
-              border: "1px solid var(--border)",
-              fontVariationSettings: fontWeights.normal,
-            }}
-          >
-            <Search size={13} strokeWidth={1.5} className="shrink-0" />
-            <span className="flex-1 text-left">Search…</span>
-            <kbd className="text-[11px] font-mono shrink-0" style={{ color: "var(--text-disabled)" }}>⌘K</kbd>
-          </button>
-
+        <ScrollArea className="flex-1">
+        <nav className="flex flex-col gap-0.5 px-2 py-3">
           {navItems.map((item) => {
             const { href, label, icon } = item
             const external = ("external" in item ? (item as { external?: boolean }).external : false) ?? false
@@ -157,6 +135,7 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
             )
           })}
         </nav>
+        </ScrollArea>
       </LayoutGroup>
 
       <div

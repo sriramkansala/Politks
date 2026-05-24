@@ -334,13 +334,13 @@ export function PromiseList({ promises }: PromiseListProps) {
                 </TableHead>
                 <TableHead
                   className="text-[10px] uppercase tracking-wide hidden md:table-cell"
-                  style={{ color: tokens.color.textTertiary, width: 120 }}
+                  style={{ color: tokens.color.textTertiary, width: 160 }}
                 >
                   Category
                 </TableHead>
                 <TableHead
                   className="text-[10px] uppercase tracking-wide"
-                  style={{ color: tokens.color.textTertiary, width: 110 }}
+                  style={{ color: tokens.color.textTertiary, width: 160 }}
                 >
                   Status
                 </TableHead>
@@ -386,7 +386,7 @@ export function PromiseList({ promises }: PromiseListProps) {
                     </TableCell>
 
                     {/* Category */}
-                    <TableCell className="hidden md:table-cell">
+                    <TableCell className="hidden md:table-cell" style={{ whiteSpace: "nowrap" }}>
                       <span
                         className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[2px]"
                         style={{
@@ -400,7 +400,7 @@ export function PromiseList({ promises }: PromiseListProps) {
                     </TableCell>
 
                     {/* Status */}
-                    <TableCell>
+                    <TableCell style={{ whiteSpace: "nowrap" }}>
                       <StatusPill status={promise.status as PromiseStatus} />
                     </TableCell>
                   </TableRow>

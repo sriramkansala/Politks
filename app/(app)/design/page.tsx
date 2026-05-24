@@ -58,8 +58,8 @@ export default function DesignPage() {
           <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Typography</h2>
           <div className="space-y-3">
             {[
-              { cls: "text-display",    sample: "Display — Bharat" },
-              { cls: "text-heading-xl", sample: "Heading XL — Manifesto Watch" },
+              { cls: "text-display",    sample: "Display — Neo Nīti" },
+              { cls: "text-heading-xl", sample: "Heading XL — Neo Nīti" },
               { cls: "text-heading",    sample: "Heading — Party Promises" },
               { cls: "text-subheading", sample: "Subheading — BJP Sankalp Patra 2024" },
               { cls: "text-body",       sample: "Body — Promise tracking for Indian elections" },

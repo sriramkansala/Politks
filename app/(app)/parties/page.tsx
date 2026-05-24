@@ -1,4 +1,4 @@
-import { PartyCard } from "@/components/parties/PartyCard"
+import { PartiesGrid } from "@/components/parties/PartiesGrid"
 import { createPublicClient } from "@/lib/db/server"
 import type { Party, PromiseRow } from "@/lib/db/types"
 
@@ -37,11 +37,7 @@ export default async function PartiesPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {partyStats.map(({ party, promiseCount, keptCount }) => (
-            <PartyCard key={party.id} party={party} promiseCount={promiseCount} keptCount={keptCount} />
-          ))}
-        </div>
+        <PartiesGrid partyStats={partyStats} />
 
         {/* Caveat block — UI_RULES.md §6 */}
         <section className="caveat-block mt-6">

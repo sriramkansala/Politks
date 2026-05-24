@@ -2,10 +2,12 @@
 // 16-stage parliamentary StageTimeline — gives a reader the political moment,
 // stakeholders, narrative events, scale stats, and verification sources.
 //
-// Server-renderable (no client interactivity), plain props only.
 // All visual tokens follow UI_RULES.md — colours via var(--...), weights via
 // fontVariationSettings, numbers via lib/format helpers at call sites.
 
+"use client"
+
+import { motion } from "framer-motion"
 import { ExternalLink } from "lucide-react"
 import type {
   BillStory,
@@ -81,7 +83,9 @@ function SourceLink({
 function StakeholderCard({ s }: { s: BillStakeholder }) {
   const tone = SIDE_COLOR[s.side]
   return (
-    <div
+    <motion.div
+      whileHover={{ y: -1 }}
+      transition={{ type: "spring", stiffness: 500, damping: 30 }}
       className="relative p-3 rounded-[6px]"
       style={{
         background: "var(--bg-elevated)",
@@ -134,7 +138,7 @@ function StakeholderCard({ s }: { s: BillStakeholder }) {
         </blockquote>
       ) : null}
       <SourceLink source={s.source} source_pending={s.source_pending} />
-    </div>
+    </motion.div>
   )
 }
 
@@ -174,11 +178,15 @@ function StoryEventRow({ ev }: { ev: BillStoryEvent }) {
 
 function StatCard({ s }: { s: BillStat }) {
   return (
-    <div className="stat-card">
+    <motion.div
+      whileHover={{ scale: 1.01 }}
+      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+      className="stat-card"
+    >
       <span className="label">{s.label}</span>
       <span className="value">{s.value}</span>
       {s.caveat ? <span className="note">{s.caveat}</span> : null}
-    </div>
+    </motion.div>
   )
 }
 
@@ -186,6 +194,8 @@ function ReadingRow({ r }: { r: BillFurtherReading }) {
   // Each row uses `display: contents` so its cells flow into the parent <ul>'s
   // grid tracks. This makes every column auto-size to the widest cell across
   // all rows, instead of each row sizing independently.
+  // Note: whileHover on display:contents elements is not supported by framer-motion,
+  // so we apply the hover background to the li wrapper using CSS instead.
   const cells = (
     <>
       <span
