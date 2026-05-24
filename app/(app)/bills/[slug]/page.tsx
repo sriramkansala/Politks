@@ -166,7 +166,7 @@ export default async function BillDetailPage({
       <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-10">
 
         {/* Header */}
-        <div>
+        <AnimateIn>
           <div className="flex items-center gap-2 mb-2">
             <Link
               href="/bills"
@@ -241,7 +241,7 @@ export default async function BillDetailPage({
               </Link>
             </div>
           )}
-        </div>
+        </AnimateIn>
 
         {/* Contextual story — explainer, stakeholders, narrative timeline, stats, sources */}
         <AnimateIn delay={0.05}>
@@ -275,7 +275,7 @@ export default async function BillDetailPage({
 
         {/* Forensic Signals (WRB only) */}
         {slug === "wrb-2023" && (
-          <section>
+          <AnimateIn delay={0.08}>
             <h2 className="h-section mb-1" style={{ color: "var(--text-primary)" }}>
               Forensic Signals
             </h2>
@@ -283,7 +283,7 @@ export default async function BillDetailPage({
               Automated signals detected by the BMW forensic engine
             </p>
             <ForensicSignals />
-          </section>
+          </AnimateIn>
         )}
 
         <AnimateIn delay={0.1}>

@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { statusMeta, type PromiseStatus } from "@/lib/tokens"
 import { fontWeights } from "@/lib/font-weight"
+import { AnimateIn } from "@/components/ui/animate-in"
 
 const statuses: PromiseStatus[] = [
   "not_yet_rated",
@@ -22,7 +23,7 @@ export default function DesignPage() {
       <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-10">
 
         {/* Colors */}
-        <section>
+        <AnimateIn as="section">
           <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Surface palette</h2>
           <div className="flex gap-3 flex-wrap">
             {[
@@ -49,12 +50,12 @@ export default function DesignPage() {
               </div>
             ))}
           </div>
-        </section>
+        </AnimateIn>
 
         <Separator style={{ background: "var(--border)" }} />
 
         {/* Typography */}
-        <section>
+        <AnimateIn as="section">
           <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Typography</h2>
           <div className="space-y-3">
             {[
@@ -71,12 +72,12 @@ export default function DesignPage() {
               </div>
             ))}
           </div>
-        </section>
+        </AnimateIn>
 
         <Separator style={{ background: "var(--border)" }} />
 
         {/* Status pills */}
-        <section>
+        <AnimateIn as="section">
           <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Status pills (PolitiFact taxonomy)</h2>
           <div className="flex flex-wrap gap-2">
             {statuses.map((s) => {
@@ -92,12 +93,12 @@ export default function DesignPage() {
               )
             })}
           </div>
-        </section>
+        </AnimateIn>
 
         <Separator style={{ background: "var(--border)" }} />
 
         {/* Buttons */}
-        <section>
+        <AnimateIn as="section">
           <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Buttons</h2>
           <div className="flex gap-3 flex-wrap items-center">
             <Button>Primary</Button>
@@ -107,12 +108,12 @@ export default function DesignPage() {
             <Button size="sm">Small</Button>
             <Button disabled>Disabled</Button>
           </div>
-        </section>
+        </AnimateIn>
 
         <Separator style={{ background: "var(--border)" }} />
 
         {/* Cards */}
-        <section>
+        <AnimateIn as="section">
           <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Cards</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
@@ -140,18 +141,18 @@ export default function DesignPage() {
               </CardContent>
             </Card>
           </div>
-        </section>
+        </AnimateIn>
 
         <Separator style={{ background: "var(--border)" }} />
 
         {/* Inputs */}
-        <section>
+        <AnimateIn as="section">
           <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Inputs</h2>
           <div className="max-w-sm space-y-3">
             <Input placeholder="Search promises…" />
             <Input placeholder="Disabled" disabled />
           </div>
-        </section>
+        </AnimateIn>
 
       </div>
     </>

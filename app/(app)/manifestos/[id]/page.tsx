@@ -9,6 +9,7 @@ import { statusMeta, type PromiseStatus } from "@/lib/tokens"
 import type { Manifesto, Party, PromiseRow } from "@/lib/db/types"
 import { formatTarget, formatIndianNumber } from "@/lib/format"
 import { fontWeights } from "@/lib/font-weight"
+import { AnimateIn } from "@/components/ui/animate-in"
 
 export const revalidate = 21600
 
@@ -182,6 +183,7 @@ export default async function ManifestoDetailPage({
       </Link>
 
       {/* Header */}
+      <AnimateIn>
       <section
         className="rounded-[6px] overflow-hidden"
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
@@ -323,8 +325,10 @@ export default async function ManifestoDetailPage({
           </div>
         </div>
       </section>
+      </AnimateIn>
 
       {/* Verification trust banner */}
+      <AnimateIn delay={0.05}>
       <section
         className="rounded-[var(--radius-card)] p-4"
         style={{
@@ -358,10 +362,11 @@ export default async function ManifestoDetailPage({
           claims with no working source link should not be relied on without verification.
         </p>
       </section>
+      </AnimateIn>
 
       {/* Headline promises */}
       {headline.length > 0 && (
-        <section>
+        <AnimateIn delay={0.1}>
           <div className="flex items-baseline justify-between mb-3">
             <h2 className="text-subheading" style={{ color: "var(--text-primary)" }}>
               Headline promises
@@ -375,12 +380,12 @@ export default async function ManifestoDetailPage({
               <PromiseCard key={p.id} p={p} partyColor={partyColor} />
             ))}
           </div>
-        </section>
+        </AnimateIn>
       )}
 
       {/* By category */}
       {categories.length > 0 && (
-        <section className="space-y-6">
+        <AnimateIn delay={0.15} className="space-y-6">
           <h2 className="text-subheading" style={{ color: "var(--text-primary)" }}>
             All promises by category
           </h2>
@@ -399,11 +404,12 @@ export default async function ManifestoDetailPage({
               </div>
             </div>
           ))}
-        </section>
+        </AnimateIn>
       )}
 
       {/* Empty state */}
       {promises.length === 0 && (
+        <AnimateIn>
         <section
           className="rounded-[6px] p-6 text-[13px]"
           style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)", color: "var(--text-tertiary)" }}
@@ -411,9 +417,11 @@ export default async function ManifestoDetailPage({
           No promises extracted for this manifesto yet. Download the source PDF
           above to read the document directly.
         </section>
+        </AnimateIn>
       )}
 
       {/* Caveat */}
+      <AnimateIn delay={0.2}>
       <section
         className="rounded-[6px] p-4 text-[12px] leading-relaxed"
         style={{
@@ -430,6 +438,7 @@ export default async function ManifestoDetailPage({
         Every promise links to a dedicated evidence page where sources are
         listed.
       </section>
+      </AnimateIn>
     </div>
   )
 }

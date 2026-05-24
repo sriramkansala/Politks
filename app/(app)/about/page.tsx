@@ -1,4 +1,5 @@
 import { ExternalLink } from "lucide-react"
+import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
 
 export const revalidate = 86400
 
@@ -6,7 +7,7 @@ export default function AboutPage() {
   return (
     <>
       <div className="px-6 py-8 max-w-[860px] mx-auto space-y-8">
-        <div>
+        <AnimateIn>
           <h1 className="h-page mb-2" style={{ color: "var(--text-primary)" }}>
             About Bharat Manifesto Watch
           </h1>
@@ -14,9 +15,9 @@ export default function AboutPage() {
             A citizen accountability dashboard tracking political promises across India.
             Non-partisan. Open source. Built for voters.
           </p>
-        </div>
+        </AnimateIn>
 
-        {[
+        <AnimateIn stagger className="space-y-8">{[
           {
             title: "Mission",
             content:
@@ -43,26 +44,28 @@ export default function AboutPage() {
               "The codebase is available on GitHub under the MIT licence. Data exports (parties, manifestos, promises, status updates) will be published under CC-BY-4.0.",
           },
         ].map(({ title, content }) => (
-          <section
-            key={title}
-            className="rounded-[6px] p-5"
-            style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
-          >
-            <h2 className="h-section mb-2" style={{ color: "var(--text-primary)" }}>{title}</h2>
-            <p className="text-body" style={{ color: "var(--text-secondary)" }}>{content}</p>
-          </section>
+          <AnimateItem key={title}>
+            <section
+              className="rounded-[6px] p-5"
+              style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
+            >
+              <h2 className="h-section mb-2" style={{ color: "var(--text-primary)" }}>{title}</h2>
+              <p className="text-body" style={{ color: "var(--text-secondary)" }}>{content}</p>
+            </section>
+          </AnimateItem>
         ))}
+        </AnimateIn>
 
-        <section>
+        <AnimateIn delay={0.1}>
           <h2 className="h-section mb-3" style={{ color: "var(--text-primary)" }}>Attribution</h2>
-          <div className="space-y-2">
+          <AnimateIn stagger className="space-y-2">
             {[
               { label: "Methodology", href: "https://www.politifact.com/truth-o-meter/promises/", text: "PolitiFact Promise Tracker" },
               { label: "Legislative data", href: "https://prsindia.org", text: "PRS Legislative Research (CC-BY-4.0)" },
               { label: "Electoral data", href: "https://eci.gov.in", text: "Election Commission of India" },
               { label: "Open data", href: "https://data.gov.in", text: "Open Government Data Platform India" },
             ].map(({ label, href, text }) => (
-              <div key={label} className="flex items-center gap-2 text-body">
+              <AnimateItem key={label} className="flex items-center gap-2 text-body">
                 <span style={{ color: "var(--text-tertiary)", minWidth: "120px" }}>{label}</span>
                 <a
                   href={href}
@@ -73,10 +76,10 @@ export default function AboutPage() {
                 >
                   {text} <ExternalLink size={11} strokeWidth={1.5} />
                 </a>
-              </div>
+              </AnimateItem>
             ))}
-          </div>
-        </section>
+          </AnimateIn>
+        </AnimateIn>
       </div>
     </>
   )

@@ -5,6 +5,8 @@ import type { PromiseRow } from "@/lib/db/types"
 import { DykCard } from "@/components/insights/DykCard"
 import { pickDailyFact } from "@/lib/insights/facts"
 import { fontWeights } from "@/lib/font-weight"
+import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
+import { MotionSection } from "@/components/ui/motion-section"
 
 export const revalidate = 21600
 
@@ -42,7 +44,7 @@ export default async function HomePage() {
       {/* Hero — title + body + a single primary CTA that takes the user
        *   to the legislator-search page (replaces the embedded PIN form
        *   that previously took up an entire section). */}
-      <section className="flex flex-col gap-4">
+      <MotionSection className="flex flex-col gap-4">
         <h1 className="h-hero" style={{ color: "var(--text-primary)" }}>
           Bharat Manifesto Watch
         </h1>
@@ -67,10 +69,10 @@ export default async function HomePage() {
             Browse all legislators
           </Link>
         </div>
-      </section>
+      </MotionSection>
 
       {/* Did You Know — daily card */}
-      <section>
+      <MotionSection delay={0.05}>
         <div className="flex items-baseline justify-between mb-3">
           <h2 className="h-section" style={{ color: "var(--text-primary)" }}>
             Did you know?
@@ -80,15 +82,15 @@ export default async function HomePage() {
           </Link>
         </div>
         <DykCard fact={dailyFact} />
-      </section>
+      </MotionSection>
 
 
       {/* Stat cards */}
-      <section>
+      <MotionSection delay={0.1}>
         <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>
           At a glance
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <AnimateIn stagger className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { label: "Parties tracked", value: String(partyCount ?? 0), pct: null },
             { label: "Promises indexed", value: String(total), pct: null },
@@ -97,19 +99,19 @@ export default async function HomePage() {
           ].map(({ label, value, pct, tone }) => (
             // Apply the status tone only when the stat is non-zero (Linear-style
             // restraint: 0% is just text, not a red-or-green status).
-            <div key={label} className={`stat-card ${pct != null && pct > 0 ? tone ?? "" : ""}`}>
+            <AnimateItem key={label} className={`stat-card ${pct != null && pct > 0 ? tone ?? "" : ""}`}>
               <div className="value" style={{ fontSize: "28px", letterSpacing: "-0.022em" }}>
                 {value}
               </div>
               <div className="label">{label}</div>
-            </div>
+            </AnimateItem>
           ))}
-        </div>
-      </section>
+        </AnimateIn>
+      </MotionSection>
 
 
       {/* Featured Investigation */}
-      <section>
+      <MotionSection delay={0.15}>
         <div className="flex items-center justify-between mb-4">
           <h2 className="h-section" style={{ color: "var(--text-primary)" }}>
             Featured Investigation
@@ -176,7 +178,7 @@ export default async function HomePage() {
             </div>
           </div>
         </Link>
-      </section>
+      </MotionSection>
     </div>
   )
 }

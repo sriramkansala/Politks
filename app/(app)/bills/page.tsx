@@ -9,6 +9,7 @@ import {
   TableCell,
 } from "@/components/ui/table"
 import type { Bill } from "@/lib/db/types"
+import { AnimateIn } from "@/components/ui/animate-in"
 
 export const revalidate = 21600
 
@@ -75,17 +76,18 @@ export default async function BillsPage() {
 
   return (
     <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto">
-      <div className="mb-6">
+      <AnimateIn className="mb-6">
         <h1 className="h-page mb-2" style={{ color: "var(--text-primary)" }}>Bills</h1>
         <p className="text-[15px]" style={{ color: "var(--text-secondary)" }}>
           {allBills.length} bills tracked · Legislative timeline with causal forensics
         </p>
-      </div>
+      </AnimateIn>
 
-      <div
-        className="rounded-[6px] overflow-hidden"
-        style={{ border: "1px solid var(--border)", background: "var(--bg-elevated)" }}
-      >
+      <AnimateIn delay={0.05}>
+        <div
+          className="rounded-[6px] overflow-hidden"
+          style={{ border: "1px solid var(--border)", background: "var(--bg-elevated)" }}
+        >
         <Table>
           <TableHeader>
             <TableRow>
@@ -146,10 +148,11 @@ export default async function BillsPage() {
             ))}
           </TableBody>
         </Table>
-      </div>
+        </div>
+      </AnimateIn>
 
       {/* Caveat block — UI_RULES.md §6 */}
-      <section className="caveat-block mt-6">
+      <AnimateIn delay={0.1} className="caveat-block mt-6">
         <strong>How this works.</strong>{" "}
         Bill metadata (number, type, dates, current stage) comes from{" "}
         <a href="https://prsindia.org/billtrack" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>
@@ -160,7 +163,7 @@ export default async function BillsPage() {
         bar; substantive amendments and committee dissent are surfaced on the
         per-bill page. Outcome is set only after gazette notification (Passed),
         explicit withdrawal, or expiry at dissolution of Parliament.
-      </section>
+      </AnimateIn>
     </div>
   )
 }

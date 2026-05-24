@@ -1,6 +1,7 @@
 import { PartyCard } from "@/components/parties/PartyCard"
 import { createPublicClient } from "@/lib/db/server"
 import type { Party, PromiseRow } from "@/lib/db/types"
+import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
 
 export const revalidate = 21600
 
@@ -28,23 +29,25 @@ export default async function PartiesPage() {
   return (
     <>
       <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto">
-        <div className="mb-6">
+        <AnimateIn className="mb-6">
           <h1 className="h-page mb-2" style={{ color: "var(--text-primary)" }}>
             Parties
           </h1>
           <p className="text-body" style={{ color: "var(--text-secondary)" }}>
             {allParties.length} parties tracked · Lok Sabha 2024 + state elections
           </p>
-        </div>
+        </AnimateIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <AnimateIn stagger className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {partyStats.map(({ party, promiseCount, keptCount }) => (
-            <PartyCard key={party.id} party={party} promiseCount={promiseCount} keptCount={keptCount} />
+            <AnimateItem key={party.id}>
+              <PartyCard party={party} promiseCount={promiseCount} keptCount={keptCount} />
+            </AnimateItem>
           ))}
-        </div>
+        </AnimateIn>
 
         {/* Caveat block — UI_RULES.md §6 */}
-        <section className="caveat-block mt-6">
+        <AnimateIn delay={0.1} className="caveat-block mt-6">
           <strong>How this works.</strong>{" "}
           Party metadata (founded year, alliance, leadership) comes from each
           party&apos;s self-declared profile filed with the{" "}
@@ -55,7 +58,7 @@ export default async function PartiesPage() {
           far — not every line in every manifesto is tracked. &ldquo;Kept&rdquo;
           counts are based on cited post-election evidence; absence of a count
           means rating is still pending, not that the party failed.
-        </section>
+        </AnimateIn>
       </div>
     </>
   )

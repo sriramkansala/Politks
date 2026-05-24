@@ -6,6 +6,7 @@ import { findMpByPin, findMpByQuery, STATIC_MPS_ALL } from "@/lib/db/staticMps"
 import { MpSearchForm } from "@/components/mp/MpSearchForm"
 import { MpRow } from "@/components/mp/LegislatorRow"
 import { fontWeights } from "@/lib/font-weight"
+import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
 
 export const metadata = { title: "Know your politician · Bharat Manifesto Watch" }
 
@@ -43,7 +44,7 @@ export default async function MpHubPage({ searchParams }: PageProps) {
 
   return (
     <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-10">
-      <section>
+      <AnimateIn>
         <h1 className="h-page mb-2" style={{ color: "var(--text-primary)" }}>
           Know your politician
         </h1>
@@ -51,10 +52,10 @@ export default async function MpHubPage({ searchParams }: PageProps) {
           Enter your PIN code, constituency, or MP name. See attendance, questions
           asked, criminal cases, declared assets and MPLADS spending — in one card.
         </p>
-      </section>
+      </AnimateIn>
 
       {/* Search form */}
-      <section>
+      <AnimateIn delay={0.05}>
         <MpSearchForm defaultPin={pin ?? ""} defaultQ={q ?? ""} />
 
         {notice && (
@@ -65,18 +66,17 @@ export default async function MpHubPage({ searchParams }: PageProps) {
             {notice}
           </p>
         )}
-      </section>
+      </AnimateIn>
 
       {/* Results */}
       {resolved.length > 0 && (
-        <section>
+        <AnimateIn delay={0.1}>
           <h2 className="h-section mb-3" style={{ color: "var(--text-primary)" }}>
             {resolved.length === 1 ? "Match" : `${resolved.length} matches`}
           </h2>
-          <div className="grid gap-2">
+          <AnimateIn stagger className="grid gap-2">
             {resolved.map((mp) => (
-              <Link
-                key={mp.id}
+              <AnimateItem key={mp.id}><Link
                 href={`/mp/${mp.prs_slug}`}
                 className="flex items-center justify-between p-4 rounded-[var(--radius-card)] transition-colors hover:border-[var(--border-strong)]"
                 style={{
@@ -105,14 +105,14 @@ export default async function MpHubPage({ searchParams }: PageProps) {
                   )}
                   <span>→</span>
                 </div>
-              </Link>
+              </Link></AnimateItem>
             ))}
-          </div>
-        </section>
+          </AnimateIn>
+        </AnimateIn>
       )}
 
       {/* Featured */}
-      <section>
+      <AnimateIn delay={0.15}>
         <h2 className="h-section mb-3" style={{ color: "var(--text-primary)" }}>
           Featured MPs
         </h2>
@@ -121,15 +121,15 @@ export default async function MpHubPage({ searchParams }: PageProps) {
           18th LS roster of {STATIC_MPS_ALL.length} MPs at{" "}
           <Link href="/legislators" style={{ color: "var(--accent)" }}>/legislators</Link>.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <AnimateIn stagger className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {featured.map((mp) => (
-            <MpRow key={mp.id} mp={mp} />
+            <AnimateItem key={mp.id}><MpRow mp={mp} /></AnimateItem>
           ))}
-        </div>
-      </section>
+        </AnimateIn>
+      </AnimateIn>
 
       {/* Footer caveat */}
-      <section className="caveat-block">
+      <AnimateIn delay={0.2} className="caveat-block">
         <strong>How this works.</strong>{" "}
         Attendance, questions, debates and PMB counts come from{" "}
         <a href="https://prsindia.org/mptrack" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>
@@ -141,7 +141,7 @@ export default async function MpHubPage({ searchParams }: PageProps) {
         </a>
         . Ministers and the Speaker are exempt from signing the attendance
         register — flagged on individual cards.
-      </section>
+      </AnimateIn>
     </div>
   )
 }

@@ -7,6 +7,7 @@ import { createPublicClient } from "@/lib/db/server"
 import type { Manifesto, Party, PromiseRow } from "@/lib/db/types"
 import { FilterDropdown } from "@/components/mp/FilterDropdown"
 import { fontWeights } from "@/lib/font-weight"
+import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
 
 export const revalidate = 21600
 export const metadata = { title: "Manifestos · Bharat Manifesto Watch" }
@@ -61,7 +62,7 @@ export default async function ManifestosPage({ searchParams }: PageProps) {
   return (
     <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-10">
       {/* Hero */}
-      <section>
+      <AnimateIn>
         <h1 className="h-page mb-2" style={{ color: "var(--text-primary)" }}>
           Manifestos
         </h1>
@@ -70,10 +71,10 @@ export default async function ManifestosPage({ searchParams }: PageProps) {
           linked back to the official PDF. {manifestos.length} manifestos ·{" "}
           {totalPromises} promises · {totalPages} pages of source material.
         </p>
-      </section>
+      </AnimateIn>
 
       {/* Filters — three dropdowns. "All" is the default when no value is set. */}
-      <section className="flex flex-wrap items-center gap-3">
+      <AnimateIn delay={0.05} className="flex flex-wrap items-center gap-3">
         <FilterDropdown
           paramKey="year"
           label="Year"
@@ -117,18 +118,18 @@ export default async function ManifestosPage({ searchParams }: PageProps) {
             Clear filters
           </Link>
         )}
-      </section>
+      </AnimateIn>
 
       {/* Grid */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <AnimateIn stagger className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {filtered.map((m) => {
           const p = partyById[m.party_id]
           const counts = promiseCount[m.id] ?? { total: 0, headline: 0 }
           const partyColor = p?.color_hex ?? "var(--accent)"
           return (
+            <AnimateItem key={m.id}>
             <article
-              key={m.id}
-              className="rounded-[6px] overflow-hidden flex flex-col"
+              className="rounded-[6px] overflow-hidden flex flex-col h-full"
               style={{
                 background: "var(--bg-elevated)",
                 border: "1px solid var(--border)",
@@ -255,25 +256,29 @@ export default async function ManifestosPage({ searchParams }: PageProps) {
                 </div>
               </div>
             </article>
+            </AnimateItem>
           )
         })}
-      </section>
+      </AnimateIn>
 
       {filtered.length === 0 && (
-        <p className="text-[13px]" style={{ color: "var(--text-tertiary)" }}>
-          No manifestos match this filter.
-        </p>
+        <AnimateIn>
+          <p className="text-[13px]" style={{ color: "var(--text-tertiary)" }}>
+            No manifestos match this filter.
+          </p>
+        </AnimateIn>
       )}
 
       {/* Source caveat */}
-      <section
-        className="rounded-[6px] p-4 text-[12px] leading-relaxed"
-        style={{
-          background: "var(--bg-elevated)",
-          border: "1px solid var(--border)",
-          color: "var(--text-tertiary)",
-        }}
-      >
+      <AnimateIn delay={0.1}>
+        <section
+          className="rounded-[6px] p-4 text-[12px] leading-relaxed"
+          style={{
+            background: "var(--bg-elevated)",
+            border: "1px solid var(--border)",
+            color: "var(--text-tertiary)",
+          }}
+        >
         <strong style={{ color: "var(--text-secondary)" }}>How this works.</strong>{" "}
         Every manifesto link goes to the party's official source PDF. Promises
         are extracted, categorised by issue, and tagged with their page
@@ -281,7 +286,8 @@ export default async function ManifestosPage({ searchParams }: PageProps) {
         against the source material. Status ratings (Promise Kept / Broken /
         In the works / Compromise / Stalled) appear on individual promise
         pages once editorial review concludes.
-      </section>
+        </section>
+      </AnimateIn>
     </div>
   )
 }

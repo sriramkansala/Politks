@@ -30,6 +30,7 @@ import { PartyPersonnelStats } from "@/components/parties/PartyPersonnelStats"
 import { PartyManifestoList } from "@/components/parties/PartyManifestoList"
 import { createPublicClient } from "@/lib/db/server"
 import { fontWeights } from "@/lib/font-weight"
+import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
 import {
   PARTY_HISTORY,
   PARTY_ORGANISATION,
@@ -142,7 +143,7 @@ export default async function PartyPage({ params, searchParams }: PageProps) {
   return (
     <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-8">
       {/* Party header — visible on every tab */}
-      <div className="flex items-center justify-between gap-4">
+      <AnimateIn className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div
             className="w-12 h-12 rounded-[6px] flex items-center justify-center shrink-0"
@@ -174,7 +175,7 @@ export default async function PartyPage({ params, searchParams }: PageProps) {
         </div>
 
         <PoliticalCompass slug={slug} color={typedParty.color_hex} />
-      </div>
+      </AnimateIn>
 
       {/* Tabs */}
       <PartyTabNav
@@ -188,8 +189,8 @@ export default async function PartyPage({ params, searchParams }: PageProps) {
 
       {/* Tab content */}
       {active === "overview" && (
-        <section className="space-y-6">
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+        <AnimateIn delay={0.05} className="space-y-6">
+          <AnimateIn stagger className="grid grid-cols-3 md:grid-cols-6 gap-2">
             {(
               [
                 ["not_yet_rated", "Unrated"],
@@ -200,9 +201,9 @@ export default async function PartyPage({ params, searchParams }: PageProps) {
                 ["promise_broken", "Broken"],
               ] as [PromiseStatus, string][]
             ).map(([status, label]) => (
+              <AnimateItem key={status}>
               <div
-                key={status}
-                className="p-3 rounded-[6px] text-center"
+                className="p-3 rounded-[6px] text-center h-full"
                 style={{
                   background: "var(--bg-elevated)",
                   border: "1px solid var(--border)",
@@ -221,27 +222,28 @@ export default async function PartyPage({ params, searchParams }: PageProps) {
                   {label}
                 </div>
               </div>
+              </AnimateItem>
             ))}
-          </div>
+          </AnimateIn>
           <p className="text-[13px]" style={{ color: "var(--text-tertiary)" }}>
             Use the tabs above to view this party's history, organisational
             structure, donor records, personnel-record aggregates, legal cases,
             promise tracker, and past manifestos.
           </p>
-        </section>
+        </AnimateIn>
       )}
 
       {active === "history" && (
-        <section>
+        <AnimateIn delay={0.05}>
           <h2 className="h-section mb-3" style={{ color: "var(--text-primary)" }}>
             History
           </h2>
           <PartyHistoryTimeline events={history} partyColor={typedParty.color_hex} />
-        </section>
+        </AnimateIn>
       )}
 
       {active === "organisation" && (
-        <section>
+        <AnimateIn delay={0.05}>
           <h2 className="h-section mb-3" style={{ color: "var(--text-primary)" }}>
             Organisation
           </h2>
@@ -251,40 +253,40 @@ export default async function PartyPage({ params, searchParams }: PageProps) {
             preserveTab="organisation"
             partyColor={typedParty.color_hex}
           />
-        </section>
+        </AnimateIn>
       )}
 
       {active === "donors" && (
-        <section>
+        <AnimateIn delay={0.05}>
           <h2 className="h-section mb-3" style={{ color: "var(--text-primary)" }}>
             Donors
           </h2>
           <PartyDonors donors={donors} partyColor={typedParty.color_hex} />
-        </section>
+        </AnimateIn>
       )}
 
       {active === "personnel" && (
-        <section>
+        <AnimateIn delay={0.05}>
           <h2 className="h-section mb-3" style={{ color: "var(--text-primary)" }}>
             Personnel records
           </h2>
           <PartyPersonnelStats mps={partyMps} partyColor={typedParty.color_hex} />
-        </section>
+        </AnimateIn>
       )}
 
       {active === "legal" && (
-        <section>
+        <AnimateIn delay={0.05}>
           <h2 className="h-section mb-3" style={{ color: "var(--text-primary)" }}>
             Legal cases against the party
           </h2>
           <PartyLegalCases cases={legal} />
-        </section>
+        </AnimateIn>
       )}
 
-      {active === "promises" && <PromiseList promises={allPromises} />}
+      {active === "promises" && <AnimateIn delay={0.05}><PromiseList promises={allPromises} /></AnimateIn>}
 
       {active === "manifestos" && (
-        <section>
+        <AnimateIn delay={0.05}>
           <h2 className="h-section mb-3" style={{ color: "var(--text-primary)" }}>
             Manifestos
           </h2>
@@ -292,11 +294,12 @@ export default async function PartyPage({ params, searchParams }: PageProps) {
             manifestos={manifestos}
             partyColor={typedParty.color_hex}
           />
-        </section>
+        </AnimateIn>
       )}
 
       {/* Source caveat — visible on all non-Promises tabs */}
       {active !== "promises" && (
+        <AnimateIn delay={0.15}>
         <section
           className="rounded-[6px] p-4 text-[12px] leading-relaxed"
           style={{
@@ -348,6 +351,7 @@ export default async function PartyPage({ params, searchParams }: PageProps) {
           Supreme Court e-judgements portal. Entries marked "Source pending"
           are awaiting verification — we don't fabricate URLs.
         </section>
+        </AnimateIn>
       )}
     </div>
   )

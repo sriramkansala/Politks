@@ -8,6 +8,7 @@ import { MpRow, MlaRow } from "@/components/mp/LegislatorRow"
 import { FilterDropdown } from "@/components/mp/FilterDropdown"
 import { LegislatorSearchForm } from "@/components/legislators/LegislatorSearchForm"
 import { partyColor } from "@/lib/partyColors"
+import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
 
 export const metadata = { title: "Legislators · Bharat Manifesto Watch" }
 export const revalidate = 21600
@@ -76,7 +77,7 @@ export default async function LegislatorsPage({ searchParams }: PageProps) {
   return (
     <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-8">
       {/* Hero */}
-      <section>
+      <AnimateIn>
         <h1 className="text-heading-xl mb-2" style={{ color: "var(--text-primary)" }}>
           Legislators
         </h1>
@@ -84,15 +85,15 @@ export default async function LegislatorsPage({ searchParams }: PageProps) {
           {mpCount} MPs · {mlaCount} ruling-party MLAs · all major Indian states.
           Search by name or constituency, or filter by house, state and party.
         </p>
-      </section>
+      </AnimateIn>
 
       {/* Search */}
-      <section>
+      <AnimateIn delay={0.05}>
         <LegislatorSearchForm defaultQ={q} house={house} state={state} party={party} />
-      </section>
+      </AnimateIn>
 
       {/* Filter row — three FilterDropdowns, consistent with /manifestos. */}
-      <div className="flex flex-wrap gap-2">
+      <AnimateIn delay={0.1} className="flex flex-wrap gap-2">
         <FilterDropdown
           paramKey="house"
           label="House"
@@ -125,40 +126,41 @@ export default async function LegislatorsPage({ searchParams }: PageProps) {
           preserveParams={{ house, state, q }}
           allLabel="All parties"
         />
-      </div>
+      </AnimateIn>
 
       {/* Results */}
-      <section>
+      <AnimateIn delay={0.15}>
         <div className="flex items-baseline justify-between mb-3">
           <h2 className="text-subheading" style={{ color: "var(--text-primary)" }}>
             {filtered.length} result{filtered.length === 1 ? "" : "s"}
           </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <AnimateIn stagger className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {filtered.map((row, i) =>
             row.kind === "mp" ? (
-              <MpRow key={i} mp={row.mp} />
+              <AnimateItem key={i}><MpRow mp={row.mp} /></AnimateItem>
             ) : (
-              <MlaRow key={i} mla={row.mla} />
+              <AnimateItem key={i}><MlaRow mla={row.mla} /></AnimateItem>
             )
           )}
-        </div>
+        </AnimateIn>
         {filtered.length === 0 && (
           <p className="text-[13px]" style={{ color: "var(--text-tertiary)" }}>
             No legislators match these filters.
           </p>
         )}
-      </section>
+      </AnimateIn>
 
       {/* Coverage caveat */}
-      <section
-        className="rounded-[6px] p-4 text-[12px] leading-relaxed"
-        style={{
-          background: "var(--bg-elevated)",
-          border: "1px solid var(--border)",
-          color: "var(--text-tertiary)",
-        }}
-      >
+      <AnimateIn delay={0.2}>
+        <section
+          className="rounded-[6px] p-4 text-[12px] leading-relaxed"
+          style={{
+            background: "var(--bg-elevated)",
+            border: "1px solid var(--border)",
+            color: "var(--text-tertiary)",
+          }}
+        >
         <strong style={{ color: "var(--text-secondary)" }}>Coverage.</strong>{" "}
         MP list shows the 25 marquee 18th Lok Sabha members hand-seeded from the
         BMW-130 spec — the full 543-MP roster is currently being ingested by{" "}
@@ -168,7 +170,8 @@ export default async function LegislatorsPage({ searchParams }: PageProps) {
         UP, MP, AP, Telangana, Kerala) — opposition MLAs and remaining states
         land in a later phase. Per BMW-130 caveats, UP/Bihar/MP publish little
         digital assembly data — we mark those records "medium" or "low" confidence.
-      </section>
+        </section>
+      </AnimateIn>
     </div>
   )
 }

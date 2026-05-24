@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 import { formatINR as fmtINR } from "@/lib/format"
 import { fontWeights } from "@/lib/font-weight"
+import { AnimateIn } from "@/components/ui/animate-in"
 // fmtINR is now provided by lib/format so /mp dossier shares the same
 // Indian-numbering treatment as the rest of the app (no inline divergences).
 
@@ -152,13 +153,13 @@ export default async function MpDossierPage({
       </Link>
 
       {/* Honesty card — the headline */}
-      <HonestyCard mp={mp} />
+      <AnimateIn><HonestyCard mp={mp} /></AnimateIn>
 
       {/* Attendance heatmap */}
-      <AttendanceHeatmap mp={mp} />
+      <AnimateIn delay={0.05}><AttendanceHeatmap mp={mp} /></AnimateIn>
 
       {/* Financials */}
-      <SectionCard title="Financials" hint="Self-declared affidavit + MPLADS portal">
+      <AnimateIn delay={0.1}><SectionCard title="Financials" hint="Self-declared affidavit + MPLADS portal">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div>
             <div className="text-caption mb-1" style={{ color: "var(--text-tertiary)" }}>
@@ -206,10 +207,10 @@ export default async function MpDossierPage({
           Asset figures are nominal (not CPI-adjusted). MPLADS distinguishes sanctioned,
           released and spent — we show released and unspent.
         </p>
-      </SectionCard>
+      </SectionCard></AnimateIn>
 
       {/* Compare vs averages */}
-      <SectionCard title="vs national average" hint="PRS 17th/18th LS aggregates">
+      <AnimateIn delay={0.15}><SectionCard title="vs national average" hint="PRS 17th/18th LS aggregates">
         <ComparisonBar
           label="Attendance"
           value={mp.attendance_pct}
@@ -226,10 +227,10 @@ export default async function MpDossierPage({
           value={mp.debates_participated}
           reference={mp.national_avg_debates}
         />
-      </SectionCard>
+      </SectionCard></AnimateIn>
 
       {/* Act tab */}
-      <SectionCard title="Act" hint="BMW-211 to BMW-225">
+      <AnimateIn delay={0.2}><SectionCard title="Act" hint="BMW-211 to BMW-225">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <ActionTile
             icon={Mail}
@@ -256,11 +257,11 @@ export default async function MpDossierPage({
             href={`/act?to=${slug}&template=question`}
           />
         </div>
-      </SectionCard>
+      </SectionCard></AnimateIn>
 
       {/* Caveats */}
-      <section className="text-[11px] leading-relaxed" style={{ color: "var(--text-disabled)" }}>
-        <p>
+      <AnimateIn delay={0.25} className="text-[11px] leading-relaxed">
+        <p style={{ color: "var(--text-disabled)" }}>
           Coverage caveat: This MP is part of the BMW-130 marquee set. Full 543-MP
           coverage from PRS is being ingested. Where a stat is unavailable we show
           “—”, not a zero.
@@ -285,7 +286,7 @@ export default async function MpDossierPage({
             </>
           )}
         </p>
-      </section>
+      </AnimateIn>
     </div>
   )
 }
