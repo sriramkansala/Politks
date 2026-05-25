@@ -79,8 +79,12 @@ interface DialProps {
 function Dial({ value, color, leftLabel, rightLabel, delay = 0 }: DialProps) {
   const TICKS = 21 // odd so there's a centre tick
   const needleAngle = valToAngle(value)
-  const centreAngle = Math.PI / 2
+  const leftAngle = Math.PI // 9 o'clock — always the starting position
   const needleEnd = polar(R_NEEDLE, needleAngle)
+  // CSS rotation (clockwise) that takes the line from 9 o'clock to the final
+  // needle angle. Used as the negative start of the rotate animation so the
+  // needle always begins at 9 and sweeps clockwise to its value.
+  const finalRotationDeg = (leftAngle - needleAngle) * (180 / Math.PI)
 
   return (
     <div className="flex flex-col items-end">
@@ -100,10 +104,11 @@ function Dial({ value, color, leftLabel, rightLabel, delay = 0 }: DialProps) {
           strokeLinecap="round"
         />
 
-        {/* Active arc — from centre top to needle position, in party colour.
-         *  Direction depends on which side of centre the needle sits. */}
+        {/* Active arc — from 9 o'clock (left edge) sweeping clockwise to the
+         *  needle position, in the party colour. pathLength grows from 0→1,
+         *  giving a speedometer-style fill that tracks the needle sweep. */}
         <motion.path
-          d={arcPath(R_ARC, centreAngle, needleAngle)}
+          d={arcPath(R_ARC, leftAngle, needleAngle)}
           fill="none"
           stroke={color}
           strokeWidth={2.5}
@@ -134,7 +139,9 @@ function Dial({ value, color, leftLabel, rightLabel, delay = 0 }: DialProps) {
           )
         })}
 
-        {/* Needle */}
+        {/* Needle — drawn at its final endpoint, but rotated back to 9 o'clock
+         *  at start so the spring sweeps it clockwise like a clock hand from
+         *  9 → 12 → 3 toward the final value. */}
         <motion.line
           x1={CX}
           y1={CY}
@@ -143,7 +150,7 @@ function Dial({ value, color, leftLabel, rightLabel, delay = 0 }: DialProps) {
           stroke={color}
           strokeWidth={2.5}
           strokeLinecap="round"
-          initial={{ rotate: -90, opacity: 0 }}
+          initial={{ rotate: -finalRotationDeg, opacity: 0 }}
           animate={{ rotate: 0, opacity: 1 }}
           transition={{ ...springs.gentle, delay: delay + 0.05 }}
           style={{ originX: `${CX}px`, originY: `${CY}px` }}
