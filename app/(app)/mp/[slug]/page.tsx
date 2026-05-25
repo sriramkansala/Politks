@@ -5,13 +5,19 @@ import Link from "next/link"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
-import { MP_BY_SLUG, STATIC_MPS_BMW } from "@/lib/db/staticMps"
+import { MP_BY_SLUG, STATIC_MPS_ALL } from "@/lib/db/staticMps"
 import { MpPageTabs } from "@/components/mp/MpPageTabs"
 import type { Mp } from "@/lib/db/types"
 import { fontWeights } from "@/lib/font-weight"
 
+// Pre-render every MP at build time so every Legislators-tab click serves
+// from static cache (no on-demand server render). Was previously limited to
+// the 25-MP BMW seed, which made the first click on any other legislator
+// pay a render round-trip.
 export async function generateStaticParams() {
-  return STATIC_MPS_BMW.map((mp) => ({ slug: mp.prs_slug! }))
+  return STATIC_MPS_ALL
+    .filter((mp) => !!mp.prs_slug)
+    .map((mp) => ({ slug: mp.prs_slug! }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
