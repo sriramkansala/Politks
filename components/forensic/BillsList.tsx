@@ -109,7 +109,7 @@ function BillTable({ bills, hideHouseTag = false }: { bills: BillRow[]; hideHous
             <TableHead className="text-[10px] uppercase tracking-wide" style={{ color: "var(--text-tertiary)" }}>
               Bill
             </TableHead>
-            <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 220 }}>
+            <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: hideHouseTag ? 180 : 300 }}>
               {hideHouseTag ? "Type" : "Chamber / Type"}
             </TableHead>
             <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 70 }}>
@@ -146,7 +146,7 @@ function BillTable({ bills, hideHouseTag = false }: { bills: BillRow[]; hideHous
                 </Link>
               </TableCell>
               <TableCell className="hidden md:table-cell whitespace-nowrap">
-                <div className="flex flex-wrap gap-1">
+                <div className="flex items-center flex-nowrap gap-1.5">
                   {!hideHouseTag && bill.house_introduced && (
                     <Tag tone="house">
                       {bill.house_introduced === "lok_sabha" ? "Lok Sabha" : "Rajya Sabha"}
