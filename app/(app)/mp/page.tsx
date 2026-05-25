@@ -13,6 +13,7 @@ import { FilterDropdown } from "@/components/mp/FilterDropdown"
 import { partyColor } from "@/lib/partyColors"
 import { fontWeights } from "@/lib/font-weight"
 import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
+import { stateName } from "@/lib/stateNames"
 
 export const metadata = { title: "Know your politician · Neo Nīti" }
 
@@ -246,7 +247,9 @@ export default async function MpHubPage({ searchParams }: PageProps) {
             paramKey="state"
             label="State"
             value={state ?? null}
-            options={states.map((s) => ({ value: s, label: s }))}
+            options={states
+              .map((s) => ({ value: s, label: stateName(s) || s }))
+              .sort((a, b) => a.label.localeCompare(b.label))}
             preserveParams={{ tab: "legislators", house, party, q: legQ }}
             allLabel="All states"
           />
