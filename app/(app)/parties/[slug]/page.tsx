@@ -18,7 +18,7 @@
 
 import { notFound } from "next/navigation"
 import { ExternalLink } from "lucide-react"
-import { PoliticalCompass } from "@/components/parties/PoliticalCompass"
+import { PoliticalCompass, getPartyLean } from "@/components/parties/PoliticalCompass"
 import { PartySymbol } from "@/components/parties/PartySymbol"
 import { PromiseList } from "@/components/promises/PromiseList"
 import { PartyTabNav, type TabSpec } from "@/components/parties/PartyTabNav"
@@ -155,10 +155,23 @@ export default async function PartyPage({ params, searchParams }: PageProps) {
             <h1 className="h-page" style={{ color: "var(--text-primary)" }}>
               {typedParty.name}
             </h1>
-            <div className="flex items-center gap-3 mt-0.5">
+            <div className="flex items-center gap-3 mt-0.5 flex-wrap">
               <span className="text-caption" style={{ color: "var(--text-secondary)" }}>
                 Est. {typedParty.founded_year} · {level}
               </span>
+              {getPartyLean(slug) && (
+                <span
+                  className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[3px] whitespace-nowrap"
+                  style={{
+                    color: typedParty.color_hex,
+                    background: `${typedParty.color_hex}1A`,
+                    border: `1px solid ${typedParty.color_hex}55`,
+                    fontVariationSettings: fontWeights.semibold,
+                  }}
+                >
+                  {getPartyLean(slug)}
+                </span>
+              )}
               {typedParty.website_url && (
                 <a
                   href={typedParty.website_url}

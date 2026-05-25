@@ -14,11 +14,17 @@ import { fontWeights } from "@/lib/font-weight"
 
 // x: -1 = Left, +1 = Right
 // y: -1 = Socialist, +1 = Democratic
-const PARTY_POSITIONS: Record<string, { x: number; y: number; label: string }> = {
+export const PARTY_POSITIONS: Record<string, { x: number; y: number; label: string }> = {
   bjp:  { x:  0.60, y: -0.35, label: "Right · Nationalist" },
   inc:  { x: -0.18, y:  0.30, label: "Centre-Left · Liberal" },
   aap:  { x: -0.28, y:  0.55, label: "Centre-Left · Democratic" },
   dmk:  { x: -0.52, y:  0.20, label: "Left · Democratic Socialist" },
+}
+
+/** Look up the human-readable lean label ("Centre-Left · Liberal") for a
+ *  party slug. Returns null if we don't have a position recorded yet. */
+export function getPartyLean(slug: string): string | null {
+  return PARTY_POSITIONS[slug]?.label ?? null
 }
 
 interface PoliticalCompassProps {
@@ -128,17 +134,9 @@ export function PoliticalCompass({ slug, color }: PoliticalCompassProps) {
   if (!pos) return null
 
   return (
-    <div className="flex flex-col items-end gap-2.5 shrink-0">
-      <div className="flex flex-col gap-2">
-        <Axis value={pos.x} leftLabel="Left"      rightLabel="Right"      color={color} delay={0.1} />
-        <Axis value={pos.y} leftLabel="Socialist" rightLabel="Democratic" color={color} delay={0.18} />
-      </div>
-      <span
-        className="text-[11px] font-mono leading-tight"
-        style={{ color: "var(--text-tertiary)" }}
-      >
-        {pos.label}
-      </span>
+    <div className="flex flex-col gap-2 shrink-0">
+      <Axis value={pos.x} leftLabel="Left"      rightLabel="Right"      color={color} delay={0.1} />
+      <Axis value={pos.y} leftLabel="Socialist" rightLabel="Democratic" color={color} delay={0.18} />
     </div>
   )
 }
