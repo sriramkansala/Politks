@@ -69,6 +69,22 @@ function StageBar({ stage }: { stage: number | null }) {
   )
 }
 
+function Tag({ children, tone = "default" }: { children: React.ReactNode; tone?: "default" | "house" }) {
+  return (
+    <span
+      className="inline-flex items-center px-1.5 py-0.5 rounded-[3px] text-[10px] uppercase tracking-[0.05em] whitespace-nowrap"
+      style={{
+        background: "var(--bg-elevated-2)",
+        color: tone === "house" ? "var(--text-secondary)" : "var(--text-tertiary)",
+        border: "1px solid var(--border)",
+        fontVariationSettings: "'wght' 530",
+      }}
+    >
+      {children}
+    </span>
+  )
+}
+
 function BillTable({ bills }: { bills: BillRow[] }) {
   if (bills.length === 0) {
     return (
@@ -93,6 +109,9 @@ function BillTable({ bills }: { bills: BillRow[] }) {
             <TableHead className="text-[10px] uppercase tracking-wide" style={{ color: "var(--text-tertiary)" }}>
               Bill
             </TableHead>
+            <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 220 }}>
+              Chamber / Type
+            </TableHead>
             <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 180 }}>
               Number
             </TableHead>
@@ -115,13 +134,30 @@ function BillTable({ bills }: { bills: BillRow[] }) {
                   <div className="text-[13px] font-book" style={{ color: "var(--text-primary)" }}>
                     {bill.short_title ?? bill.title}
                   </div>
+                  {/* Mobile-only: chamber/type tags inline since the dedicated
+                      column is hidden below md. Desktop sees them in their own column. */}
                   {bill.house_introduced && (
-                    <div className="text-[11px] mt-0.5" style={{ color: "var(--text-disabled)" }}>
-                      {bill.house_introduced === "lok_sabha" ? "Lok Sabha" : "Rajya Sabha"}
-                      {bill.bill_type ? ` · ${bill.bill_type.replace("_", " ")}` : ""}
+                    <div className="md:hidden flex flex-wrap gap-1 mt-1.5">
+                      <Tag tone="house">
+                        {bill.house_introduced === "lok_sabha" ? "Lok Sabha" : "Rajya Sabha"}
+                      </Tag>
+                      {bill.bill_type && <Tag>{bill.bill_type.replace("_", " ")}</Tag>}
                     </div>
                   )}
                 </Link>
+              </TableCell>
+              <TableCell className="hidden md:table-cell whitespace-nowrap">
+                <div className="flex flex-wrap gap-1">
+                  {bill.house_introduced && (
+                    <Tag tone="house">
+                      {bill.house_introduced === "lok_sabha" ? "Lok Sabha" : "Rajya Sabha"}
+                    </Tag>
+                  )}
+                  {bill.bill_type && <Tag>{bill.bill_type.replace("_", " ")}</Tag>}
+                  {!bill.house_introduced && !bill.bill_type && (
+                    <span className="text-[12px]" style={{ color: "var(--text-disabled)" }}>—</span>
+                  )}
+                </div>
               </TableCell>
               <TableCell className="hidden md:table-cell whitespace-nowrap">
                 <span className="text-[12px] font-mono" style={{ color: "var(--text-tertiary)" }}>
