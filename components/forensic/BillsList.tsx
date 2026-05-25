@@ -112,9 +112,6 @@ function BillTable({ bills, hideHouseTag = false }: { bills: BillRow[]; hideHous
             <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 220 }}>
               {hideHouseTag ? "Type" : "Chamber / Type"}
             </TableHead>
-            <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 180 }}>
-              Number
-            </TableHead>
             <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 70 }}>
               Year
             </TableHead>
@@ -160,11 +157,6 @@ function BillTable({ bills, hideHouseTag = false }: { bills: BillRow[]; hideHous
                     <span className="text-[12px]" style={{ color: "var(--text-disabled)" }}>—</span>
                   )}
                 </div>
-              </TableCell>
-              <TableCell className="hidden md:table-cell whitespace-nowrap">
-                <span className="text-[12px] font-mono" style={{ color: "var(--text-tertiary)" }}>
-                  {bill.bill_number ?? "—"}
-                </span>
               </TableCell>
               <TableCell className="hidden md:table-cell whitespace-nowrap">
                 <span className="text-[12px]" style={{ color: "var(--text-tertiary)" }}>
