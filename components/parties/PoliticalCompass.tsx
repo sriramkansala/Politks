@@ -15,7 +15,8 @@
 //   • a needle that animates in with a spring
 //   • compact axis labels under the dial
 
-import { motion } from "framer-motion"
+import { useEffect } from "react"
+import { motion, useMotionValue, useTransform, animate } from "framer-motion"
 import { springs } from "@/lib/springs"
 import { fontWeights } from "@/lib/font-weight"
 
@@ -80,11 +81,26 @@ function Dial({ value, color, leftLabel, rightLabel, delay = 0 }: DialProps) {
   const TICKS = 21 // odd so there's a centre tick
   const needleAngle = valToAngle(value)
   const leftAngle = Math.PI // 9 o'clock — always the starting position
-  const needleEnd = polar(R_NEEDLE, needleAngle)
-  // CSS rotation (clockwise) that takes the line from 9 o'clock to the final
-  // needle angle. Used as the negative start of the rotate animation so the
-  // needle always begins at 9 and sweeps clockwise to its value.
-  const finalRotationDeg = (leftAngle - needleAngle) * (180 / Math.PI)
+
+  // Animate the needle by interpolating its ANGLE (radians) from π → final.
+  // Computing x2/y2 from the live motion value avoids the CSS-transform /
+  // bounding-box quirks that made the needle look like it spun in from a
+  // random spot. The endpoint literally travels along the arc.
+  const angleMV = useMotionValue(leftAngle)
+  const x2 = useTransform(angleMV, (a) => (CX + R_NEEDLE * Math.cos(a)).toFixed(2))
+  const y2 = useTransform(angleMV, (a) => (CY - R_NEEDLE * Math.sin(a)).toFixed(2))
+
+  useEffect(() => {
+    const controls = animate(angleMV, needleAngle, { ...springs.gentle, delay: delay + 0.05 })
+    return () => controls.stop()
+  }, [needleAngle, delay, angleMV])
+
+  // Opacity animation for the needle fade-in (separate from angle sweep).
+  const opacityMV = useMotionValue(0)
+  useEffect(() => {
+    const controls = animate(opacityMV, 1, { duration: 0.18, delay: delay + 0.05 })
+    return () => controls.stop()
+  }, [delay, opacityMV])
 
   return (
     <div className="flex flex-col items-end">
@@ -139,21 +155,19 @@ function Dial({ value, color, leftLabel, rightLabel, delay = 0 }: DialProps) {
           )
         })}
 
-        {/* Needle — drawn at its final endpoint, but rotated back to 9 o'clock
-         *  at start so the spring sweeps it clockwise like a clock hand from
-         *  9 → 12 → 3 toward the final value. */}
+        {/* Needle — endpoint x2/y2 are MotionValues derived from a live angle
+         *  that springs from π (9 o'clock) to the target angle, so the tip
+         *  literally traces the arc 9 → 12 → 3 like a clock hand. No CSS
+         *  rotate, no transform-origin gotchas. */}
         <motion.line
           x1={CX}
           y1={CY}
-          x2={needleEnd.x}
-          y2={needleEnd.y}
+          x2={x2}
+          y2={y2}
           stroke={color}
           strokeWidth={2.5}
           strokeLinecap="round"
-          initial={{ rotate: -finalRotationDeg, opacity: 0 }}
-          animate={{ rotate: 0, opacity: 1 }}
-          transition={{ ...springs.gentle, delay: delay + 0.05 }}
-          style={{ originX: `${CX}px`, originY: `${CY}px` }}
+          style={{ opacity: opacityMV }}
         />
 
         {/* Pivot */}
