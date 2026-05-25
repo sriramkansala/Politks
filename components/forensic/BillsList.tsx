@@ -85,7 +85,7 @@ function Tag({ children, tone = "default" }: { children: React.ReactNode; tone?:
   )
 }
 
-function BillTable({ bills }: { bills: BillRow[] }) {
+function BillTable({ bills, hideHouseTag = false }: { bills: BillRow[]; hideHouseTag?: boolean }) {
   if (bills.length === 0) {
     return (
       <div
@@ -110,7 +110,7 @@ function BillTable({ bills }: { bills: BillRow[] }) {
               Bill
             </TableHead>
             <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 220 }}>
-              Chamber / Type
+              {hideHouseTag ? "Type" : "Chamber / Type"}
             </TableHead>
             <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 180 }}>
               Number
@@ -136,11 +136,13 @@ function BillTable({ bills }: { bills: BillRow[] }) {
                   </div>
                   {/* Mobile-only: chamber/type tags inline since the dedicated
                       column is hidden below md. Desktop sees them in their own column. */}
-                  {bill.house_introduced && (
+                  {(bill.house_introduced || bill.bill_type) && (
                     <div className="md:hidden flex flex-wrap gap-1 mt-1.5">
-                      <Tag tone="house">
-                        {bill.house_introduced === "lok_sabha" ? "Lok Sabha" : "Rajya Sabha"}
-                      </Tag>
+                      {!hideHouseTag && bill.house_introduced && (
+                        <Tag tone="house">
+                          {bill.house_introduced === "lok_sabha" ? "Lok Sabha" : "Rajya Sabha"}
+                        </Tag>
+                      )}
                       {bill.bill_type && <Tag>{bill.bill_type.replace("_", " ")}</Tag>}
                     </div>
                   )}
@@ -148,13 +150,13 @@ function BillTable({ bills }: { bills: BillRow[] }) {
               </TableCell>
               <TableCell className="hidden md:table-cell whitespace-nowrap">
                 <div className="flex flex-wrap gap-1">
-                  {bill.house_introduced && (
+                  {!hideHouseTag && bill.house_introduced && (
                     <Tag tone="house">
                       {bill.house_introduced === "lok_sabha" ? "Lok Sabha" : "Rajya Sabha"}
                     </Tag>
                   )}
                   {bill.bill_type && <Tag>{bill.bill_type.replace("_", " ")}</Tag>}
-                  {!bill.house_introduced && !bill.bill_type && (
+                  {(hideHouseTag ? !bill.bill_type : !bill.house_introduced && !bill.bill_type) && (
                     <span className="text-[12px]" style={{ color: "var(--text-disabled)" }}>—</span>
                   )}
                 </div>
@@ -216,12 +218,12 @@ export function BillsList({ bills }: Props) {
       </TabPanel>
       <TabPanel value="lok_sabha">
         <AnimateIn stagger className="space-y-2">
-          <AnimateItem><BillTable bills={lokSabha} /></AnimateItem>
+          <AnimateItem><BillTable bills={lokSabha} hideHouseTag /></AnimateItem>
         </AnimateIn>
       </TabPanel>
       <TabPanel value="rajya_sabha">
         <AnimateIn stagger className="space-y-2">
-          <AnimateItem><BillTable bills={rajyaSabha} /></AnimateItem>
+          <AnimateItem><BillTable bills={rajyaSabha} hideHouseTag /></AnimateItem>
         </AnimateIn>
       </TabPanel>
     </Tabs>
