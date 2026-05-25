@@ -7,7 +7,7 @@
 import { motion } from "framer-motion"
 import { ExternalLink } from "lucide-react"
 import { Tabs, TabsList, TabItem, TabPanel } from "@/components/ui/tabs"
-import { PanelMotion } from "@/components/ui/animate-in"
+import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
 import { springs } from "@/lib/springs"
 import { HonestyCard } from "@/components/mp/HonestyCard"
 import { AttendanceHeatmap } from "@/components/mp/AttendanceHeatmap"
@@ -89,12 +89,12 @@ function ComparisonBar({
 
 function OverviewTab({ mp }: { mp: Mp }) {
   return (
-    <PanelMotion>
-      <div className="space-y-6">
-        <HonestyCard mp={mp} />
-        <AttendanceHeatmap mp={mp} />
+    <AnimateIn stagger className="space-y-6">
+      <AnimateItem><HonestyCard mp={mp} /></AnimateItem>
+      <AnimateItem><AttendanceHeatmap mp={mp} /></AnimateItem>
 
-        {/* vs national average */}
+      {/* vs national average */}
+      <AnimateItem>
         <section>
           <SectionHeading sub="PRS 17th/18th LS aggregates">vs national average</SectionHeading>
           <div style={{ borderTop: "1px solid var(--border)" }}>
@@ -103,8 +103,8 @@ function OverviewTab({ mp }: { mp: Mp }) {
             <ComparisonBar label="Debates participated" value={mp.debates_participated} reference={mp.national_avg_debates} />
           </div>
         </section>
-      </div>
-    </PanelMotion>
+      </AnimateItem>
+    </AnimateIn>
   )
 }
 
@@ -114,8 +114,8 @@ function QuestionsTab({ mp }: { mp: Mp }) {
   const questions = mp.questions_detail ?? []
 
   return (
-    <PanelMotion>
-      <div className="space-y-4">
+    <AnimateIn stagger className="space-y-4">
+      <AnimateItem>
         <div className="flex items-baseline gap-3">
           <SectionHeading sub="Parliamentary questions tabled in Lok Sabha">
             Questions asked
@@ -127,7 +127,9 @@ function QuestionsTab({ mp }: { mp: Mp }) {
             {mp.questions_asked ?? questions.length} total
           </span>
         </div>
+      </AnimateItem>
 
+      <AnimateItem>
         {questions.length === 0 ? (
           <EmptyState message="Detailed question records being compiled for this MP." />
         ) : (
@@ -189,14 +191,16 @@ function QuestionsTab({ mp }: { mp: Mp }) {
             ))}
           </div>
         )}
+      </AnimateItem>
 
-        {questions.length > 0 && questions.length < (mp.questions_asked ?? 0) && (
+      {questions.length > 0 && questions.length < (mp.questions_asked ?? 0) && (
+        <AnimateItem>
           <p className="text-[11px] text-center pt-2" style={{ color: "var(--text-disabled)" }}>
             Showing {questions.length} of {mp.questions_asked} questions · full list on PRS India
           </p>
-        )}
-      </div>
-    </PanelMotion>
+        </AnimateItem>
+      )}
+    </AnimateIn>
   )
 }
 
@@ -208,53 +212,59 @@ function CriminalTab({ mp }: { mp: Mp }) {
   const totalSerious = mp.criminal_cases_serious ?? 0
 
   return (
-    <PanelMotion>
-      <div className="space-y-6">
-        {/* Summary stat cards */}
-        <div className="grid grid-cols-2 gap-3">
-          <div
-            className="p-4 rounded-[6px]"
-            style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
-          >
-            <div className="text-[11px] uppercase tracking-[0.07em] mb-1" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.medium }}>
-              Total cases
-            </div>
+    <AnimateIn stagger className="space-y-6">
+      {/* Summary stat cards */}
+      <AnimateItem>
+        <AnimateIn stagger className="grid grid-cols-2 gap-3">
+          <AnimateItem>
             <div
-              className="text-[28px] leading-none"
-              style={{
-                color: totalAny > 0 ? "var(--status-broken)" : "var(--status-kept)",
-                fontVariationSettings: fontWeights.semibold,
-              }}
+              className="p-4 rounded-[6px]"
+              style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
             >
-              {totalAny}
+              <div className="text-[11px] uppercase tracking-[0.07em] mb-1" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.medium }}>
+                Total cases
+              </div>
+              <div
+                className="text-[28px] leading-none"
+                style={{
+                  color: totalAny > 0 ? "var(--status-broken)" : "var(--status-kept)",
+                  fontVariationSettings: fontWeights.semibold,
+                }}
+              >
+                {totalAny}
+              </div>
+              <div className="text-[11px] mt-1" style={{ color: "var(--text-tertiary)" }}>
+                self-declared affidavit
+              </div>
             </div>
-            <div className="text-[11px] mt-1" style={{ color: "var(--text-tertiary)" }}>
-              self-declared affidavit
-            </div>
-          </div>
-          <div
-            className="p-4 rounded-[6px]"
-            style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
-          >
-            <div className="text-[11px] uppercase tracking-[0.07em] mb-1" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.medium }}>
-              Serious cases
-            </div>
+          </AnimateItem>
+          <AnimateItem>
             <div
-              className="text-[28px] leading-none"
-              style={{
-                color: totalSerious > 0 ? "var(--status-broken)" : "var(--status-kept)",
-                fontVariationSettings: fontWeights.semibold,
-              }}
+              className="p-4 rounded-[6px]"
+              style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
             >
-              {totalSerious}
+              <div className="text-[11px] uppercase tracking-[0.07em] mb-1" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.medium }}>
+                Serious cases
+              </div>
+              <div
+                className="text-[28px] leading-none"
+                style={{
+                  color: totalSerious > 0 ? "var(--status-broken)" : "var(--status-kept)",
+                  fontVariationSettings: fontWeights.semibold,
+                }}
+              >
+                {totalSerious}
+              </div>
+              <div className="text-[11px] mt-1" style={{ color: "var(--text-tertiary)" }}>
+                murder · rape · kidnap
+              </div>
             </div>
-            <div className="text-[11px] mt-1" style={{ color: "var(--text-tertiary)" }}>
-              murder · rape · kidnap
-            </div>
-          </div>
-        </div>
+          </AnimateItem>
+        </AnimateIn>
+      </AnimateItem>
 
-        {/* Case list */}
+      {/* Case list */}
+      <AnimateItem>
         <section>
           <SectionHeading sub="Declared in election affidavit — source: MyNeta / ECI">
             Case details
@@ -318,13 +328,15 @@ function CriminalTab({ mp }: { mp: Mp }) {
             </div>
           )}
         </section>
+      </AnimateItem>
 
+      <AnimateItem>
         <p className="text-[11px]" style={{ color: "var(--text-disabled)" }}>
           Criminal records are self-declared by candidates in affidavits filed with the Election Commission of India.
           They reflect charges filed, not convictions. Source: MyNeta / ADR.
         </p>
-      </div>
-    </PanelMotion>
+      </AnimateItem>
+    </AnimateIn>
   )
 }
 
@@ -334,10 +346,10 @@ function EducationTab({ mp }: { mp: Mp }) {
   const history = mp.education_history ?? []
 
   return (
-    <PanelMotion>
-      <div className="space-y-6">
-        {/* Highest level badge */}
-        {mp.education_level && (
+    <AnimateIn stagger className="space-y-6">
+      {/* Highest level badge */}
+      {mp.education_level && (
+        <AnimateItem>
           <div
             className="inline-flex items-center gap-2 px-3 py-2 rounded-[6px]"
             style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
@@ -349,8 +361,10 @@ function EducationTab({ mp }: { mp: Mp }) {
               {mp.education_level}
             </span>
           </div>
-        )}
+        </AnimateItem>
+      )}
 
+      <AnimateItem>
         <section>
           <SectionHeading sub="As declared in election affidavit — source: MyNeta / ECI">
             Education history
@@ -423,8 +437,8 @@ function EducationTab({ mp }: { mp: Mp }) {
             </div>
           )}
         </section>
-      </div>
-    </PanelMotion>
+      </AnimateItem>
+    </AnimateIn>
   )
 }
 
@@ -435,44 +449,50 @@ function FinancialsTab({ mp }: { mp: Mp }) {
     mp.mplads_unspent_inr != null && mp.mplads_unspent_inr >= 5_00_00_000
 
   return (
-    <PanelMotion>
-      <div className="space-y-6">
-        {/* Asset headline */}
-        <div className="grid grid-cols-2 gap-3">
-          <div
-            className="p-4 rounded-[6px]"
-            style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
-          >
-            <div className="text-[11px] uppercase tracking-[0.07em] mb-1" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.medium }}>
-              Declared assets
-            </div>
+    <AnimateIn stagger className="space-y-6">
+      {/* Asset headline */}
+      <AnimateItem>
+        <AnimateIn stagger className="grid grid-cols-2 gap-3">
+          <AnimateItem>
             <div
-              className="text-[28px] leading-none"
-              style={{ color: "var(--status-compromise)", fontVariationSettings: fontWeights.semibold }}
+              className="p-4 rounded-[6px]"
+              style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
             >
-              {formatINR(mp.assets_inr)}
+              <div className="text-[11px] uppercase tracking-[0.07em] mb-1" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.medium }}>
+                Declared assets
+              </div>
+              <div
+                className="text-[28px] leading-none"
+                style={{ color: "var(--status-compromise)", fontVariationSettings: fontWeights.semibold }}
+              >
+                {formatINR(mp.assets_inr)}
+              </div>
+              {mp.is_crorepati && (
+                <div className="text-[11px] mt-1" style={{ color: "var(--text-tertiary)" }}>Crorepati</div>
+              )}
             </div>
-            {mp.is_crorepati && (
-              <div className="text-[11px] mt-1" style={{ color: "var(--text-tertiary)" }}>Crorepati</div>
-            )}
-          </div>
-          <div
-            className="p-4 rounded-[6px]"
-            style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
-          >
-            <div className="text-[11px] uppercase tracking-[0.07em] mb-1" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.medium }}>
-              Liabilities
-            </div>
+          </AnimateItem>
+          <AnimateItem>
             <div
-              className="text-[28px] leading-none"
-              style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold }}
+              className="p-4 rounded-[6px]"
+              style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
             >
-              {formatINR(mp.liabilities_inr)}
+              <div className="text-[11px] uppercase tracking-[0.07em] mb-1" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.medium }}>
+                Liabilities
+              </div>
+              <div
+                className="text-[28px] leading-none"
+                style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold }}
+              >
+                {formatINR(mp.liabilities_inr)}
+              </div>
             </div>
-          </div>
-        </div>
+          </AnimateItem>
+        </AnimateIn>
+      </AnimateItem>
 
-        {/* Detailed breakdown */}
+      {/* Detailed breakdown */}
+      <AnimateItem>
         <section>
           <SectionHeading sub="Self-declared affidavit — MyNeta / ECI">
             Asset breakdown
@@ -490,8 +510,10 @@ function FinancialsTab({ mp }: { mp: Mp }) {
             />
           </div>
         </section>
+      </AnimateItem>
 
-        {/* MPLADS */}
+      {/* MPLADS */}
+      <AnimateItem>
         <section>
           <SectionHeading sub="Member of Parliament Local Area Development Scheme">
             MPLADS spending
@@ -516,13 +538,15 @@ function FinancialsTab({ mp }: { mp: Mp }) {
             </p>
           )}
         </section>
+      </AnimateItem>
 
+      <AnimateItem>
         <p className="text-[11px]" style={{ color: "var(--text-disabled)" }}>
           Asset figures are nominal (not CPI-adjusted). MPLADS distinguishes sanctioned, released and spent —
           we show released and unspent. All figures self-declared; not audited.
         </p>
-      </div>
-    </PanelMotion>
+      </AnimateItem>
+    </AnimateIn>
   )
 }
 

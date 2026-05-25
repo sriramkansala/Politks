@@ -3,7 +3,7 @@
 import { ExternalLink } from "lucide-react"
 import { motion } from "framer-motion"
 import { Tabs, TabsList, TabItem, TabPanel } from "@/components/ui/tabs"
-import { PanelMotion } from "@/components/ui/animate-in"
+import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
 import { StageTimeline } from "@/components/forensic/StageTimeline"
 import { ForensicSignals } from "@/components/forensic/ForensicSignalCard"
 import { IssueGraph, type GraphNode, type GraphEdge } from "@/components/forensic/IssueGraph"
@@ -196,73 +196,89 @@ export function BillPageTabs({
 
       {/* ── Tab 1: Overview ────────────────────────────────────────────────── */}
       <TabPanel value="overview">
-        <PanelMotion>
-          <div className="space-y-8">
-            {story ? (
+        <AnimateIn stagger className="space-y-8">
+          {story ? (
+            <AnimateItem>
               <section>
                 <SectionHeading sub="Plain-English explainer">What this bill does</SectionHeading>
                 <p className="text-[14px] leading-relaxed max-w-3xl" style={{ color: "var(--text-secondary)" }}>
                   {story.what_it_does}
                 </p>
               </section>
-            ) : (
+            </AnimateItem>
+          ) : (
+            <AnimateItem>
               <p className="text-[13px]" style={{ color: "var(--text-tertiary)" }}>
                 Contextual overview being compiled.
               </p>
-            )}
+            </AnimateItem>
+          )}
 
-            {/* Vote counts */}
-            {(billVotes?.lok_sabha_ayes != null || billVotes?.rajya_sabha_ayes != null) && (
+          {/* Vote counts */}
+          {(billVotes?.lok_sabha_ayes != null || billVotes?.rajya_sabha_ayes != null) && (
+            <AnimateItem>
               <section>
                 <SectionHeading sub="Parliamentary vote record">Voting record</SectionHeading>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <AnimateIn stagger className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {billVotes?.lok_sabha_ayes != null && (
-                    <div className="stat-card tone-good">
-                      <span className="label">Lok Sabha — Ayes</span>
-                      <span className="value">{billVotes.lok_sabha_ayes}</span>
-                    </div>
+                    <AnimateItem>
+                      <div className="stat-card tone-good">
+                        <span className="label">Lok Sabha — Ayes</span>
+                        <span className="value">{billVotes.lok_sabha_ayes}</span>
+                      </div>
+                    </AnimateItem>
                   )}
                   {billVotes?.lok_sabha_noes != null && (
-                    <div className="stat-card tone-bad">
-                      <span className="label">Lok Sabha — Noes</span>
-                      <span className="value">{billVotes.lok_sabha_noes}</span>
-                    </div>
+                    <AnimateItem>
+                      <div className="stat-card tone-bad">
+                        <span className="label">Lok Sabha — Noes</span>
+                        <span className="value">{billVotes.lok_sabha_noes}</span>
+                      </div>
+                    </AnimateItem>
                   )}
                   {billVotes?.rajya_sabha_ayes != null && (
-                    <div className="stat-card tone-good">
-                      <span className="label">Rajya Sabha — Ayes</span>
-                      <span className="value">{billVotes.rajya_sabha_ayes}</span>
-                    </div>
+                    <AnimateItem>
+                      <div className="stat-card tone-good">
+                        <span className="label">Rajya Sabha — Ayes</span>
+                        <span className="value">{billVotes.rajya_sabha_ayes}</span>
+                      </div>
+                    </AnimateItem>
                   )}
                   {billVotes?.rajya_sabha_noes != null && (
-                    <div className="stat-card tone-bad">
-                      <span className="label">Rajya Sabha — Noes</span>
-                      <span className="value">{billVotes.rajya_sabha_noes}</span>
-                    </div>
+                    <AnimateItem>
+                      <div className="stat-card tone-bad">
+                        <span className="label">Rajya Sabha — Noes</span>
+                        <span className="value">{billVotes.rajya_sabha_noes}</span>
+                      </div>
+                    </AnimateItem>
                   )}
-                </div>
+                </AnimateIn>
               </section>
-            )}
+            </AnimateItem>
+          )}
 
-            {/* Stats */}
-            {story && story.stats.length > 0 && (
+          {/* Stats */}
+          {story && story.stats.length > 0 && (
+            <AnimateItem>
               <section>
                 <SectionHeading sub="Scale and context, in numbers">By the numbers</SectionHeading>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {story.stats.map((s, i) => <StatCard key={i} s={s} />)}
-                </div>
+                <AnimateIn stagger className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {story.stats.map((s, i) => (
+                    <AnimateItem key={i}><StatCard s={s} /></AnimateItem>
+                  ))}
+                </AnimateIn>
               </section>
-            )}
-          </div>
-        </PanelMotion>
+            </AnimateItem>
+          )}
+        </AnimateIn>
       </TabPanel>
 
       {/* ── Tab 2: Story ───────────────────────────────────────────────────── */}
       <TabPanel value="story">
-        <PanelMotion>
-          <div className="space-y-8">
-            {story ? (
-              <>
+        <AnimateIn stagger className="space-y-8">
+          {story ? (
+            <>
+              <AnimateItem>
                 <section>
                   <SectionHeading sub="The political and social moment around this bill">
                     Why it matters
@@ -271,8 +287,10 @@ export function BillPageTabs({
                     {story.why_it_matters}
                   </p>
                 </section>
+              </AnimateItem>
 
-                {story.stakeholders.length > 0 && (
+              {story.stakeholders.length > 0 && (
+                <AnimateItem>
                   <section>
                     <SectionHeading sub="Who supports, opposes, or has taken a formal position">
                       Stakeholders
@@ -296,31 +314,35 @@ export function BillPageTabs({
                                 {group.length}
                               </span>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                              {group.map((s, i) => <StakeholderCard key={i} s={s} />)}
-                            </div>
+                            <AnimateIn stagger className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              {group.map((s, i) => (
+                                <AnimateItem key={i}><StakeholderCard s={s} /></AnimateItem>
+                              ))}
+                            </AnimateIn>
                           </div>
                         ) : null,
                       )}
                     </div>
                   </section>
-                )}
-              </>
-            ) : (
+                </AnimateItem>
+              )}
+            </>
+          ) : (
+            <AnimateItem>
               <p className="text-[13px]" style={{ color: "var(--text-tertiary)" }}>
                 Story being compiled for this bill.
               </p>
-            )}
-          </div>
-        </PanelMotion>
+            </AnimateItem>
+          )}
+        </AnimateIn>
       </TabPanel>
 
       {/* ── Tab 3: History ─────────────────────────────────────────────────── */}
       <TabPanel value="history">
-        <PanelMotion>
-          <div className="space-y-10">
-            {/* Narrative events */}
-            {story && story.events.length > 0 && (
+        <AnimateIn stagger className="space-y-10">
+          {/* Narrative events */}
+          {story && story.events.length > 0 && (
+            <AnimateItem>
               <section>
                 <SectionHeading sub="Key moments in the life of this bill">
                   Narrative timeline
@@ -332,17 +354,21 @@ export function BillPageTabs({
                     .map((ev, i) => <EventRow key={i} ev={ev} />)}
                 </ol>
               </section>
-            )}
+            </AnimateItem>
+          )}
 
-            {/* 16-stage parliamentary timeline */}
+          {/* 16-stage parliamentary timeline */}
+          <AnimateItem>
             <StageTimeline
               stageEvents={stageEvents}
               currentStage={currentStage}
               coveredCount={coveredCount}
             />
+          </AnimateItem>
 
-            {/* Causal graph — WRB series only */}
-            {isWrbSeries && graphNodes.length > 0 && (
+          {/* Causal graph — WRB series only */}
+          {isWrbSeries && graphNodes.length > 0 && (
+            <AnimateItem>
               <section>
                 <SectionHeading sub="Relationships between bills, MPs, and blocking events">
                   Causal graph
@@ -352,17 +378,17 @@ export function BillPageTabs({
                   <IssueGraph nodes={graphNodes} edges={graphEdges} width={920} height={480} />
                 </div>
               </section>
-            )}
-          </div>
-        </PanelMotion>
+            </AnimateItem>
+          )}
+        </AnimateIn>
       </TabPanel>
 
       {/* ── Tab 4: Implications ────────────────────────────────────────────── */}
       <TabPanel value="implications">
-        <PanelMotion>
-          <div className="space-y-8">
-            {story ? (
-              <>
+        <AnimateIn stagger className="space-y-8">
+          {story ? (
+            <>
+              <AnimateItem>
                 <section>
                   <SectionHeading sub="What this means in practice beyond the status pill">
                     Where it stands
@@ -371,17 +397,21 @@ export function BillPageTabs({
                     {story.where_it_stands}
                   </p>
                 </section>
+              </AnimateItem>
 
-                {showForensicSignals && (
+              {showForensicSignals && (
+                <AnimateItem>
                   <section>
                     <SectionHeading sub="Automated signals detected by the Neo Nīti forensic engine">
                       Forensic signals
                     </SectionHeading>
                     <ForensicSignals />
                   </section>
-                )}
+                </AnimateItem>
+              )}
 
-                {story.further_reading.length > 0 && (
+              {story.further_reading.length > 0 && (
+                <AnimateItem>
                   <section>
                     <SectionHeading sub="Primary documents and reporting">
                       Further reading
@@ -401,15 +431,17 @@ export function BillPageTabs({
                       from mainstream reporting but where we have not yet pinned a specific article URL.
                     </div>
                   </section>
-                )}
-              </>
-            ) : (
+                </AnimateItem>
+              )}
+            </>
+          ) : (
+            <AnimateItem>
               <p className="text-[13px]" style={{ color: "var(--text-tertiary)" }}>
                 Implications analysis being compiled for this bill.
               </p>
-            )}
-          </div>
-        </PanelMotion>
+            </AnimateItem>
+          )}
+        </AnimateIn>
       </TabPanel>
     </Tabs>
   )

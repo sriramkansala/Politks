@@ -8,7 +8,7 @@ import { useState } from "react"
 import { motion, LayoutGroup } from "framer-motion"
 import Link from "next/link"
 import { Tabs, TabsList, TabItem, TabPanel } from "@/components/ui/tabs"
-import { PanelMotion } from "@/components/ui/animate-in"
+import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
 import { springs } from "@/lib/springs"
 import { StatusPill } from "@/components/promises/StatusPill"
 import { useHiddenParties } from "@/hooks/use-hidden-parties"
@@ -74,16 +74,16 @@ function Bar({ value, total, color }: { value: number; total: number; color: str
 
 function OverviewTab({ stats }: { stats: PartyStats[] }) {
   return (
-    <PanelMotion>
-      <div className="space-y-6">
-        {/* Summary cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <AnimateIn stagger className="space-y-6">
+      {/* Summary cards */}
+      <AnimateItem>
+        <AnimateIn stagger className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {stats.map((p) => {
             const keptPct = p.total > 0 ? Math.round((p.kept / p.total) * 100) : 0
             const hasData = p.total > 0 && keptPct > 0
             return (
+              <AnimateItem key={p.slug}>
               <motion.div
-                key={p.slug}
                 whileHover={{ y: -1 }}
                 transition={springs.responsive}
                 className="p-4 rounded-[var(--radius-card)]"
@@ -112,11 +112,14 @@ function OverviewTab({ stats }: { stats: PartyStats[] }) {
                 <p className="text-caption mb-2" style={{ color: tokens.color.textTertiary }}>kept</p>
                 <Bar value={p.kept} total={p.total} color={hasData ? tokens.status.kept : tokens.color.border} />
               </motion.div>
+              </AnimateItem>
             )
           })}
-        </div>
+        </AnimateIn>
+      </AnimateItem>
 
-        {/* Breakdown table */}
+      {/* Breakdown table */}
+      <AnimateItem>
         <div className="rounded-[6px] overflow-hidden"
           style={{ border: `1px solid ${tokens.color.border}`, background: tokens.color.bgElevated }}>
           <Table>
@@ -156,8 +159,8 @@ function OverviewTab({ stats }: { stats: PartyStats[] }) {
             </TableBody>
           </Table>
         </div>
-      </div>
-    </PanelMotion>
+      </AnimateItem>
+    </AnimateIn>
   )
 }
 
@@ -188,9 +191,9 @@ function PromisesTab({
     : promises.filter((p) => p.status === filter)
 
   return (
-    <PanelMotion>
-      <div className="space-y-4">
-        {/* Status filter chips — FF shared-element pill (see PromiseList.tsx). */}
+    <AnimateIn stagger className="space-y-4">
+      {/* Status filter chips — FF shared-element pill (see PromiseList.tsx). */}
+      <AnimateItem>
         <LayoutGroup id="tracker-filter-group">
           <div className="flex flex-wrap gap-0.5">
             {PROMISE_STATUSES.map(({ value, label }) => {
@@ -226,8 +229,10 @@ function PromisesTab({
             })}
           </div>
         </LayoutGroup>
+      </AnimateItem>
 
-        {/* Promise list */}
+      {/* Promise list */}
+      <AnimateItem>
         <div className="space-y-0" style={{ borderTop: "1px solid var(--border)" }}>
           {filtered.length === 0 ? (
             <p className="py-10 text-center text-[13px]" style={{ color: "var(--text-tertiary)" }}>
@@ -282,14 +287,16 @@ function PromisesTab({
             })
           )}
         </div>
+      </AnimateItem>
 
-        {filtered.length > 0 && (
+      {filtered.length > 0 && (
+        <AnimateItem>
           <p className="text-[11px] text-center" style={{ color: "var(--text-disabled)" }}>
             {filtered.length} promise{filtered.length !== 1 ? "s" : ""}
           </p>
-        )}
-      </div>
-    </PanelMotion>
+        </AnimateItem>
+      )}
+    </AnimateIn>
   )
 }
 
