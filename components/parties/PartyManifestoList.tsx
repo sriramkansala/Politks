@@ -1,9 +1,10 @@
 "use client"
 
 // Compact list of a party's manifestos — year, election type, page count,
-// PDF link. "use client" so framer-motion stagger hydrates cleanly without
-// the SSR/CSR inheritance gap that was killing the AnimateItem initial state.
+// PDF link. Uses an explicit post-mount state flip to drive the cascade so
+// the animation can't be skipped by SSR hydration optimisations.
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowRight, Download, ExternalLink } from "lucide-react"
@@ -25,6 +26,15 @@ export function PartyManifestoList({
   manifestos: Manifesto[]
   partyColor: string
 }) {
+  const [shown, setShown] = useState(false)
+  useEffect(() => {
+    // Flip on the next frame so the DOM has the initial hidden state
+    // committed before we transition to the visible state. Without the
+    // rAF the browser can coalesce both states and you see nothing.
+    const id = requestAnimationFrame(() => setShown(true))
+    return () => cancelAnimationFrame(id)
+  }, [])
+
   if (!manifestos.length) return <PartyEmptyState section="Manifesto" />
 
   const sorted = [...manifestos].sort(
@@ -36,9 +46,9 @@ export function PartyManifestoList({
       {sorted.map((m, i) => (
         <motion.article
           key={m.id}
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ ...springs.gentle, delay: i * 0.07 }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={shown ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+          transition={{ ...springs.gentle, delay: i * 0.08 }}
           className="p-3 rounded-[6px] flex flex-col gap-2 h-full"
           style={{
             background: "var(--bg-elevated)",
