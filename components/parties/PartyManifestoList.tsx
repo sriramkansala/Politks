@@ -5,11 +5,12 @@
 // the SSR/CSR inheritance gap that was killing the AnimateItem initial state.
 
 import Link from "next/link"
+import { motion } from "framer-motion"
 import { ArrowRight, Download, ExternalLink } from "lucide-react"
 import type { Manifesto } from "@/lib/db/types"
 import { PartyEmptyState } from "./PartyEmptyState"
 import { fontWeights } from "@/lib/font-weight"
-import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
+import { springs } from "@/lib/springs"
 
 const ELECTION_LABEL: Record<string, string> = {
   lok_sabha: "Lok Sabha",
@@ -31,10 +32,13 @@ export function PartyManifestoList({
   )
 
   return (
-    <AnimateIn stagger className="grid grid-cols-1 md:grid-cols-2 gap-2">
-      {sorted.map((m) => (
-        <AnimateItem key={m.id}>
-        <article
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+      {sorted.map((m, i) => (
+        <motion.article
+          key={m.id}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...springs.gentle, delay: i * 0.07 }}
           className="p-3 rounded-[6px] flex flex-col gap-2 h-full"
           style={{
             background: "var(--bg-elevated)",
@@ -121,9 +125,8 @@ export function PartyManifestoList({
               </a>
             )}
           </div>
-        </article>
-        </AnimateItem>
+        </motion.article>
       ))}
-    </AnimateIn>
+    </div>
   )
 }
