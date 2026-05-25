@@ -286,7 +286,7 @@ export default async function PartyPage({ params, searchParams }: PageProps) {
       {active === "promises" && <AnimateIn delay={0.05}><PromiseList promises={allPromises} /></AnimateIn>}
 
       {active === "manifestos" && (
-        <AnimateIn delay={0.05}>
+        <section>
           <h2 className="h-section mb-3" style={{ color: "var(--text-primary)" }}>
             Manifestos
           </h2>
@@ -294,7 +294,7 @@ export default async function PartyPage({ params, searchParams }: PageProps) {
             manifestos={manifestos}
             partyColor={typedParty.color_hex}
           />
-        </AnimateIn>
+        </section>
       )}
 
       {/* Source caveat — visible on all non-Promises tabs */}

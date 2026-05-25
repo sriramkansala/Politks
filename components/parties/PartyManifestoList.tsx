@@ -1,6 +1,8 @@
+"use client"
+
 // Compact list of a party's manifestos — year, election type, page count,
-// PDF link. Data comes from the existing `manifestos` table filtered by
-// party_id on the page server-component.
+// PDF link. "use client" so framer-motion stagger hydrates cleanly without
+// the SSR/CSR inheritance gap that was killing the AnimateItem initial state.
 
 import Link from "next/link"
 import { ArrowRight, Download, ExternalLink } from "lucide-react"
