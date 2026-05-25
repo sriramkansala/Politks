@@ -7,6 +7,7 @@
 import { PartyCard } from "@/components/parties/PartyCard"
 import type { Party } from "@/lib/db/types"
 import { useHiddenParties } from "@/hooks/use-hidden-parties"
+import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
 
 interface PartyStat {
   party: Party
@@ -19,15 +20,16 @@ export function PartiesGrid({ partyStats }: { partyStats: PartyStat[] }) {
   const visible = partyStats.filter(({ party }) => !hidden.includes(party.id))
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <AnimateIn stagger className="grid grid-cols-1 md:grid-cols-2 gap-3">
       {visible.map(({ party, promiseCount, keptCount }) => (
-        <PartyCard
-          key={party.id}
-          party={party}
-          promiseCount={promiseCount}
-          keptCount={keptCount}
-        />
+        <AnimateItem key={party.id}>
+          <PartyCard
+            party={party}
+            promiseCount={promiseCount}
+            keptCount={keptCount}
+          />
+        </AnimateItem>
       ))}
-    </div>
+    </AnimateIn>
   )
 }

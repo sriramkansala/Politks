@@ -7,6 +7,7 @@ import { ArrowRight, Download, ExternalLink } from "lucide-react"
 import type { Manifesto } from "@/lib/db/types"
 import { PartyEmptyState } from "./PartyEmptyState"
 import { fontWeights } from "@/lib/font-weight"
+import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
 
 const ELECTION_LABEL: Record<string, string> = {
   lok_sabha: "Lok Sabha",
@@ -28,11 +29,11 @@ export function PartyManifestoList({
   )
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+    <AnimateIn stagger className="grid grid-cols-1 md:grid-cols-2 gap-2">
       {sorted.map((m) => (
+        <AnimateItem key={m.id}>
         <article
-          key={m.id}
-          className="p-3 rounded-[6px] flex flex-col gap-2"
+          className="p-3 rounded-[6px] flex flex-col gap-2 h-full"
           style={{
             background: "var(--bg-elevated)",
             border: "1px solid var(--border)",
@@ -119,7 +120,8 @@ export function PartyManifestoList({
             )}
           </div>
         </article>
+        </AnimateItem>
       ))}
-    </div>
+    </AnimateIn>
   )
 }

@@ -37,6 +37,7 @@ import { tokens } from "@/lib/tokens"
 import { fontWeights } from "@/lib/font-weight"
 import { springs } from "@/lib/springs"
 import { useHiddenParties } from "@/hooks/use-hidden-parties"
+import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
 
 // ─── Exported data shapes (used by server page) ───────────────────────────────
 
@@ -913,33 +914,40 @@ function CompareBoard<T>({
   }
 
   return (
-    <div className="space-y-6">
+    <AnimateIn stagger className="space-y-6">
       {/* Slot columns row */}
-      <div className="overflow-x-auto">
-        <div className="flex gap-3" style={{ minWidth: slots.length * (SLOT_W + GAP) }}>
-          {slots.map((slot, i) => {
-            const filled = slotAsPickerItem(slot)
-            return (
-              <SlotColumn
-                key={i}
-                filled={filled}
-                groups={searchGroups}
-                selectedIds={selectedIds}
-                onSelect={(item) => onSelect(i, item)}
-                onRemove={() => onRemove(i)}
-                renderHeader={renderHeader}
-              />
-            )
-          })}
+      <AnimateItem>
+        <div className="overflow-x-auto">
+          <div style={{ minWidth: slots.length * (SLOT_W + GAP) }}>
+            <AnimateIn stagger className="flex gap-3">
+              {slots.map((slot, i) => {
+                const filled = slotAsPickerItem(slot)
+                return (
+                  <AnimateItem key={i}>
+                    <SlotColumn
+                      filled={filled}
+                      groups={searchGroups}
+                      selectedIds={selectedIds}
+                      onSelect={(item) => onSelect(i, item)}
+                      onRemove={() => onRemove(i)}
+                      renderHeader={renderHeader}
+                    />
+                  </AnimateItem>
+                )
+              })}
+            </AnimateIn>
+          </div>
         </div>
-      </div>
+      </AnimateItem>
 
       {/* Spec table */}
-      <div className="overflow-x-auto">
-        <div style={{ minWidth: CAT_W + ROW_LABEL_W + slots.length * SLOT_W }}>
-          <SpecTable<T> slots={slots} groups={groups} />
+      <AnimateItem>
+        <div className="overflow-x-auto">
+          <div style={{ minWidth: CAT_W + ROW_LABEL_W + slots.length * SLOT_W }}>
+            <SpecTable<T> slots={slots} groups={groups} />
+          </div>
         </div>
-      </div>
-    </div>
+      </AnimateItem>
+    </AnimateIn>
   )
 }

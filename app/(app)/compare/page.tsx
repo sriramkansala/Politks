@@ -8,6 +8,7 @@ import type { Party, PromiseRow } from "@/lib/db/types"
 import { CompareShell } from "@/components/compare/CompareShell"
 import type { CompareParty, CompareMp } from "@/components/compare/CompareShell"
 import { tokens } from "@/lib/tokens"
+import { AnimateIn } from "@/components/ui/animate-in"
 
 export const revalidate = 21600
 
@@ -59,7 +60,7 @@ export default async function ComparePage() {
 
   return (
     <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-8">
-      <div>
+      <AnimateIn>
         <h1 className="h-page mb-2" style={{ color: tokens.color.textPrimary }}>
           Compare
         </h1>
@@ -67,11 +68,13 @@ export default async function ComparePage() {
           Search and add up to three items — parties, MPs, or manifestos — to
           compare them side by side.
         </p>
-      </div>
+      </AnimateIn>
 
-      <CompareShell parties={parties} mps={mps} />
+      <AnimateIn delay={0.05}>
+        <CompareShell parties={parties} mps={mps} />
+      </AnimateIn>
 
-      <section className="caveat-block">
+      <AnimateIn delay={0.12} className="caveat-block">
         <strong>How this works.</strong>{" "}
         Party stats are drawn from the promise tracker — only promises with a
         verifiable source are counted. MP data comes from{" "}
@@ -81,7 +84,7 @@ export default async function ComparePage() {
         and self-declared ECI affidavits. State-specific promises (AAP/Delhi,
         DMK/Tamil Nadu) are rated against state-government delivery; national
         promises against the Union government.
-      </section>
+      </AnimateIn>
     </div>
   )
 }
