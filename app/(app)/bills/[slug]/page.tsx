@@ -165,19 +165,6 @@ export default async function BillDetailPage({
 
         {/* Header */}
         <div>
-          <div className="flex items-center gap-2 mb-2">
-            <Link
-              href="/bills"
-              className="text-[12px]"
-              style={{ color: "var(--text-tertiary)", textDecoration: "none" }}
-            >
-              Bills
-            </Link>
-            <span style={{ color: "var(--text-disabled)" }}>/</span>
-            <span className="text-[12px]" style={{ color: "var(--text-tertiary)" }}>
-              {typedBill.bill_number ?? slug}
-            </span>
-          </div>
           <div className="flex items-start justify-between gap-6 mb-2">
             <h1 className="h-page" style={{ color: "var(--text-primary)" }}>
               {typedBill.title}
