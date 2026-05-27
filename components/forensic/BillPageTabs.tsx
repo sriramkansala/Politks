@@ -5,82 +5,21 @@ import { motion } from "framer-motion"
 import { Tabs, TabsList, TabItem, TabPanel } from "@/components/ui/tabs"
 import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
 import { StageTimeline } from "@/components/forensic/StageTimeline"
+import { NarrativeTimeline } from "@/components/forensic/NarrativeTimeline"
 import { ForensicSignals } from "@/components/forensic/ForensicSignalCard"
 import { IssueGraph, type GraphNode, type GraphEdge } from "@/components/forensic/IssueGraph"
+import { StakeholderPanel } from "@/components/forensic/StakeholderPanel"
 import { fontWeights } from "@/lib/font-weight"
-import type { BillStory, BillStakeholder, BillStat, BillFurtherReading, BillStoryEvent } from "@/lib/db/billStory"
+import type { BillStory, BillStat, BillFurtherReading } from "@/lib/db/billStory"
 import type { StageEvent } from "@/lib/db/types"
 
 // ─── shared sub-components ────────────────────────────────────────────────────
-
-const SIDE_COLOR: Record<BillStakeholder["side"], string> = {
-  support: "var(--status-kept)",
-  oppose: "var(--status-broken)",
-  neutral: "var(--text-disabled)",
-}
-const SIDE_LABEL: Record<BillStakeholder["side"], string> = {
-  support: "Supports",
-  oppose: "Opposes",
-  neutral: "Neutral",
-}
 
 function SectionHeading({ children, sub }: { children: React.ReactNode; sub?: string }) {
   return (
     <div className="mb-3">
       <h2 className="h-section" style={{ color: "var(--text-primary)" }}>{children}</h2>
       {sub && <p className="text-[12px] mt-0.5" style={{ color: "var(--text-tertiary)" }}>{sub}</p>}
-    </div>
-  )
-}
-
-function SourceLink({ source, source_pending }: { source?: string; source_pending?: boolean }) {
-  if (source) return (
-    <a href={source} target="_blank" rel="noopener noreferrer"
-      className="inline-flex items-center gap-1 text-[11px]"
-      style={{ color: "var(--accent)", textDecoration: "none" }}>
-      Source <ExternalLink size={10} strokeWidth={1.5} />
-    </a>
-  )
-  if (source_pending) return (
-    <span className="text-[10px] uppercase tracking-wide" style={{ color: "var(--text-disabled)" }}>
-      Source pending
-    </span>
-  )
-  return null
-}
-
-function StakeholderCard({ s }: { s: BillStakeholder }) {
-  const tone = SIDE_COLOR[s.side]
-  return (
-    <div className="relative p-3 rounded-[6px]"
-      style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}>
-      <span aria-hidden className="absolute left-0 top-0 bottom-0 rounded-l-[6px]"
-        style={{ width: 3, background: tone }} />
-      <div className="flex items-center justify-between gap-2 mb-1.5">
-        <h3 className="text-[13px] leading-tight"
-          style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold }}>
-          {s.actor}
-        </h3>
-        <span className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[2px] whitespace-nowrap shrink-0"
-          style={{
-            color: tone,
-            background: `color-mix(in srgb, ${tone} 12%, transparent)`,
-            border: `1px solid color-mix(in srgb, ${tone} 35%, transparent)`,
-            fontVariationSettings: fontWeights.medium,
-          }}>
-          {SIDE_LABEL[s.side]}
-        </span>
-      </div>
-      <p className="text-[12.5px] leading-relaxed mb-1.5" style={{ color: "var(--text-secondary)" }}>
-        {s.position}
-      </p>
-      {s.quote && (
-        <blockquote className="text-[12px] italic leading-relaxed mb-1.5 pl-2"
-          style={{ color: "var(--text-tertiary)", borderLeft: "2px solid var(--border-strong)" }}>
-          &ldquo;{s.quote}&rdquo;
-        </blockquote>
-      )}
-      <SourceLink source={s.source} source_pending={s.source_pending} />
     </div>
   )
 }
@@ -92,24 +31,6 @@ function StatCard({ s }: { s: BillStat }) {
       <span className="value">{s.value}</span>
       {s.caveat && <span className="note">{s.caveat}</span>}
     </div>
-  )
-}
-
-function EventRow({ ev }: { ev: BillStoryEvent }) {
-  return (
-    <li className="relative pl-5">
-      <span aria-hidden className="absolute rounded-full"
-        style={{ left: -4, top: 7, width: 7, height: 7, background: "var(--text-tertiary)", boxShadow: "0 0 0 3px var(--bg-base)" }} />
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="text-[11px] font-mono tabular-nums" style={{ color: "var(--text-secondary)" }}>
-          {ev.date}
-        </span>
-        <span className="text-[13px] leading-snug" style={{ color: "var(--text-primary)" }}>
-          {ev.headline}
-        </span>
-        <SourceLink source={ev.source} source_pending={ev.source_pending} />
-      </div>
-    </li>
   )
 }
 
@@ -179,10 +100,6 @@ export function BillPageTabs({
   showForensicSignals,
   billVotes,
 }: BillPageTabsProps) {
-  const supporters = story?.stakeholders.filter((s) => s.side === "support") ?? []
-  const opposers   = story?.stakeholders.filter((s) => s.side === "oppose") ?? []
-  const neutral    = story?.stakeholders.filter((s) => s.side === "neutral") ?? []
-
   return (
     <Tabs defaultValue="overview">
       {/* Tab strip */}
@@ -295,34 +212,7 @@ export function BillPageTabs({
                     <SectionHeading sub="Who supports, opposes, or has taken a formal position">
                       Stakeholders
                     </SectionHeading>
-                    <div className="space-y-6">
-                      {([
-                        ["support", "Supports", supporters],
-                        ["oppose",  "Opposes",  opposers],
-                        ["neutral", "Neutral",  neutral],
-                      ] as const).map(([side, label, group]) =>
-                        group.length > 0 ? (
-                          <div key={side}>
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="inline-block w-1.5 h-1.5 rounded-full"
-                                style={{ background: SIDE_COLOR[side] }} aria-hidden />
-                              <span className="text-[11px] uppercase tracking-[0.08em]"
-                                style={{ color: "var(--text-secondary)", fontVariationSettings: fontWeights.semibold }}>
-                                {label}
-                              </span>
-                              <span className="text-[11px] tabular-nums" style={{ color: "var(--text-tertiary)" }}>
-                                {group.length}
-                              </span>
-                            </div>
-                            <AnimateIn stagger className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                              {group.map((s, i) => (
-                                <AnimateItem key={i}><StakeholderCard s={s} /></AnimateItem>
-                              ))}
-                            </AnimateIn>
-                          </div>
-                        ) : null,
-                      )}
-                    </div>
+                    <StakeholderPanel stakeholders={story.stakeholders} />
                   </section>
                 </AnimateItem>
               )}
@@ -340,20 +230,13 @@ export function BillPageTabs({
       {/* ── Tab 3: History ─────────────────────────────────────────────────── */}
       <TabPanel value="history">
         <AnimateIn stagger className="space-y-10">
-          {/* Narrative events */}
+          {/* Narrative events — editorial story layer above the procedural
+              16-stage StageTimeline below. See NarrativeTimeline.tsx for
+              design rationale (NYT live-blog pattern, pacing as a first-
+              class citizen, adaptive empty-states). */}
           {story && story.events.length > 0 && (
             <AnimateItem>
-              <section>
-                <SectionHeading sub="Key moments in the life of this bill">
-                  Narrative timeline
-                </SectionHeading>
-                <ol className="relative space-y-3 pl-3"
-                  style={{ borderLeft: "1px solid var(--border)" }}>
-                  {[...story.events]
-                    .sort((a, b) => a.date.localeCompare(b.date))
-                    .map((ev, i) => <EventRow key={i} ev={ev} />)}
-                </ol>
-              </section>
+              <NarrativeTimeline events={story.events} />
             </AnimateItem>
           )}
 

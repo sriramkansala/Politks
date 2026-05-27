@@ -118,23 +118,59 @@ function PipelineRail({
 }) {
   const documented = new Set(stageEvents.map(e => e.stage))
 
+  // Bucket events per stage for the preview slot
+  const eventsByStage = new Map<number, StageEvent[]>()
+  for (const e of stageEvents) {
+    eventsByStage.set(e.stage, [...(eventsByStage.get(e.stage) ?? []), e])
+  }
+
+  const [hovered, setHovered] = useState<number | null>(null)
+
+  // Slot is ALWAYS visible. Default shows the live current stage; hover
+  // momentarily overrides to preview a different stage. Mouse-leave reverts.
+  const displayedStage = hovered ?? currentStage
+  const mode: "live" | "preview" | "empty" =
+    displayedStage === null ? "empty" : hovered !== null ? "preview" : "live"
+
+  const displayedEvents =
+    displayedStage !== null ? eventsByStage.get(displayedStage) ?? [] : []
+  const displayedIsDocumented = displayedEvents.length > 0
+  const displayedFirstEvent = displayedEvents[0]
+
+  // Click → scroll to chapter row for that stage.
+  const handleSegmentClick = (stage: number) => {
+    if (!documented.has(stage)) return
+    const el = document.getElementById(`stage-row-${stage}`)
+    if (!el) return
+    el.scrollIntoView({ behavior: "smooth", block: "center" })
+    // Briefly highlight the row so the eye finds it after scrolling.
+    el.animate(
+      [
+        { backgroundColor: "color-mix(in oklab, var(--success) 16%, transparent)" },
+        { backgroundColor: "transparent" },
+      ],
+      { duration: 1100, easing: "cubic-bezier(0.165, 0.84, 0.44, 1)" }
+    )
+  }
+
   return (
     <div
       className="mb-7"
       style={{
-        // Subtle elevated panel — distinct affordance from prose below,
-        // but NOT a card around the events. This frames just the map.
         padding: "12px 14px 10px",
         borderRadius: "var(--radius-4)",
         background: "var(--bg-elevated)",
         border: "1px solid var(--border)",
       }}
+      onMouseLeave={() => setHovered(null)}
     >
       <div className="flex items-end" style={{ gap: 14 }}>
         {PHASES.map((phase) => {
           const phaseDocCount = phase.stages.filter(s => documented.has(s)).length
           const phaseHasCurrent =
             currentStage !== null && phase.stages.includes(currentStage)
+          const phaseHasHover =
+            hovered !== null && phase.stages.includes(hovered)
           return (
             <div
               key={phase.label}
@@ -148,10 +184,13 @@ function PipelineRail({
                   style={{
                     fontSize: 9.5,
                     letterSpacing: "0.09em",
-                    color: phaseDocCount > 0 || phaseHasCurrent
+                    color: phaseHasHover
+                      ? "var(--text-secondary)"
+                      : phaseDocCount > 0 || phaseHasCurrent
                       ? "var(--text-tertiary)"
                       : "var(--text-disabled)",
                     fontVariationSettings: fontWeights.semibold,
+                    transition: "color 120ms ease-out",
                   }}
                 >
                   {phase.short}
@@ -168,32 +207,54 @@ function PipelineRail({
                 </span>
               </div>
 
-              {/* Segment row */}
+              {/* Segment row — each segment is a hover-and-click target */}
               <div className="flex" style={{ gap: 2 }}>
                 {phase.stages.map(s => {
                   const has    = documented.has(s)
                   const isCur  = currentStage === s
                   const isPast = currentStage !== null && s < currentStage
+                  const isHov  = hovered === s
 
+                  // Accent is reserved for action items. Documented stages
+                  // are a positive *state* (we have evidence) → --success.
                   let bg = "var(--border)"
-                  if (has)         bg = "var(--accent)"
+                  if (has)         bg = "var(--success)"
                   else if (isPast) bg = "var(--border-stronger)"
 
+                  // Hover-dim the non-hovered segments slightly so the
+                  // hovered one reads as "selected." Linear-style focus.
+                  const dimNonHovered = hovered !== null && !isHov
+
                   return (
-                    <motion.div
+                    <motion.button
                       key={s}
-                      className="relative"
+                      type="button"
+                      aria-label={`Stage ${s}: ${STAGE_LABELS[s] ?? ""}`}
+                      onMouseEnter={() => setHovered(s)}
+                      onFocus={() => setHovered(s)}
+                      onClick={() => handleSegmentClick(s)}
                       initial={{ opacity: 0, scaleY: 0.4 }}
-                      animate={{ opacity: 1, scaleY: 1 }}
+                      animate={{
+                        opacity: dimNonHovered ? 0.55 : 1,
+                        scaleY: 1,
+                      }}
+                      whileHover={{ scaleY: 1.6 }}
                       transition={{ ...springs.snap, delay: 0.02 * s }}
                       style={{
                         flex: 1,
                         height: 6,
+                        padding: 0,
+                        border: "none",
                         borderRadius: 1.5,
                         background: bg,
-                        outline: isCur ? "1.5px solid var(--accent)" : "none",
+                        outline: isCur
+                          ? "1.5px solid var(--success)"
+                          : isHov
+                          ? "1.5px solid var(--text-tertiary)"
+                          : "none",
                         outlineOffset: 2,
                         transformOrigin: "bottom",
+                        cursor: has ? "pointer" : "default",
                       }}
                     />
                   )
@@ -228,6 +289,246 @@ function PipelineRail({
             </div>
           )
         })}
+      </div>
+
+      {/* ─── Status slot ──────────────────────────────────────────────
+          ALWAYS rendered. Two visual modes:
+            • "live"    — shows currentStage. Pulsing accent dot +
+                          "CURRENT STAGE" pill, subtle accent-tinted wash,
+                          accent-tinted border, "View full record" CTA.
+            • "preview" — shows hovered stage. Neutral elevated surface,
+                          "PREVIEWING" tag in tertiary, "Click to jump"
+                          CTA. Reverts to live mode on mouse-leave.
+            • "empty"   — neither set; gentle placeholder.
+          The slot is the rail's permanent status display, NOT a tooltip.
+          Inspirations: Linear active-cycle header, Vercel production
+          deployment header, Stripe Sigma latest-run swap. */}
+      <div
+        style={{
+          marginTop: 12,
+          padding: "10px 12px 12px",
+          borderRadius: "var(--radius-4)",
+          border: "1px solid",
+          background:
+            mode === "live"
+              ? "color-mix(in oklab, var(--success) 7%, var(--bg-elevated-2))"
+              : "var(--bg-elevated-2)",
+          borderColor:
+            mode === "live"
+              ? "color-mix(in oklab, var(--success) 26%, transparent)"
+              : "var(--border)",
+          transition: "background 180ms ease-out, border-color 180ms ease-out",
+        }}
+      >
+        {/* Mode tag — accent-dot CURRENT  /  PREVIEWING  /  empty */}
+        <div
+          className="flex items-center"
+          style={{ gap: 6, marginBottom: 7, minHeight: 12 }}
+        >
+          {mode === "live" && (
+            <>
+              <motion.span
+                animate={{ opacity: [1, 0.35, 1] }}
+                transition={{
+                  duration: 2.2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: "var(--success)",
+                  boxShadow:
+                    "0 0 0 3px color-mix(in oklab, var(--success) 22%, transparent)",
+                }}
+              />
+              <span
+                className="uppercase"
+                style={{
+                  fontSize: 9.5,
+                  letterSpacing: "0.1em",
+                  color: "var(--success)",
+                  fontVariationSettings: fontWeights.semibold,
+                }}
+              >
+                Current Stage
+              </span>
+            </>
+          )}
+          {mode === "preview" && (
+            <span
+              className="uppercase"
+              style={{
+                fontSize: 9.5,
+                letterSpacing: "0.1em",
+                color: "var(--text-tertiary)",
+                fontVariationSettings: fontWeights.semibold,
+              }}
+            >
+              Previewing
+            </span>
+          )}
+        </div>
+
+        {/* Keyed crossfade — body swaps cleanly when displayedStage changes */}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={`status-${displayedStage ?? "empty"}-${mode}`}
+            initial={{ opacity: 0, y: 3 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -3 }}
+            transition={{ duration: 0.14, ease: [0.165, 0.84, 0.44, 1] }}
+          >
+            {mode === "empty" ? (
+              <p
+                style={{
+                  fontSize: 12,
+                  color: "var(--text-disabled)",
+                  fontVariationSettings: fontWeights.normal,
+                  fontStyle: "italic",
+                }}
+              >
+                Hover a stage in the rail above to preview.
+              </p>
+            ) : (
+              <>
+                {/* Header line: NN  STAGE LABEL                house · date */}
+                <div
+                  className="flex items-baseline"
+                  style={{ gap: 10, marginBottom: displayedIsDocumented ? 4 : 0 }}
+                >
+                  <span
+                    className="font-mono tabular-nums"
+                    style={{
+                      fontSize: 11,
+                      color: displayedIsDocumented
+                        ? mode === "live"
+                          ? "var(--success)"
+                          : "var(--text-secondary)"
+                        : "var(--text-disabled)",
+                      fontVariationSettings: fontWeights.semibold,
+                      letterSpacing: "0.04em",
+                      width: 18,
+                    }}
+                  >
+                    {String(displayedStage!).padStart(2, "0")}
+                  </span>
+                  <span
+                    className="flex-1 min-w-0 truncate"
+                    style={{
+                      fontSize: 13,
+                      color: displayedIsDocumented
+                        ? "var(--text-primary)"
+                        : "var(--text-tertiary)",
+                      fontVariationSettings: fontWeights.semibold,
+                      letterSpacing: "var(--tracking-body)",
+                    }}
+                  >
+                    {STAGE_LABELS[displayedStage!] ?? `Stage ${displayedStage}`}
+                  </span>
+
+                  {displayedIsDocumented && displayedFirstEvent &&
+                   (displayedFirstEvent.house || displayedFirstEvent.event_date) && (
+                    <span
+                      className="shrink-0 flex items-baseline"
+                      style={{ gap: 8 }}
+                    >
+                      {displayedFirstEvent.house && (
+                        <span
+                          className="font-mono"
+                          style={{
+                            fontSize: 10,
+                            color: "var(--text-disabled)",
+                            fontVariationSettings: fontWeights.normal,
+                            letterSpacing: "0.05em",
+                          }}
+                        >
+                          {houseLabel(displayedFirstEvent.house)}
+                        </span>
+                      )}
+                      {displayedFirstEvent.event_date && (
+                        <span
+                          className="font-mono tabular-nums"
+                          style={{
+                            fontSize: 11,
+                            color: "var(--text-tertiary)",
+                            fontVariationSettings: fontWeights.normal,
+                          }}
+                        >
+                          {formatDate(displayedFirstEvent.event_date)}
+                        </span>
+                      )}
+                    </span>
+                  )}
+                </div>
+
+                {/* Body — description preview OR muted "not documented" line */}
+                {displayedIsDocumented && displayedFirstEvent ? (
+                  <>
+                    <p
+                      style={{
+                        paddingLeft: 28,
+                        fontSize: 12,
+                        lineHeight: 1.55,
+                        color:
+                          mode === "live"
+                            ? "var(--text-secondary)"
+                            : "var(--text-tertiary)",
+                        fontVariationSettings: fontWeights.normal,
+                        letterSpacing: "var(--tracking-body)",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {displayedFirstEvent.description}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => handleSegmentClick(displayedStage!)}
+                      className="inline-flex items-center transition-colors hover:text-[var(--text-secondary)]"
+                      style={{
+                        marginLeft: 28,
+                        marginTop: 7,
+                        padding: 0,
+                        gap: 5,
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: 10,
+                        color: "var(--text-disabled)",
+                        fontVariationSettings: fontWeights.medium,
+                        letterSpacing: "0.02em",
+                      }}
+                    >
+                      <ArrowDown size={9} strokeWidth={2.2} />
+                      <span>
+                        {mode === "live"
+                          ? "View full record"
+                          : "Click to jump to record"}
+                      </span>
+                    </button>
+                  </>
+                ) : (
+                  <p
+                    style={{
+                      paddingLeft: 28,
+                      fontSize: 11.5,
+                      lineHeight: 1.5,
+                      color: "var(--text-disabled)",
+                      fontVariationSettings: fontWeights.normal,
+                      fontStyle: "italic",
+                    }}
+                  >
+                    Not documented for this bill.
+                  </p>
+                )}
+              </>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   )
@@ -393,12 +694,22 @@ export function StageTimeline({ stageEvents, currentStage }: StageTimelineProps)
                   return (
                     <div
                       key={stage}
+                      id={`stage-row-${stage}`}
                       style={{
                         paddingTop: 10,
                         paddingBottom: 12,
                         borderBottom: isLastInPhase
                           ? "none"
                           : "1px dashed var(--border)",
+                        // Apply a subtle border-radius so the rail's
+                        // post-click flash animation has clean edges.
+                        borderRadius: "var(--radius-4)",
+                        // Negative margin so the flash highlight extends
+                        // slightly past the prose's left indent for visibility.
+                        marginLeft: -6,
+                        marginRight: -6,
+                        paddingLeft: 6,
+                        paddingRight: 6,
                       }}
                     >
                       {/* Stage label row */}
@@ -411,7 +722,7 @@ export function StageTimeline({ stageEvents, currentStage }: StageTimelineProps)
                           style={{
                             fontSize: 11,
                             color: isCurrent
-                              ? "var(--accent)"
+                              ? "var(--success)"
                               : "var(--text-disabled)",
                             fontVariationSettings: isCurrent
                               ? fontWeights.semibold
@@ -445,10 +756,11 @@ export function StageTimeline({ stageEvents, currentStage }: StageTimelineProps)
                             style={{
                               fontSize: 9.5,
                               padding: "1px 6px",
-                              background: "var(--accent-tint)",
-                              color: "var(--accent)",
+                              // No --success-tint token exists; mix to taste.
+                              background: "color-mix(in oklab, var(--success) 14%, transparent)",
+                              color: "var(--success)",
                               borderRadius: "var(--radius-pill)",
-                              border: "1px solid color-mix(in oklab, var(--accent) 24%, transparent)",
+                              border: "1px solid color-mix(in oklab, var(--success) 28%, transparent)",
                               fontVariationSettings: fontWeights.semibold,
                               letterSpacing: "0.06em",
                             }}

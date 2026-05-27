@@ -16,6 +16,7 @@ import {
   Settings,
   Shield,
   User,
+  IndianRupee,
 } from "lucide-react"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -32,6 +33,7 @@ const navItems = [
   { href: "/bills",       label: "Bills",       icon: Landmark },
   { href: "/compare",     label: "Compare",     icon: GitCompare },
   { href: "/atlas",       label: "Atlas",       icon: Globe },
+  { href: "/budget",      label: "Budget",      icon: IndianRupee },
 ] as const
 
 const bottomItems = [

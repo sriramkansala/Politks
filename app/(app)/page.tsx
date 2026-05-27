@@ -117,7 +117,13 @@ export default async function HomePage() {
                   { label: `Broken (of ${rated} rated)`,value: String(broken), pct: brokenPct, tone: "tone-bad"  as const },
                 ].map(({ label, value, pct, tone }) => (
                   <AnimateItem key={label}>
-                    <div className={`stat-card ${pct != null && pct > 0 ? tone ?? "" : ""}`}>
+                    <div
+                      className={`stat-card ${pct != null && pct > 0 ? tone ?? "" : ""}`}
+                      data-explain
+                      data-explain-label={label}
+                      data-explain-value={value}
+                      data-explain-context="Neo Nīti home dashboard — At a glance summary across all tracked parties and promises in India."
+                    >
                       <div className="value" style={{ fontSize: "28px", letterSpacing: "-0.022em" }}>{value}</div>
                       <div className="label">{label}</div>
                     </div>

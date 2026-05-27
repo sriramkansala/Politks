@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Analytics } from "@vercel/analytics/react"
 import { ThemeProvider } from "@/components/ui/theme-provider"
 import { ShapeProvider } from "@/lib/shape-context"
+import { WiggleExplainProvider } from "@/components/ai-explain/WiggleExplainProvider"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -31,6 +32,7 @@ export default function RootLayout({
         >
           <ShapeProvider defaultShape="rounded">
             {children}
+            <WiggleExplainProvider />
             <Analytics />
           </ShapeProvider>
         </ThemeProvider>

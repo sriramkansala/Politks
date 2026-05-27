@@ -226,10 +226,7 @@ function CriminalTab({ mp }: { mp: Mp }) {
               </div>
               <div
                 className="text-[28px] leading-none"
-                style={{
-                  color: totalAny > 0 ? "var(--status-broken)" : "var(--status-kept)",
-                  fontVariationSettings: fontWeights.semibold,
-                }}
+                style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold }}
               >
                 {totalAny}
               </div>
@@ -248,10 +245,7 @@ function CriminalTab({ mp }: { mp: Mp }) {
               </div>
               <div
                 className="text-[28px] leading-none"
-                style={{
-                  color: totalSerious > 0 ? "var(--status-broken)" : "var(--status-kept)",
-                  fontVariationSettings: fontWeights.semibold,
-                }}
+                style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold }}
               >
                 {totalSerious}
               </div>
@@ -274,7 +268,7 @@ function CriminalTab({ mp }: { mp: Mp }) {
               className="rounded-[6px] p-6 text-center"
               style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
             >
-              <p className="text-[13px]" style={{ color: "var(--status-kept)" }}>
+              <p className="text-[13px]" style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.medium }}>
                 No criminal cases declared
               </p>
               <p className="text-[11px] mt-1" style={{ color: "var(--text-tertiary)" }}>
@@ -289,7 +283,7 @@ function CriminalTab({ mp }: { mp: Mp }) {
                   className="p-3 rounded-[6px]"
                   style={{
                     background: "var(--bg-elevated)",
-                    border: `1px solid ${c.is_serious ? "color-mix(in srgb, var(--status-broken) 40%, var(--border))" : "var(--border)"}`,
+                    border: "1px solid var(--border)",
                   }}
                 >
                   <div className="flex items-start justify-between gap-2 mb-1">
@@ -302,9 +296,7 @@ function CriminalTab({ mp }: { mp: Mp }) {
                     <span
                       className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[2px] shrink-0 whitespace-nowrap"
                       style={{
-                        color: c.status === "pending" ? "var(--status-broken)"
-                          : c.status === "acquitted" || c.status === "discharged" ? "var(--status-kept)"
-                          : "var(--status-compromise)",
+                        color: "var(--text-secondary)",
                         background: "var(--bg-elevated-2)",
                         border: "1px solid var(--border)",
                         fontVariationSettings: fontWeights.medium,
@@ -318,8 +310,15 @@ function CriminalTab({ mp }: { mp: Mp }) {
                     {c.court && <span className="text-[11px]" style={{ color: "var(--text-tertiary)" }}>{c.court}</span>}
                     {c.year && <span className="text-[11px] font-mono" style={{ color: "var(--text-tertiary)" }}>{c.year}</span>}
                     {c.is_serious && (
-                      <span className="text-[10px] uppercase tracking-wide" style={{ color: "var(--status-broken)" }}>
-                        Serious offence
+                      <span
+                        className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[2px]"
+                        style={{
+                          color: "var(--text-secondary)",
+                          background: "var(--bg-elevated-2)",
+                          border: "1px solid var(--border-strong)",
+                        }}
+                      >
+                        Serious
                       </span>
                     )}
                   </div>
@@ -442,6 +441,140 @@ function EducationTab({ mp }: { mp: Mp }) {
   )
 }
 
+// ─── Asset Breakdown Chart (Issues-Status style) ─────────────────────────────
+
+// Reference-exact palette: sampled from the zoomed bar screenshot
+// Blue=#3B82F6 (new), Purple=#7C3AED (open — unused here), Amber=#F59E0B (regressed), Green=#10B981 (resolved)
+const ASSET_COLORS = {
+  assets:      "#3B82F6", // blue-500  — "New"
+  liabilities: "#F59E0B", // amber-500 — "Regressed"
+  net:         "#10B981", // emerald-500 — "Resolved"
+} as const
+
+function AssetIcon({ kind }: { kind: "assets" | "liabilities" | "net" }) {
+  const bg = ASSET_COLORS[kind]
+
+  if (kind === "assets") {
+    return (
+      <span
+        className="inline-flex items-center justify-center rounded-full shrink-0"
+        style={{ width: 22, height: 22, background: bg }}
+      >
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M5 2v6M2 5h6" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" />
+        </svg>
+      </span>
+    )
+  }
+  if (kind === "liabilities") {
+    return (
+      <span
+        className="inline-flex items-center justify-center rounded-full shrink-0"
+        style={{ width: 22, height: 22, background: bg }}
+      >
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M2.5 5h5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" />
+        </svg>
+      </span>
+    )
+  }
+  return (
+    <span
+      className="inline-flex items-center justify-center rounded-full shrink-0"
+      style={{ width: 22, height: 22, background: bg }}
+    >
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+        <path d="M2 5.5l2 2 4-4" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </span>
+  )
+}
+
+function AssetBreakdownChart({ mp }: { mp: Mp }) {
+  const assets      = mp.assets_inr ?? 0
+  const liabilities = mp.liabilities_inr ?? 0
+  const net         = assets > 0 ? assets - liabilities : null
+
+  // Stacked bar proportions (net-worth = green left, liabilities = amber right)
+  const liabPct = assets > 0 ? Math.min(100, (liabilities / assets) * 100) : 0
+  const netPct  = assets > 0 ? Math.max(0, 100 - liabPct) : 0
+
+  const rows: { kind: "assets" | "liabilities" | "net"; label: string; value: number | null }[] = [
+    { kind: "assets",      label: "Total declared assets",            value: mp.assets_inr    },
+    { kind: "liabilities", label: "Total liabilities",                value: mp.liabilities_inr },
+    { kind: "net",         label: "Net worth (assets − liabilities)", value: net              },
+  ]
+
+  return (
+    <section>
+      {/* Header: title + subtitle left, "Amount" label right */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2
+            className="text-[15px] leading-tight"
+            style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold, letterSpacing: "-0.013em" }}
+          >
+            Asset breakdown
+          </h2>
+          <p className="text-[12px] mt-0.5" style={{ color: "var(--text-tertiary)" }}>
+            Self-declared affidavit — MyNeta / ECI
+          </p>
+        </div>
+        <span
+          className="text-[13px]"
+          style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.medium }}
+        >
+          Amount
+        </span>
+      </div>
+
+      {/* Stacked bar — 14px tall, gap-px + dark bg = thin dark divider between segments */}
+      {assets > 0 && (
+        <div
+          className="flex gap-[2px] rounded-[4px] overflow-hidden mb-2"
+          style={{ height: 14, background: "#000", border: "1px solid #404040" }}
+        >
+          {netPct > 0 && (
+            <div style={{ width: `${netPct}%`, background: ASSET_COLORS.net, flexShrink: 0 }} />
+          )}
+          {liabPct > 0 && (
+            <div style={{ width: `${liabPct}%`, background: ASSET_COLORS.liabilities, flexShrink: 0 }} />
+          )}
+        </div>
+      )}
+
+      {/* Row list — py-5 matches reference row height, dashed separator */}
+      <div>
+        {rows.map(({ kind, label, value }, i) => (
+          <div
+            key={i}
+            className="flex items-center justify-between py-5"
+            style={{
+              borderBottom: i < rows.length - 1 ? "1px dashed var(--border)" : undefined,
+            }}
+          >
+            <div className="flex items-center gap-3.5">
+              <AssetIcon kind={kind} />
+              <span
+                className="text-[18px]"
+                style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.medium }}
+              >
+                {label}
+              </span>
+            </div>
+            <span
+              className="text-[18px] tabular-nums"
+              style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold }}
+            >
+              {formatINR(value)}
+            </span>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 // ─── Tab: Financials ──────────────────────────────────────────────────────────
 
 function FinancialsTab({ mp }: { mp: Mp }) {
@@ -491,25 +624,9 @@ function FinancialsTab({ mp }: { mp: Mp }) {
         </AnimateIn>
       </AnimateItem>
 
-      {/* Detailed breakdown */}
+      {/* Detailed breakdown — Issues-Status style */}
       <AnimateItem>
-        <section>
-          <SectionHeading sub="Self-declared affidavit — MyNeta / ECI">
-            Asset breakdown
-          </SectionHeading>
-          <div style={{ borderTop: "1px solid var(--border)" }}>
-            <StatRow label="Total declared assets" value={formatINR(mp.assets_inr)} />
-            <StatRow label="Total liabilities" value={formatINR(mp.liabilities_inr)} />
-            <StatRow
-              label="Net worth (assets − liabilities)"
-              value={
-                mp.assets_inr != null && mp.liabilities_inr != null
-                  ? formatINR(mp.assets_inr - mp.liabilities_inr)
-                  : null
-              }
-            />
-          </div>
-        </section>
+        <AssetBreakdownChart mp={mp} />
       </AnimateItem>
 
       {/* MPLADS */}

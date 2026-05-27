@@ -1,6 +1,20 @@
 @import "tailwindcss";
 @import "@fontsource-variable/inter";
-@import "@fontsource/jetbrains-mono/400.css";
+
+/* ── Tremor chart colors ─────────────────────────────────────────────────────
+ * @tremor/react v3 builds gradient stopColor via `currentColor` on elements
+ * that receive dynamic Tailwind classes (e.g. `text-blue-500`). Tailwind v4
+ * never sees those runtime-constructed class strings, so we force-include
+ * them here via @source inline() — Tailwind v4's canonical safelist mechanism.
+ * Classes cover the two chart palettes used in this project.
+ */
+@source inline("text-blue-500 dark:text-blue-500 stroke-blue-500 dark:stroke-blue-500");
+@source inline("text-emerald-500 dark:text-emerald-500 stroke-emerald-500 dark:stroke-emerald-500");
+@source inline("text-amber-500 dark:text-amber-500 stroke-amber-500 dark:stroke-amber-500");
+@source inline("text-slate-500 dark:text-slate-500 stroke-slate-500 dark:stroke-slate-500");
+@source inline("text-rose-500 dark:text-rose-500 stroke-rose-500 dark:stroke-rose-500");
+/* Inter is the ONLY font in this project. `--font-mono` resolves to Inter
+   with tabular-nums; we do not load JetBrains Mono or any other family. */
 
 /* ─── Linear design tokens ──────────────────────────────────────────────
  * VERIFIED values extracted from Linear's production CSS bundles at
@@ -192,12 +206,14 @@
   --hover-row:        rgba(255,255,255,0.02);
   --hover-row-strong: rgba(255,255,255,0.04);
 
-  /* Linear-precise letter-spacing per text scale (tracks Inter Display) */
-  --tracking-display: -0.022em;
-  --tracking-heading: -0.018em;
-  --tracking-sub:     -0.014em;
-  --tracking-body:    -0.011em;
-  --tracking-caption: -0.005em;
+  /* Project-wide letter-spacing: every typographic surface uses -0.24px.
+     All --tracking-* tokens collapse to the same value so any inline use of
+     `letterSpacing: "var(--tracking-body)"` (etc.) inherits the same rule. */
+  --tracking-display: -0.24px;
+  --tracking-heading: -0.24px;
+  --tracking-sub:     -0.24px;
+  --tracking-body:    -0.24px;
+  --tracking-caption: -0.24px;
 
   /* Linear-precise motion curves — official Linear refresh blog values */
   --ease-linear-out:   cubic-bezier(0.16, 1, 0.3, 1);
@@ -207,6 +223,9 @@
 
 /* ─── Tailwind v4 theme extension ─────────────────────────── */
 @theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
   --color-bg-base:       var(--bg-base);
   --color-bg-elevated:   var(--bg-elevated);
   --color-bg-elevated-2: var(--bg-elevated-2);
@@ -260,7 +279,9 @@
   --shadow-surface-8: var(--shadow-s8);
 
   --font-sans: "Inter Variable", "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /* Inter only. `font-mono` Tailwind utility and .text-mono class both
+     resolve to Inter — pair with `tabular-nums` for column-aligned digits. */
+  --font-mono: "Inter Variable", "Inter", system-ui, sans-serif;
   @keyframes spinner-move {
   to {
     stroke-dashoffset:       -100;
@@ -283,6 +304,18 @@
   box-sizing: border-box;
 }
 
+/* ─── Global typographic rule — every font style is -0.24px tracked ────
+ * `!important` is intentional. It overrides inline `style={{ letterSpacing }}`
+ * declarations scattered throughout components (~59 callsites) without
+ * needing to touch each one. Any future per-element tracking should still
+ * use this value; if you genuinely need a different tracking, it must be
+ * justified and added as a documented exception below this rule. */
+*,
+*::before,
+*::after {
+  letter-spacing: -0.24px !important;
+}
+
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -294,7 +327,7 @@ body {
   font-family: var(--font-sans);
   font-size: 16px;                          /* MEASURED on linear.app body */
   line-height: 24px;                        /* MEASURED — 1.5 ratio */
-  letter-spacing: normal;                   /* MEASURED — Linear doesn't tighten body */
+  letter-spacing: -0.24px;                  /* Project-wide rule — every font style is -0.24px tracked */
   font-weight: 400;
   font-feature-settings: 'cv01', 'ss03';    /* MEASURED — Linear's Inter Variable tuning */
 }
@@ -315,16 +348,18 @@ body {
 .text-mini       { font-size: 12px; line-height: 1.4;  font-weight: 400; font-variation-settings: 'wght' 400; }
 .text-small      { font-size: 13px; line-height: 1.45; font-weight: 400; font-variation-settings: 'wght' 400; }
 .text-regular    { font-size: 15px; line-height: 1.55; font-weight: 400; font-variation-settings: 'wght' 400; }
-.text-large      { font-size: 18px; line-height: 1.45; letter-spacing: -0.012em; font-weight: 510; font-variation-settings: 'wght' 510; }
-.text-title3     { font-size: 20px; line-height: 1.3;  letter-spacing: -0.015em; font-weight: 590; font-variation-settings: 'wght' 590; }
-.text-title2     { font-size: 24px; line-height: 1.25; letter-spacing: -0.018em; font-weight: 590; font-variation-settings: 'wght' 590; }
-.text-title1     { font-size: 36px; line-height: 1.1;  letter-spacing: -0.022em; font-weight: 590; font-variation-settings: 'wght' 590; }
+/* `!important` overrides the project-wide `* { letter-spacing: -0.24px }`
+   rule defined in the Base section. Headlines get tighter tracking. */
+.text-large      { font-size: 18px; line-height: 1.45; letter-spacing: -0.32px !important; font-weight: 510; font-variation-settings: 'wght' 510; }
+.text-title3     { font-size: 20px; line-height: 1.3;  letter-spacing: -0.32px !important; font-weight: 590; font-variation-settings: 'wght' 590; }
+.text-title2     { font-size: 24px; line-height: 1.25; letter-spacing: -0.32px !important; font-weight: 590; font-variation-settings: 'wght' 590; }
+.text-title1     { font-size: 36px; line-height: 1.1;  letter-spacing: -0.32px !important; font-weight: 590; font-variation-settings: 'wght' 590; }
 
 /* Back-compat aliases */
-.text-display    { font-size: 56px; line-height: 1.04; letter-spacing: -0.025em; font-weight: 590; font-variation-settings: 'wght' 590; }
-.text-heading-xl { font-size: 36px; line-height: 1.1;  letter-spacing: -0.022em; font-weight: 590; font-variation-settings: 'wght' 590; }
-.text-heading    { font-size: 24px; line-height: 1.25; letter-spacing: -0.018em; font-weight: 590; font-variation-settings: 'wght' 590; }
-.text-subheading { font-size: 18px; line-height: 1.45; letter-spacing: -0.012em; font-weight: 510; font-variation-settings: 'wght' 510; }
+.text-display    { font-size: 56px; line-height: 1.04; letter-spacing: -0.32px !important; font-weight: 590; font-variation-settings: 'wght' 590; }
+.text-heading-xl { font-size: 36px; line-height: 1.1;  letter-spacing: -0.32px !important; font-weight: 590; font-variation-settings: 'wght' 590; }
+.text-heading    { font-size: 24px; line-height: 1.25; letter-spacing: -0.32px !important; font-weight: 590; font-variation-settings: 'wght' 590; }
+.text-subheading { font-size: 18px; line-height: 1.45; letter-spacing: -0.32px !important; font-weight: 510; font-variation-settings: 'wght' 510; }
 .text-body       { font-size: 15px; line-height: 1.55; font-weight: 400; font-variation-settings: 'wght' 400; }
 .text-caption    { font-size: 12px; line-height: 1.4;  font-weight: 400; font-variation-settings: 'wght' 400; }
 .text-mono       { font-family: var(--font-mono); font-size: 13px; line-height: 1.4; font-weight: 400; }
@@ -451,7 +486,7 @@ h1, h2 { font-feature-settings: 'ss01' 1, 'ss02' 1, 'cv11' 1; }
   font-size: 13px;
   font-variation-settings: 'wght' 510;
   font-weight: 510;
-  letter-spacing: normal;
+  letter-spacing: -0.24px;
   background: #e5e5e6;
   color: var(--bg-base);
   border: 1px solid #e5e5e6;
@@ -623,7 +658,7 @@ h1, h2 { font-feature-settings: 'ss01' 1, 'ss02' 1, 'cv11' 1; }
 .party-card__name {
   font-size: 14px;
   line-height: 1.25;
-  letter-spacing: -0.14px;
+  letter-spacing: -0.24px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -631,7 +666,7 @@ h1, h2 { font-feature-settings: 'ss01' 1, 'ss02' 1, 'cv11' 1; }
 .party-card__short {
   font-size: 11px;
   margin-top: 1px;
-  letter-spacing: 0.04em;
+  letter-spacing: -0.24px;
   text-transform: uppercase;
 }
 .party-card__stats {
@@ -657,7 +692,7 @@ h1, h2 { font-feature-settings: 'ss01' 1, 'ss02' 1, 'cv11' 1; }
   font-size: 10px;
   color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: -0.24px;
   font-variation-settings: 'wght' 510;
 }
 .party-card__arrow {
@@ -730,7 +765,7 @@ a[style*="--bg-elevated)"]:hover {
 }
 .stat-card .label {
   font-size: 10px;
-  letter-spacing: 0.06em;
+  letter-spacing: -0.24px;
   text-transform: uppercase;
   color: var(--text-tertiary);
   font-variation-settings: 'wght' 510;
@@ -738,7 +773,7 @@ a[style*="--bg-elevated)"]:hover {
 .stat-card .value {
   font-size: 20px;
   line-height: 1.1;
-  letter-spacing: -0.018em;
+  letter-spacing: -0.24px;
   color: var(--text-primary);
   font-variation-settings: 'wght' 590;
 }
@@ -759,7 +794,7 @@ a[style*="--bg-elevated)"]:hover {
   height: 22px;
   padding: 0 8px;
   font-size: 11px;
-  letter-spacing: 0;
+  letter-spacing: -0.24px;
   font-variation-settings: 'wght' 510;
   color: var(--text-tertiary);
   background: transparent;
@@ -882,7 +917,7 @@ a[style*="--bg-elevated)"]:hover {
 .filter-row .label-prefix {
   font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: -0.24px;
   color: var(--text-tertiary);
   padding: 0 8px;
   margin-right: 4px;
@@ -934,13 +969,13 @@ a[style*="--bg-elevated)"]:hover {
  * 48/40/20 because it's about persuasion; in-app issue trackers stay tighter.
  * All weights 510 (MEASURED), letter-spacing follows -0.022em ratio,
  * line-height ~= font-size for headings, font-feature-settings inherited. */
-.h-display   { font-size: 64px; line-height: 64px; letter-spacing: -1.408px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* splash hero only */
-.h-hero      { font-size: 48px; line-height: 48px; letter-spacing: -1.056px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* marketing-style hero */
-.h-page      { font-size: 28px; line-height: 32px; letter-spacing: -0.616px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* in-app page title */
-.h-section   { font-size: 18px; line-height: 22px; letter-spacing: -0.396px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* in-app section header */
-.h-sub       { font-size: 15px; line-height: 20px; letter-spacing: -0.18px;  font-weight: 510; font-variation-settings: 'wght' 510; }  /* sub-section */
-.h-card      { font-size: 14px; line-height: 20px; letter-spacing: -0.154px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* card title */
-.lbl-tiny    { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); font-weight: 510; font-variation-settings: 'wght' 510; }
+.h-display   { font-size: 64px; line-height: 64px; letter-spacing: -0.24px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* splash hero only */
+.h-hero      { font-size: 48px; line-height: 48px; letter-spacing: -0.24px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* marketing-style hero */
+.h-page      { font-size: 28px; line-height: 32px; letter-spacing: -0.24px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* in-app page title */
+.h-section   { font-size: 18px; line-height: 22px; letter-spacing: -0.24px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* in-app section header */
+.h-sub       { font-size: 15px; line-height: 20px; letter-spacing: -0.24px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* sub-section */
+.h-card      { font-size: 14px; line-height: 20px; letter-spacing: -0.24px; font-weight: 510; font-variation-settings: 'wght' 510; }  /* card title */
+.lbl-tiny    { font-size: 11px; letter-spacing: -0.24px; text-transform: uppercase; color: var(--text-tertiary); font-weight: 510; font-variation-settings: 'wght' 510; }
 
 /* FF surface bg helpers (in case Tailwind misses them — explicit defs). */
 .bg-surface-1 { background-color: var(--surface-1); }
