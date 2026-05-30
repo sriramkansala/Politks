@@ -19,11 +19,15 @@ function toneClass(tone: Tone): string {
 function Stat({
   label,
   value,
+  sub,
   note,
   tone = "neutral",
 }: {
   label: string
   value: string
+  /** Secondary value line shown directly under the hero — for relative context
+   *  (e.g. "−12 pp vs nat avg") that belongs at the same visual level as value. */
+  sub?: string
   note?: string
   tone?: Tone
 }) {
@@ -31,6 +35,11 @@ function Stat({
     <div className={`stat-card ${toneClass(tone)}`}>
       <div className="label">{label}</div>
       <div className="value">{value}</div>
+      {sub && (
+        <div className="text-[11px] mt-0.5" style={{ color: "var(--text-tertiary)", fontVariationSettings: "'wght' 400" }}>
+          {sub}
+        </div>
+      )}
       {note && <div className="note">{note}</div>}
     </div>
   )
@@ -111,18 +120,27 @@ export function HonestyCard({ mp, partyColor }: { mp: Mp; partyColor?: string | 
           <Stat
             label="Attendance"
             value={attendanceUnavailable ? "—" : `${mp.attendance_pct!.toFixed(0)}%`}
+            sub={(() => {
+              if (attendanceUnavailable || mp.national_avg_attendance == null) return undefined
+              const delta = mp.attendance_pct! - mp.national_avg_attendance
+              const sign = delta >= 0 ? "+" : ""
+              return `${sign}${delta.toFixed(0)} pp vs ${mp.national_avg_attendance.toFixed(0)}% nat avg`
+            })()}
             tone={attendanceTone}
             note={
               attendanceUnavailable
                 ? mp.attendance_note ?? "Data unavailable"
-                : mp.national_avg_attendance != null
-                  ? `vs ${mp.national_avg_attendance.toFixed(0)}% nat avg`
-                  : undefined
+                : undefined
             }
           />
           <Stat
             label="Questions"
             value={mp.questions_asked != null ? formatIndianNumber(mp.questions_asked) : "—"}
+            sub={mp.national_avg_questions != null && mp.questions_asked != null ? (() => {
+              const delta = mp.questions_asked - mp.national_avg_questions
+              const sign = delta >= 0 ? "+" : ""
+              return `${sign}${delta.toFixed(0)} vs ${mp.national_avg_questions.toFixed(0)} nat avg`
+            })() : undefined}
             tone={
               mp.questions_asked == null
                 ? "neutral"
@@ -132,7 +150,6 @@ export function HonestyCard({ mp, partyColor }: { mp: Mp; partyColor?: string | 
                     ? "bad"
                     : "warn"
             }
-            note={mp.national_avg_questions != null ? `vs ${mp.national_avg_questions.toFixed(0)} nat avg` : undefined}
           />
           <Stat
             label="Criminal cases"
@@ -155,7 +172,11 @@ export function HonestyCard({ mp, partyColor }: { mp: Mp; partyColor?: string | 
           <Stat
             label="Debates"
             value={mp.debates_participated != null ? `${mp.debates_participated}` : "—"}
-            note={mp.national_avg_debates != null ? `vs ${mp.national_avg_debates.toFixed(1)} nat avg` : undefined}
+            sub={mp.national_avg_debates != null && mp.debates_participated != null ? (() => {
+              const delta = mp.debates_participated - mp.national_avg_debates
+              const sign = delta >= 0 ? "+" : ""
+              return `${sign}${delta.toFixed(1)} vs ${mp.national_avg_debates.toFixed(1)} nat avg`
+            })() : undefined}
           />
           <Stat
             label="PM Bills"

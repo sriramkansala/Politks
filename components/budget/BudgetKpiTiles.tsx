@@ -231,16 +231,19 @@ export function BudgetKpiTiles() {
 
   const tiles: TileProps[] = [
     {
+      // Show YoY growth % as headline — citizens can't parse ₹53.47 L Cr
+      // directly, but "+10.9% more than last year" is immediately legible.
+      // The absolute is kept in support text for reference.
       label: "Total Expenditure",
-      headline: `₹${k.totalExpenditure.toFixed(2)}`,
-      unit: "L Cr",
-      support: `vs ₹${p.totalExpenditure.toFixed(2)} L Cr · FY ${p.fy} BE`,
+      headline: `+${(((k.totalExpenditure - p.totalExpenditure) / p.totalExpenditure) * 100).toFixed(1)}`,
+      unit: "% YoY",
+      support: `₹${k.totalExpenditure.toFixed(2)} L Cr BE · was ₹${p.totalExpenditure.toFixed(2)} L Cr`,
       series: t.totalExpenditure,
       current: k.totalExpenditure,
       prior: p.totalExpenditure,
       direction: "neutral",
       emphasised: true,
-      tooltip: `Union Budget expenditure for FY ${k.fy} (Budget Estimate). Source: ${k.source}`,
+      tooltip: `Union Budget expenditure for FY ${k.fy} (Budget Estimate) is ₹${k.totalExpenditure.toFixed(2)} lakh crore — ${(((k.totalExpenditure - p.totalExpenditure) / p.totalExpenditure) * 100).toFixed(1)}% more than FY ${p.fy} BE. Source: ${k.source}`,
       delay: 0,
       showRightHairline: true,
     },

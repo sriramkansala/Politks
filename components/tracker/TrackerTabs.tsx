@@ -79,8 +79,11 @@ function OverviewTab({ stats }: { stats: PartyStats[] }) {
       <AnimateItem>
         <AnimateIn stagger className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {stats.map((p) => {
-            const keptPct = p.total > 0 ? Math.round((p.kept / p.total) * 100) : 0
-            const hasData = p.total > 0 && keptPct > 0
+            // Use rated (non-unrated) as the denominator — "kept of rated" is
+            // the meaningful signal; counting unrated in the denominator masks it.
+            const rated = p.kept + p.broken + p.inworks + p.stalled + p.compromise
+            const keptPct = rated > 0 ? Math.round((p.kept / rated) * 100) : 0
+            const hasData = rated > 0 && p.kept > 0
             return (
               <AnimateItem key={p.slug}>
               <motion.div
@@ -97,20 +100,26 @@ function OverviewTab({ stats }: { stats: PartyStats[] }) {
                       {p.short_name ?? p.name}
                     </span>
                   </div>
-                  <span className="text-caption" style={{ color: tokens.color.textTertiary }}>
-                    {p.total} promises
+                </div>
+                {/* Hero: kept count / rated denominator — rate is legible because
+                    denominator gives the scale ("3 of 6" vs "3 of 200" differ hugely) */}
+                <div className="flex items-baseline gap-1 mb-0.5">
+                  <span className="text-[28px]"
+                    style={{
+                      color: hasData ? tokens.status.kept : tokens.color.textPrimary,
+                      letterSpacing: "-0.022em",
+                      fontVariationSettings: "'wght' 590",
+                    }}>
+                    {p.kept}
+                  </span>
+                  <span className="text-[13px]" style={{ color: tokens.color.textTertiary }}>
+                    of {rated} rated kept
                   </span>
                 </div>
-                <div className="text-[28px] mb-1"
-                  style={{
-                    color: hasData ? tokens.status.kept : tokens.color.textPrimary,
-                    letterSpacing: "-0.022em",
-                    fontVariationSettings: "'wght' 590",
-                  }}>
-                  {keptPct}%
-                </div>
-                <p className="text-caption mb-2" style={{ color: tokens.color.textTertiary }}>kept</p>
-                <Bar value={p.kept} total={p.total} color={hasData ? tokens.status.kept : tokens.color.border} />
+                <p className="text-caption mb-2" style={{ color: tokens.color.textDisabled }}>
+                  {keptPct > 0 ? `${keptPct}% · ` : ""}{p.total} promises indexed
+                </p>
+                <Bar value={p.kept} total={rated} color={hasData ? tokens.status.kept : tokens.color.border} />
               </motion.div>
               </AnimateItem>
             )

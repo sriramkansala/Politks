@@ -111,14 +111,35 @@ export default async function HomePage() {
               </AnimateItem>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { label: "Parties tracked",          value: String(partyCount ?? 0), pct: null },
-                  { label: "Promises indexed",          value: String(total),           pct: null },
-                  { label: `Kept (of ${rated} rated)`,  value: String(kept),   pct: keptPct,   tone: "tone-good" as const },
-                  { label: `Broken (of ${rated} rated)`,value: String(broken), pct: brokenPct, tone: "tone-bad"  as const },
-                ].map(({ label, value, pct, tone }) => (
+                  {
+                    label: "Parties tracked",
+                    value: String(partyCount ?? 0),
+                    sub: null,
+                    tone: "",
+                  },
+                  {
+                    label: "Promises indexed",
+                    value: String(total),
+                    sub: rated > 0 ? `${rated} rated · ${total - rated} pending` : null,
+                    tone: "",
+                  },
+                  {
+                    // Rate with denominator: the % is only meaningful when you see the base
+                    label: "Kept",
+                    value: rated > 0 ? `${kept} of ${rated}` : "—",
+                    sub: keptPct > 0 ? `${keptPct}% of rated promises` : "No rated promises yet",
+                    tone: keptPct > 0 ? "tone-good" : "",
+                  },
+                  {
+                    label: "Broken",
+                    value: rated > 0 ? `${broken} of ${rated}` : "—",
+                    sub: brokenPct > 0 ? `${brokenPct}% of rated promises` : "No broken promises yet",
+                    tone: brokenPct > 0 ? "tone-bad" : "",
+                  },
+                ].map(({ label, value, sub, tone }) => (
                   <AnimateItem key={label}>
                     <div
-                      className={`stat-card ${pct != null && pct > 0 ? tone ?? "" : ""}`}
+                      className={`stat-card ${tone}`}
                       data-explain
                       data-explain-label={label}
                       data-explain-value={value}
@@ -126,6 +147,7 @@ export default async function HomePage() {
                     >
                       <div className="value">{value}</div>
                       <div className="label">{label}</div>
+                      {sub && <div className="note">{sub}</div>}
                     </div>
                   </AnimateItem>
                 ))}

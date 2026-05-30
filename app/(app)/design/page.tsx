@@ -8,6 +8,7 @@ import { StatusPill } from "@/components/promises/StatusPill"
 import { TypographySpecimen } from "@/components/dev/TypographySpecimen"
 import { LinearSpecimens } from "@/components/linear/LinearSpecimens"
 import { LinearShowcase } from "@/components/linear/LinearShowcase"
+import { IndiaTilegramLoader } from "@/components/atlas/IndiaTilegramLoader"
 import { type PromiseStatus } from "@/lib/tokens"
 
 const statuses: PromiseStatus[] = [
@@ -186,6 +187,21 @@ export default function DesignPage() {
             Live demo — add filters, click a row to open it, edit its properties, or press ⌘K.
           </p>
           <LinearShowcase />
+        </section>
+
+        <Separator style={{ background: "var(--border)" }} />
+
+        {/* ── India constituency tilegram ────────────────────────────────── */}
+        <section>
+          <h2 className="h-section mb-1" style={{ color: "var(--text-primary)" }}>
+            India constituency tilegram
+          </h2>
+          <p className="text-[13px] mb-6" style={{ color: "var(--text-tertiary)" }}>
+            543 Lok Sabha constituencies — one hexagon each. Colour-coded by reserved category.
+            Drop in <code className="text-[12px] px-1 py-px rounded" style={{ background: "var(--bg-elevated-2)", color: "var(--accent)" }}>data=</code> to
+            colour by any metric (vote share, attendance, whatever).
+          </p>
+          <IndiaTilegramLoader />
         </section>
 
       </div>
