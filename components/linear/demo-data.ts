@@ -1,0 +1,138 @@
+// Sample issues + people + filter-property defs for the /design showcase.
+// Politks-flavoured content so the demo reads in-context, not "Acme Inc".
+
+import type { Issue, IssuePerson } from "./types"
+
+export const PEOPLE: IssuePerson[] = [
+  { id: "u-priya", name: "Priya Nair", color: "#5e6ad2" },
+  { id: "u-arjun", name: "Arjun Rao", color: "#4cb782" },
+  { id: "u-meera", name: "Meera Iyer", color: "#fc7840" },
+  { id: "u-dev", name: "Dev Kapoor", color: "#4ea7fc" },
+]
+
+export const DEMO_ISSUES: Issue[] = [
+  {
+    id: "NITI-128",
+    title: "Bill detail Story tab drifts from BillStorySection",
+    description:
+      "Two parallel implementations of the same section hierarchy. Consolidate to a single source of truth and verify the Story tab still renders.",
+    status: "done",
+    priority: "high",
+    labels: [
+      { label: "Tech debt", color: "#b08968" },
+      { label: "Forensic", color: "#5e6ad2" },
+    ],
+    assignee: PEOPLE[0],
+    project: "Bill forensics",
+    milestone: "v0.2 cleanup",
+    cycle: "Cycle 7",
+    dueDate: "May 30",
+    createdBy: PEOPLE[1],
+  },
+  {
+    id: "NITI-131",
+    title: "Add Linear-style filter bar to the bills list",
+    description:
+      "Status / Priority / Assignee / Labels pills with AND combination and a saved-view affordance.",
+    status: "in_progress",
+    priority: "urgent",
+    labels: [{ label: "UI", color: "#4ea7fc" }],
+    assignee: PEOPLE[2],
+    project: "Design system",
+    milestone: null,
+    cycle: "Cycle 7",
+    dueDate: "Jun 04",
+    createdBy: PEOPLE[0],
+  },
+  {
+    id: "NITI-140",
+    title: "Command menu: group results by entity type",
+    description:
+      "Navigation / Bills / Legislators / Commands sections with keyboard nav and a footer hint bar.",
+    status: "in_review",
+    priority: "medium",
+    labels: [
+      { label: "UI", color: "#4ea7fc" },
+      { label: "Search", color: "#02b8cc" },
+    ],
+    assignee: PEOPLE[3],
+    project: "Design system",
+    milestone: "v0.2 cleanup",
+    cycle: "Cycle 7",
+    dueDate: null,
+    createdBy: PEOPLE[0],
+  },
+  {
+    id: "NITI-142",
+    title: "Right-side properties panel for bill pages",
+    description:
+      "Key–value rows: status, ministry, house, sponsor, dates — inline-editable controls.",
+    status: "todo",
+    priority: "high",
+    labels: [{ label: "Forensic", color: "#5e6ad2" }],
+    assignee: PEOPLE[0],
+    project: "Bill forensics",
+    milestone: null,
+    cycle: null,
+    dueDate: "Jun 10",
+    createdBy: PEOPLE[1],
+  },
+  {
+    id: "NITI-150",
+    title: "Atlas map: hover state flickers on dense districts",
+    status: "todo",
+    priority: "low",
+    labels: [
+      { label: "Bug", color: "#eb5757" },
+      { label: "Atlas", color: "#4cb782" },
+    ],
+    assignee: null,
+    project: null,
+    milestone: null,
+    cycle: null,
+    dueDate: null,
+    createdBy: PEOPLE[2],
+  },
+  {
+    id: "NITI-155",
+    title: "Backfill PRS bill-track records for 2019–2021",
+    status: "backlog",
+    priority: "medium",
+    labels: [{ label: "Data", color: "#f2c94c" }],
+    assignee: PEOPLE[1],
+    project: "Bill forensics",
+    milestone: null,
+    cycle: null,
+    dueDate: null,
+    createdBy: PEOPLE[1],
+  },
+  {
+    id: "NITI-159",
+    title: "Deprecate legacy StatusPill chip variant",
+    status: "canceled",
+    priority: "no_priority",
+    labels: [{ label: "Tech debt", color: "#b08968" }],
+    assignee: PEOPLE[3],
+    project: "Design system",
+    milestone: null,
+    cycle: null,
+    dueDate: null,
+    createdBy: PEOPLE[0],
+  },
+  {
+    id: "NITI-161",
+    title: "Manifesto diff: highlight added vs removed promises",
+    status: "backlog",
+    priority: "low",
+    labels: [
+      { label: "UI", color: "#4ea7fc" },
+      { label: "Manifesto", color: "#a855f7" },
+    ],
+    assignee: null,
+    project: null,
+    milestone: null,
+    cycle: null,
+    dueDate: null,
+    createdBy: PEOPLE[2],
+  },
+]

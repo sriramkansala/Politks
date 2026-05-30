@@ -6,6 +6,8 @@ import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { StatusPill } from "@/components/promises/StatusPill"
 import { TypographySpecimen } from "@/components/dev/TypographySpecimen"
+import { LinearSpecimens } from "@/components/linear/LinearSpecimens"
+import { LinearShowcase } from "@/components/linear/LinearShowcase"
 import { type PromiseStatus } from "@/lib/tokens"
 
 const statuses: PromiseStatus[] = [
@@ -159,6 +161,31 @@ export default function DesignPage() {
             Inter Variable across every product role, rendered in both themes for side-by-side validation.
           </p>
           <TypographySpecimen />
+        </section>
+
+        <Separator style={{ background: "var(--border)" }} />
+
+        {/* ── Linear-style component system ─────────────────────────────── */}
+        <section>
+          <h2 className="h-section mb-1" style={{ color: "var(--text-primary)" }}>
+            Linear component system
+          </h2>
+          <p className="text-[13px] mb-6" style={{ color: "var(--text-tertiary)" }}>
+            Workflow primitives — status &amp; priority glyphs, labels, assignees — built to Linear spec.
+          </p>
+          <LinearSpecimens />
+        </section>
+
+        <Separator style={{ background: "var(--border)" }} />
+
+        <section>
+          <h2 className="h-section mb-1" style={{ color: "var(--text-primary)" }}>
+            Filtering · search · detail panel
+          </h2>
+          <p className="text-[13px] mb-6" style={{ color: "var(--text-tertiary)" }}>
+            Live demo — add filters, click a row to open it, edit its properties, or press ⌘K.
+          </p>
+          <LinearShowcase />
         </section>
 
       </div>

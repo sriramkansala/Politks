@@ -12,6 +12,7 @@ import {
   Info,
   Landmark,
   Menu,
+  Palette,
   ScrollText,
   Settings,
   Shield,
@@ -38,6 +39,7 @@ const navItems = [
 ] as const
 
 const bottomItems = [
+  { href: "/design",      label: "Design system", icon: Palette },
   { href: "/settings",    label: "Settings",     icon: Settings },
   { href: "/methodology", label: "Methodology", icon: ScrollText },
   { href: "/about",       label: "About",        icon: Info },

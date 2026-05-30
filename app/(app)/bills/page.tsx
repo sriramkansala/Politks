@@ -1,7 +1,7 @@
 import { createPublicClient } from "@/lib/db/server"
 import type { Bill } from "@/lib/db/types"
 import { AnimateIn } from "@/components/ui/animate-in"
-import { BillsList } from "@/components/forensic/BillsList"
+import { BillsWorkspace } from "@/components/forensic/BillsWorkspace"
 
 export const revalidate = 21600
 
@@ -27,7 +27,7 @@ export default async function BillsPage() {
       </AnimateIn>
 
       <AnimateIn delay={0.05}>
-        <BillsList bills={allBills} />
+        <BillsWorkspace bills={allBills} />
       </AnimateIn>
 
       {/* Caveat block — UI_RULES.md §6 */}
