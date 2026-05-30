@@ -34,6 +34,9 @@ import { SCHEME_ESTIMATES, type SchemeEstimate } from "@/lib/budget/data"
 const FY_OPTIONS = ["2025-26", "2024-25"] as const
 type FY = typeof FY_OPTIONS[number]
 
+// Threshold below which a scheme's RE vs BE is flagged for forensic review
+const FORENSIC_THRESHOLD = 0.80
+
 // ── Formatters ────────────────────────────────────────────────────────────────
 
 function fmtRs(v: number): string {
@@ -637,8 +640,18 @@ function TrackLegend() {
 
 export function BeReActualsTracker() {
   const [fy, setFy] = useState<FY>("2025-26")
+  const [showAllOk, setShowAllOk] = useState(false)
 
   const schemes = SCHEME_ESTIMATES.filter(s => s.fy === fy)
+
+  if (!schemes.length) {
+    return (
+      <div className="flex items-center justify-center h-32 text-[12px]"
+        style={{ color: "var(--text-tertiary)", border: "1px solid var(--border)", borderRadius: "var(--radius-card)" }}>
+        No scheme data available for FY {fy}.
+      </div>
+    )
+  }
 
   // Sort: flagged first (sorted by severity of cut desc), then clean
   const flagged = schemes
@@ -879,7 +892,7 @@ export function BeReActualsTracker() {
             </motion.div>
           )}
 
-          {/* WITHIN TOLERANCE */}
+          {/* WITHIN TOLERANCE — collapsed by default */}
           {cleanOk.length > 0 && (
             <motion.div key={`ok-${fy}`} layout="position">
               <SectionLabel
@@ -887,14 +900,34 @@ export function BeReActualsTracker() {
                 count={cleanOk.length}
                 variant="neutral"
               />
-              {cleanOk.map((s, i) => (
+              {(showAllOk ? cleanOk : cleanOk.slice(0, 5)).map((s, i) => (
                 <SchemeRow
                   key={`${fy}-ok-${s.scheme}`}
                   s={s}
                   idx={flagged.length + cleanUp.length + i}
-                  isLast={i === cleanOk.length - 1}
+                  isLast={showAllOk ? i === cleanOk.length - 1 : i === Math.min(4, cleanOk.length - 1)}
                 />
               ))}
+              {cleanOk.length > 5 && (
+                <button
+                  onClick={() => setShowAllOk(v => !v)}
+                  style={{
+                    width: "100%",
+                    padding: "7px 12px",
+                    textAlign: "left",
+                    fontSize: 11,
+                    color: "var(--text-tertiary)",
+                    background: "var(--bg-elevated-2)",
+                    border: "none",
+                    cursor: "pointer",
+                    borderTop: "1px solid var(--border)",
+                  }}
+                >
+                  {showAllOk
+                    ? "↑ Show fewer"
+                    : `↓ Show ${cleanOk.length - 5} more within-tolerance schemes`}
+                </button>
+              )}
             </motion.div>
           )}
 
@@ -918,7 +951,7 @@ export function BeReActualsTracker() {
         <span>
           BE = Budget Estimate (Feb speech). RE = Revised Estimate (following February).
           Actuals = CAG-audited figures (~12–18 months post year-end).
-          Forensic flag triggers when RE ≤ 80% of BE. Values in ₹ lakh crore (1 L Cr = ₹1 trillion).
+          Forensic flag triggers when RE ≤ {(FORENSIC_THRESHOLD * 100).toFixed(0)}% of BE. Values in ₹ lakh crore (1 L Cr = ₹1 trillion).
           Click any flagged row to expand the forensic note.
           Sources: indiabudget.gov.in · CGA Monthly Accounts · CAG Finance Accounts · PRS Budget Analysis.
         </span>

@@ -10,8 +10,15 @@
 
 import { useEffect, useRef, useState } from "react"
 import { motion, animate } from "framer-motion"
-import { AreaChart } from "@tremor/react"
-import type { CustomTooltipProps } from "@tremor/react"
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { SegmentedControl } from "@/components/ui/segmented-control"
@@ -25,7 +32,8 @@ import { DataProvenance } from "@/components/budget/_shared/DataProvenance"
 
 type ViewMode = "pct" | "absolute"
 
-const CHART_LABEL = { surcharge: "Surcharge", cess: "Cess" } as const
+const SURCHARGE_HEX = hexColor("surcharge")
+const CESS_HEX      = hexColor("cess")
 
 // ── Count-up span ─────────────────────────────────────────────────────────────
 function CountUp({ to, prefix = "", suffix = "", decimals = 1, delay = 0 }: {
@@ -73,21 +81,22 @@ function StatTile({ label, to, prefix, suffix, decimals, sub, color, delay }: {
 
 // ── Tooltip ────────────────────────────────────────────────────────────────────
 function makeCessTooltip(view: ViewMode) {
-  return function CessTooltip({ active, payload, label }: CustomTooltipProps) {
+  return function CessTooltip({ active, payload, label }: {
+    active?: boolean
+    payload?: Array<{ dataKey: string; value: number }>
+    label?: string
+  }) {
     if (!active || !payload?.length) return null
     return (
       <ChartTooltip
         title={`FY ${label}`}
-        rows={payload.map(p => {
-          const key = p.dataKey as keyof typeof CHART_LABEL
-          return {
-            color: key === "cess" ? hexColor("cess") : hexColor("surcharge"),
-            label: CHART_LABEL[key],
-            value: view === "pct"
-              ? `${Number(p.value).toFixed(1)}%`
-              : `₹${Number(p.value).toFixed(2)} L Cr`,
-          }
-        })}
+        rows={payload.map(p => ({
+          color: p.dataKey === "cess" ? CESS_HEX : SURCHARGE_HEX,
+          label: p.dataKey === "cess" ? "Cess" : "Surcharge",
+          value: view === "pct"
+            ? `${Number(p.value).toFixed(1)}%`
+            : `₹${Number(p.value).toFixed(2)} L Cr`,
+        }))}
       />
     )
   }
@@ -97,6 +106,8 @@ function makeCessTooltip(view: ViewMode) {
 export function CessWedgeTracker() {
   const [view, setView] = useState<ViewMode>("pct")
   const latest = CESS_SERIES[CESS_SERIES.length - 1]
+
+  if (!latest) return null
 
   const chartData = CESS_SERIES.map(e => ({
     fy: e.fy.slice(2),
@@ -196,17 +207,59 @@ export function CessWedgeTracker() {
       </div>
 
       <MotionSection delay={0.1}>
-        <AreaChart
-          data={chartData}
-          index="fy"
-          categories={["surcharge", "cess"]}
-          colors={["amber", "rose"]}
-          stack
-          valueFormatter={fmt}
-          showLegend={false}
-          customTooltip={CustomTooltip}
-          className="h-[260px]"
-        />
+        <ResponsiveContainer width="100%" height={260}>
+          <AreaChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+            <defs>
+              <linearGradient id="cess-gradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={CESS_HEX} stopOpacity={0.22} />
+                <stop offset="95%" stopColor={CESS_HEX} stopOpacity={0.04} />
+              </linearGradient>
+              <linearGradient id="surcharge-gradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={SURCHARGE_HEX} stopOpacity={0.22} />
+                <stop offset="95%" stopColor={SURCHARGE_HEX} stopOpacity={0.04} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="var(--border)"
+              vertical={false}
+            />
+            <XAxis
+              dataKey="fy"
+              tick={{ fontSize: 11, fill: "var(--text-tertiary)" }}
+              axisLine={false}
+              tickLine={false}
+              dy={6}
+            />
+            <YAxis
+              tick={{ fontSize: 11, fill: "var(--text-tertiary)" }}
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={fmt}
+              width={52}
+            />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ stroke: "var(--border-stronger)", strokeWidth: 1 }}
+            />
+            <Area
+              type="monotone"
+              dataKey="surcharge"
+              stackId="1"
+              stroke={SURCHARGE_HEX}
+              strokeWidth={1.5}
+              fill="url(#surcharge-gradient)"
+            />
+            <Area
+              type="monotone"
+              dataKey="cess"
+              stackId="1"
+              stroke={CESS_HEX}
+              strokeWidth={1.5}
+              fill="url(#cess-gradient)"
+            />
+          </AreaChart>
+        </ResponsiveContainer>
       </MotionSection>
 
       <Separator style={{ background: "var(--border)" }} />

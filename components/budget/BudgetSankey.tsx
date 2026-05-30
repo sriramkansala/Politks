@@ -58,6 +58,13 @@ const COL_CX   = [175, 488, 825]
 const COL_X0   = COL_CX.map(cx => cx - NODE_W / 2)
 const COL_X1   = COL_CX.map(cx => cx + NODE_W / 2)
 
+// Named magic numbers — touch these if you change the visual language
+const BEZIER_CP             = 0.52  // Bezier control point fraction (0 = straight, 1 = S-curve)
+const RIBBON_OPACITY_SOURCE = 0.60  // gradient start opacity on source end
+const RIBBON_OPACITY_TARGET = 0.38  // gradient end opacity on target end
+const LABEL_MAX_CHARS       = 22    // chars before label gets truncated
+const LABEL_DISPLAY_CHARS   = 20    // chars shown when truncated
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface LNode extends SankeyNode {
   x0: number; y0: number; x1: number; y1: number
@@ -118,7 +125,7 @@ function buildLayout() {
 
 // ── Filled ribbon path (top-curve → bottom-curve) ────────────────────────────
 function ribbon(x0: number, y0s: number, y0e: number, x1: number, y1s: number, y1e: number) {
-  const cpx = x0 + (x1 - x0) * 0.52
+  const cpx = x0 + (x1 - x0) * BEZIER_CP
   return [
     `M ${x0} ${y0s}`,
     `C ${cpx} ${y0s}, ${cpx} ${y1s}, ${x1} ${y1s}`,
@@ -214,6 +221,15 @@ export function BudgetSankey() {
   const [hovered, setHovered] = useState<string | null>(null)
   const data = SANKEY_2026_27_BE
 
+  if (!data.nodes.length || !data.links.length) {
+    return (
+      <div className="flex items-center justify-center h-40 text-[12px]"
+        style={{ color: "var(--text-tertiary)", border: "1px solid var(--border)", borderRadius: "var(--radius-card)" }}>
+        No budget flow data available.
+      </div>
+    )
+  }
+
   const hoveredNode = nodes.find(n => n.id === hovered) ?? null
 
   // Compute which node IDs are in the hovered subgraph
@@ -273,9 +289,11 @@ export function BudgetSankey() {
             <svg
               viewBox={`0 0 ${W} ${H}`}
               width="100%"
+              role="img"
+              aria-labelledby="sankey-title"
               style={{ display: "block", overflow: "visible" }}
-              aria-label="Union Budget 2026-27 — sources to final uses"
             >
+              <title id="sankey-title">Union Budget 2026-27 — where every rupee comes from and where it goes</title>
               <defs>
                 {links.map(lk => (
                   <linearGradient
@@ -283,8 +301,8 @@ export function BudgetSankey() {
                     id={`g-${lk.id}`}
                     x1="0%" y1="0%" x2="100%" y2="0%"
                   >
-                    <stop offset="0%"   stopColor={catColor(lk.source)} stopOpacity="0.6" />
-                    <stop offset="100%" stopColor={catColor(lk.target)} stopOpacity="0.38" />
+                    <stop offset="0%"   stopColor={catColor(lk.source)} stopOpacity={RIBBON_OPACITY_SOURCE} />
+                    <stop offset="100%" stopColor={catColor(lk.target)} stopOpacity={RIBBON_OPACITY_TARGET} />
                   </linearGradient>
                 ))}
               </defs>
@@ -353,7 +371,7 @@ export function BudgetSankey() {
                           fontVariationSettings: isCenter ? fontWeights.semibold : fontWeights.medium,
                         } as React.CSSProperties}
                       >
-                        {n.label.length > 22 && !isCenter ? n.label.slice(0, 20) + "…" : n.label}
+                        {n.label.length > LABEL_MAX_CHARS && !isCenter ? n.label.slice(0, LABEL_DISPLAY_CHARS) + "…" : n.label}
                       </text>
 
                       {/* Value sub-label */}

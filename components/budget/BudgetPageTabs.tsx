@@ -11,6 +11,7 @@
  */
 
 import { useState } from "react"
+import { ErrorBoundary } from "@/components/ui/error-boundary"
 import { BudgetRoadmap } from "@/components/budget/BudgetRoadmap"
 import { Tabs, TabsList, TabItem, TabPanel } from "@/components/ui/tabs"
 import { Card, CardContent } from "@/components/ui/card"
@@ -101,12 +102,12 @@ export function BudgetPageTabs() {
         {/* ── ₹ Flow ──────────────────────────────────────────────────────── */}
         <TabPanel value="sankey">
           <div className="flex flex-col gap-8 pt-4">
-            <BudgetKpiTiles />
+            <ErrorBoundary label="KPI tiles failed to load"><BudgetKpiTiles /></ErrorBoundary>
             <div>
               <SectionHeading sub="Where every rupee of the Union Budget comes from and where it goes — FY 2026-27 Budget Estimate">
                 Union Budget Flow
               </SectionHeading>
-              <BudgetSankey />
+              <ErrorBoundary label="Budget flow chart failed to render"><BudgetSankey /></ErrorBoundary>
             </div>
             <Card style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}>
               <CardContent className="px-4 py-3 text-[12px] leading-[1.7]"
@@ -127,7 +128,7 @@ export function BudgetPageTabs() {
               <SectionHeading sub="Six expenditure heads, indexed to 100 at FY13. Capex tripling and interest crowding out everything else, in one glance.">
                 Budget Time-Machine
               </SectionHeading>
-              <BudgetTimeMachine />
+              <ErrorBoundary label="Budget Time-Machine failed to render"><BudgetTimeMachine /></ErrorBoundary>
             </div>
 
             <Separator style={{ background: "var(--border)" }} />
@@ -136,7 +137,7 @@ export function BudgetPageTabs() {
               <SectionHeading sub="Defence, Health, Education, Rural Development and Agriculture — toggle between % of GDP and absolute ₹. Caveat below on Union-only data.">
                 Defence vs Social Sector
               </SectionHeading>
-              <DefenceVsSocialSector />
+              <ErrorBoundary label="Defence vs Social chart failed to render"><DefenceVsSocialSector /></ErrorBoundary>
             </div>
           </div>
         </TabPanel>
@@ -148,7 +149,7 @@ export function BudgetPageTabs() {
               <SectionHeading sub="Budget Estimate → Revised Estimate → Actuals. Forensic flags where RE falls ≥ 20% below BE.">
                 Under-execution Tracker
               </SectionHeading>
-              <BeReActualsTracker />
+              <ErrorBoundary label="Under-execution tracker failed to render"><BeReActualsTracker /></ErrorBoundary>
             </div>
 
             <Separator style={{ background: "var(--border)" }} />
@@ -157,7 +158,7 @@ export function BudgetPageTabs() {
               <SectionHeading sub="Headline fiscal deficit plus off-balance-sheet borrowings — the true fiscal deficit. UPA and NDA eras, neutrally.">
                 Off-Budget Borrowings
               </SectionHeading>
-              <OffBudgetBorrowings />
+              <ErrorBoundary label="Off-budget borrowings failed to render"><OffBudgetBorrowings /></ErrorBoundary>
             </div>
 
             <Separator style={{ background: "var(--border)" }} />
@@ -166,7 +167,7 @@ export function BudgetPageTabs() {
               <SectionHeading sub="Each scheme scored on output-outcome monitoring framework quality — CBGA-style rubric, four dimensions.">
                 Outcome Budget Integrity Score
               </SectionHeading>
-              <OutcomeBudgetIntegrity />
+              <ErrorBoundary label="Outcome budget integrity failed to render"><OutcomeBudgetIntegrity /></ErrorBoundary>
             </div>
           </div>
         </TabPanel>
@@ -178,7 +179,7 @@ export function BudgetPageTabs() {
               <SectionHeading sub="How cess and surcharge reduce the divisible pool shared with states — Articles 270 & 271.">
                 Cess + Surcharge Wedge
               </SectionHeading>
-              <CessWedgeTracker />
+              <ErrorBoundary label="Cess wedge chart failed to render"><CessWedgeTracker /></ErrorBoundary>
             </div>
 
             <Separator style={{ background: "var(--border)" }} />
@@ -187,7 +188,7 @@ export function BudgetPageTabs() {
               <SectionHeading sub="How much does each state contribute vs receive? Heuristic estimates — methodology note at foot.">
                 State Net-Position
               </SectionHeading>
-              <StateNetPositionMap />
+              <ErrorBoundary label="State net-position table failed to render"><StateNetPositionMap /></ErrorBoundary>
             </div>
 
             <Separator style={{ background: "var(--border)" }} />
@@ -196,7 +197,7 @@ export function BudgetPageTabs() {
               <SectionHeading sub="14th vs 15th vs 16th FC — vertical devolution, horizontal formula, per-state deltas, and the new ₹2.04 LC disaster grants corpus.">
                 16th Finance Commission Watch
               </SectionHeading>
-              <FinanceCommissionWatch />
+              <ErrorBoundary label="Finance Commission watch failed to render"><FinanceCommissionWatch /></ErrorBoundary>
             </div>
 
             <Separator style={{ background: "var(--border)" }} />
@@ -205,7 +206,7 @@ export function BudgetPageTabs() {
               <SectionHeading sub="IGST origin-vs-destination by state — the producer vs consumer state debate, shown factually.">
                 GST IGST Settlement
               </SectionHeading>
-              <GstIgstMap />
+              <ErrorBoundary label="GST IGST chart failed to render"><GstIgstMap /></ErrorBoundary>
             </div>
 
             <Separator style={{ background: "var(--border)" }} />
@@ -214,7 +215,7 @@ export function BudgetPageTabs() {
               <SectionHeading sub="Monthly Centrally Sponsored Scheme releases per state, with election-date overlay. Correlation ≠ causation.">
                 CSS Release Tracker
               </SectionHeading>
-              <CssReleaseTracker />
+              <ErrorBoundary label="CSS release tracker failed to render"><CssReleaseTracker /></ErrorBoundary>
             </div>
           </div>
         </TabPanel>
@@ -225,7 +226,7 @@ export function BudgetPageTabs() {
             <SectionHeading sub="Food · Fertiliser · Petroleum · Other — decomposed from FY 2017 to 2027.">
               Subsidies Decomposition
             </SectionHeading>
-            <SubsidiesDecomposition />
+            <ErrorBoundary label="Subsidies chart failed to render"><SubsidiesDecomposition /></ErrorBoundary>
           </div>
         </TabPanel>
 
@@ -235,7 +236,7 @@ export function BudgetPageTabs() {
             <SectionHeading sub="2024 Lok Sabha manifesto promises cross-referenced with FY27 Budget allocations. AI-assisted match, editor-reviewed.">
               Manifesto-to-Budget Engine
             </SectionHeading>
-            <ManifestoToBudget />
+            <ErrorBoundary label="Manifesto-to-budget engine failed to render"><ManifestoToBudget /></ErrorBoundary>
           </div>
         </TabPanel>
 
@@ -246,7 +247,7 @@ export function BudgetPageTabs() {
               <SectionHeading sub="PIN-code → your MP's MPLADS spend, top works, and neighbouring constituencies.">
                 My Constituency
               </SectionHeading>
-              <MyConstituency />
+              <ErrorBoundary label="My constituency failed to render"><MyConstituency /></ErrorBoundary>
             </div>
 
             <Separator style={{ background: "var(--border)" }} />
@@ -255,7 +256,7 @@ export function BudgetPageTabs() {
               <SectionHeading sub="Enter your income to see your estimated tax contribution split across every paise of the Union Budget. All computation client-side.">
                 Where Does My Tax Go?
               </SectionHeading>
-              <WhereDoesMyTaxGo />
+              <ErrorBoundary label="Where does my tax go failed to render"><WhereDoesMyTaxGo /></ErrorBoundary>
             </div>
           </div>
         </TabPanel>

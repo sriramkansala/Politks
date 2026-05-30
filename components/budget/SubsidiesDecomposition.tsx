@@ -9,15 +9,24 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion, animate } from "framer-motion"
-import { AreaChart, BarChart } from "@tremor/react"
-import type { CustomTooltipProps } from "@tremor/react"
+import {
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { SegmentedControl } from "@/components/ui/segmented-control"
 import { springs } from "@/lib/springs"
 import { fontWeights } from "@/lib/font-weight"
 import { SUBSIDY_SERIES } from "@/lib/budget/data"
-import { tremorColor, hexColor, tokenColor, type BudgetCategory } from "@/lib/budget/palette"
+import { hexColor, tokenColor, type BudgetCategory } from "@/lib/budget/palette"
 import { MotionSection } from "@/components/ui/motion-section"
 import { ChartTooltip } from "@/components/budget/_shared/ChartTooltip"
 import { DataProvenance } from "@/components/budget/_shared/DataProvenance"
@@ -40,7 +49,10 @@ const LABELS = {
   other:      "Other",
 }
 
-const CHART_COLORS = CATEGORIES.map(c => tremorColor(CAT_TO_BUDGET[c]))
+// Pre-resolve hex colors for Recharts (can't use CSS vars in SVG attributes)
+const CATEGORY_HEX = Object.fromEntries(
+  CATEGORIES.map(c => [c, hexColor(CAT_TO_BUDGET[c])])
+) as Record<typeof CATEGORIES[number], string>
 
 // ── Count-up ──────────────────────────────────────────────────────────────────
 function CountUp({ to, prefix = "", suffix = "", decimals = 2, delay = 0 }: {
@@ -95,7 +107,11 @@ function SubKpi({ category, value, pct, delay }: {
 
 // ── Tooltip ────────────────────────────────────────────────────────────────────
 function makeTooltip(valueMode: ValueMode) {
-  return function SubsidiesTooltip({ active, payload, label }: CustomTooltipProps) {
+  return function SubsidiesTooltip({ active, payload, label }: {
+    active?: boolean
+    payload?: Array<{ dataKey: string; value: number }>
+    label?: string
+  }) {
     if (!active || !payload?.length) return null
     const fmt = (v: number) =>
       valueMode === "gdpPct" ? `${v.toFixed(2)}% GDP` : `₹${v.toFixed(2)} L Cr`
@@ -103,7 +119,7 @@ function makeTooltip(valueMode: ValueMode) {
       <ChartTooltip
         title={`FY ${label}`}
         rows={payload.map(p => {
-          const key = p.dataKey as keyof typeof LABELS
+          const key = p.dataKey as typeof CATEGORIES[number]
           return {
             color: hexColor(CAT_TO_BUDGET[key]),
             label: LABELS[key] ?? String(p.dataKey),
@@ -115,10 +131,36 @@ function makeTooltip(valueMode: ValueMode) {
   }
 }
 
+// ── Shared chart axes ─────────────────────────────────────────────────────────
+function ChartAxes({ fmt }: { fmt: (v: number) => string }) {
+  return (
+    <>
+      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+      <XAxis
+        dataKey="fy"
+        tick={{ fontSize: 11, fill: "var(--text-tertiary)" }}
+        axisLine={false}
+        tickLine={false}
+        dy={6}
+      />
+      <YAxis
+        tick={{ fontSize: 11, fill: "var(--text-tertiary)" }}
+        axisLine={false}
+        tickLine={false}
+        tickFormatter={fmt}
+        width={52}
+      />
+    </>
+  )
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 export function SubsidiesDecomposition() {
   const [chartType, setChartType] = useState<ChartType>("area")
   const [valueMode, setValueMode] = useState<ValueMode>("absolute")
+
+  if (!SUBSIDY_SERIES.length) return null
+
   const latest = SUBSIDY_SERIES[SUBSIDY_SERIES.length - 1]
 
   const chartData = SUBSIDY_SERIES.map(e => ({
@@ -133,6 +175,10 @@ export function SubsidiesDecomposition() {
     valueMode === "gdpPct" ? `${v.toFixed(1)}%` : `₹${v.toFixed(1)}`
 
   const CustomTooltip = makeTooltip(valueMode)
+  const tooltipProps = {
+    content: <CustomTooltip />,
+    cursor: { stroke: "var(--border-stronger)", strokeWidth: 1 },
+  }
 
   return (
     <div className="flex flex-col gap-5">
@@ -169,31 +215,48 @@ export function SubsidiesDecomposition() {
       </div>
 
       <MotionSection delay={0.1}>
-        {chartType === "area" ? (
-          <AreaChart
-            data={chartData}
-            index="fy"
-            categories={[...CATEGORIES]}
-            colors={[...CHART_COLORS]}
-            stack
-            valueFormatter={fmt}
-            showLegend={false}
-            customTooltip={CustomTooltip}
-            className="h-[260px]"
-          />
-        ) : (
-          <BarChart
-            data={chartData}
-            index="fy"
-            categories={[...CATEGORIES]}
-            colors={[...CHART_COLORS]}
-            stack
-            valueFormatter={fmt}
-            showLegend={false}
-            customTooltip={CustomTooltip}
-            className="h-[260px]"
-          />
-        )}
+        <ResponsiveContainer width="100%" height={260}>
+          {chartType === "area" ? (
+            <AreaChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+              <defs>
+                {CATEGORIES.map(c => (
+                  <linearGradient key={c} id={`subsidy-${c}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%"  stopColor={CATEGORY_HEX[c]} stopOpacity={0.22} />
+                    <stop offset="95%" stopColor={CATEGORY_HEX[c]} stopOpacity={0.04} />
+                  </linearGradient>
+                ))}
+              </defs>
+              <ChartAxes fmt={fmt} />
+              <Tooltip {...tooltipProps} />
+              {CATEGORIES.map(c => (
+                <Area
+                  key={c}
+                  type="monotone"
+                  dataKey={c}
+                  stackId="1"
+                  stroke={CATEGORY_HEX[c]}
+                  strokeWidth={1.5}
+                  fill={`url(#subsidy-${c})`}
+                />
+              ))}
+            </AreaChart>
+          ) : (
+            <BarChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+              <ChartAxes fmt={fmt} />
+              <Tooltip {...tooltipProps} />
+              {CATEGORIES.map(c => (
+                <Bar
+                  key={c}
+                  dataKey={c}
+                  stackId="1"
+                  fill={CATEGORY_HEX[c]}
+                  fillOpacity={0.85}
+                  radius={c === "other" ? [2, 2, 0, 0] : [0, 0, 0, 0]}
+                />
+              ))}
+            </BarChart>
+          )}
+        </ResponsiveContainer>
       </MotionSection>
 
       <Separator style={{ background: "var(--border)" }} />

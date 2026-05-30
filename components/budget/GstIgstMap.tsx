@@ -19,6 +19,16 @@ type Sort = "origin" | "consumption" | "ratio"
 
 export function GstIgstMap() {
   const [sort, setSort] = useState<Sort>("ratio")
+
+  if (!GST_IGST.states.length) {
+    return (
+      <div className="flex items-center justify-center h-32 text-[12px]"
+        style={{ color: "var(--text-tertiary)", border: "1px solid var(--border)", borderRadius: "var(--radius-card)" }}>
+        No GST settlement data available.
+      </div>
+    )
+  }
+
   const sorted = [...GST_IGST.states].sort((a, b) => {
     if (sort === "origin") return b.origination - a.origination
     if (sort === "consumption") return b.consumption - a.consumption

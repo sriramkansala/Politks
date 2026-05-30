@@ -21,34 +21,6 @@ type SortKey = "ratio" | "gsdpSharePct" | "net" | "stateName"
 type SortDir = "asc" | "desc"
 
 // ── Animated ratio bar ────────────────────────────────────────────────────────
-function RatioBar({ ratio, max, delay }: { ratio: number; max: number; delay: number }) {
-  const pct = Math.min((ratio / max) * 100, 100)
-  const color =
-    ratio < 0.8  ? "var(--status-broken)"    :
-    ratio < 1.2  ? "var(--status-compromise)" :
-                   "var(--status-kept)"
-
-  return (
-    <div className="flex items-center gap-2 min-w-[100px]">
-      <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "var(--bg-elevated-3)" }}>
-        <motion.div
-          className="h-full rounded-full"
-          style={{ background: color, originX: 0 }}
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ ...springs.gentle, delay }}
-        />
-        {/* We need to set width, not scaleX, for correct fill. Use width animation: */}
-      </div>
-      <span className="text-[11px] tabular-nums w-8 text-right shrink-0"
-        style={{ color, fontVariationSettings: fontWeights.semibold }}>
-        {ratio.toFixed(2)}
-      </span>
-    </div>
-  )
-}
-
-// Fix: use motion.div width animation instead of scaleX for correct bar rendering
 function AnimatedRatioBar({ ratio, max, delay }: { ratio: number; max: number; delay: number }) {
   const pct = Math.min((ratio / max) * 100, 100)
   const color =
@@ -141,7 +113,7 @@ export function StateNetPositionMap() {
     return sortDir === "asc" ? av - bv : bv - av
   })
 
-  const maxRatio = Math.max(...STATE_NET_POSITIONS.map(s => s.ratioReceivedPerRupee))
+  const maxRatio = Math.max(1, ...STATE_NET_POSITIONS.map(s => s.ratioReceivedPerRupee))
   const fc16 = FC_FORMULA["16th FC"]
 
   return (
