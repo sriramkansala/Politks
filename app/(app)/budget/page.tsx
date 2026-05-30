@@ -1,4 +1,5 @@
 import { BudgetPageTabs } from "@/components/budget/BudgetPageTabs"
+import { fontWeights } from "@/lib/font-weight"
 
 export const metadata = {
   title: "Budget · Neo Nīti",
@@ -25,21 +26,14 @@ export default function BudgetPage() {
           >
             <span
               className="text-[16px] leading-none"
-              style={{ color: "var(--accent)", fontVariationSettings: "'wght' 600" }}
+              style={{ color: "var(--accent)", fontVariationSettings: fontWeights.semibold }}
             >
               ₹
             </span>
           </div>
 
           <div>
-            <h1
-              className="text-[22px] leading-none"
-              style={{
-                color: "var(--text-primary)",
-                fontVariationSettings: "'wght' 680",
-                letterSpacing: "-0.03em",
-              }}
-            >
+            <h1 className="h-page" style={{ color: "var(--text-primary)" }}>
               Union Budget
             </h1>
             <p className="text-[13px] mt-1.5" style={{ color: "var(--text-tertiary)" }}>

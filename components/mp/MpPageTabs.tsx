@@ -1,6 +1,6 @@
 "use client"
 
-// MP dossier 5-tab layout: Overview · Questions · Criminal · Education · Financials
+// MP dossier 6-tab layout: Overview · Questions · Criminal · Education · Financials · Interests
 // Uses the project's custom Tabs/TabItem/TabPanel (fluid-functionalism + Radix).
 // All colour tokens follow UI_RULES.md — no bespoke hex.
 
@@ -11,6 +11,7 @@ import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
 import { springs } from "@/lib/springs"
 import { HonestyCard } from "@/components/mp/HonestyCard"
 import { AttendanceHeatmap } from "@/components/mp/AttendanceHeatmap"
+import { InterestsTab } from "@/components/mp/InterestsTab"
 import { fontWeights } from "@/lib/font-weight"
 import { formatINR } from "@/lib/format"
 import type { Mp } from "@/lib/db/types"
@@ -20,10 +21,7 @@ import type { Mp } from "@/lib/db/types"
 function SectionHeading({ children, sub }: { children: React.ReactNode; sub?: string }) {
   return (
     <div className="mb-4">
-      <h2
-        className="text-[15px] leading-tight"
-        style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold, letterSpacing: "-0.013em" }}
-      >
+      <h2 className="h-section" style={{ color: "var(--text-primary)" }}>
         {children}
       </h2>
       {sub && (
@@ -121,7 +119,7 @@ function QuestionsTab({ mp }: { mp: Mp }) {
             Questions asked
           </SectionHeading>
           <span
-            className="text-[11px] tabular-nums px-1.5 py-0.5 rounded-[4px] mb-4"
+            className="text-[11px] tabular-nums px-1.5 py-0.5 rounded-lg mb-4"
             style={{ background: "var(--bg-elevated-2)", color: "var(--text-tertiary)", border: "1px solid var(--border)" }}
           >
             {mp.questions_asked ?? questions.length} total
@@ -139,7 +137,7 @@ function QuestionsTab({ mp }: { mp: Mp }) {
                 key={i}
                 whileHover={{ backgroundColor: "var(--hover-row)" }}
                 transition={springs.snap}
-                className="flex flex-col gap-1 py-3 px-1 rounded-[4px]"
+                className="flex flex-col gap-1 py-3 px-1 rounded-lg"
                 style={{ borderBottom: "1px solid var(--border)" }}
               >
                 <div className="flex items-start justify-between gap-4">
@@ -150,7 +148,7 @@ function QuestionsTab({ mp }: { mp: Mp }) {
                     {q.subject}
                   </span>
                   <span
-                    className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[2px] shrink-0 whitespace-nowrap"
+                    className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[var(--radius-tag)] shrink-0 whitespace-nowrap"
                     style={{
                       color: q.type === "starred" ? "var(--status-kept)" : "var(--text-tertiary)",
                       background: q.type === "starred"
@@ -218,7 +216,7 @@ function CriminalTab({ mp }: { mp: Mp }) {
         <AnimateIn stagger className="grid grid-cols-2 gap-3">
           <AnimateItem>
             <div
-              className="p-4 rounded-[6px]"
+              className="p-4 rounded-xl"
               style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
             >
               <div className="text-[11px] uppercase tracking-[0.07em] mb-1" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.medium }}>
@@ -237,7 +235,7 @@ function CriminalTab({ mp }: { mp: Mp }) {
           </AnimateItem>
           <AnimateItem>
             <div
-              className="p-4 rounded-[6px]"
+              className="p-4 rounded-xl"
               style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
             >
               <div className="text-[11px] uppercase tracking-[0.07em] mb-1" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.medium }}>
@@ -265,7 +263,7 @@ function CriminalTab({ mp }: { mp: Mp }) {
           </SectionHeading>
           {cases.length === 0 ? (
             <div
-              className="rounded-[6px] p-6 text-center"
+              className="rounded-xl p-6 text-center"
               style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
             >
               <p className="text-[13px]" style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.medium }}>
@@ -280,7 +278,7 @@ function CriminalTab({ mp }: { mp: Mp }) {
               {cases.map((c, i) => (
                 <div
                   key={i}
-                  className="p-3 rounded-[6px]"
+                  className="p-3 rounded-xl"
                   style={{
                     background: "var(--bg-elevated)",
                     border: "1px solid var(--border)",
@@ -294,7 +292,7 @@ function CriminalTab({ mp }: { mp: Mp }) {
                       {c.offence}
                     </span>
                     <span
-                      className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[2px] shrink-0 whitespace-nowrap"
+                      className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[var(--radius-tag)] shrink-0 whitespace-nowrap"
                       style={{
                         color: "var(--text-secondary)",
                         background: "var(--bg-elevated-2)",
@@ -311,7 +309,7 @@ function CriminalTab({ mp }: { mp: Mp }) {
                     {c.year && <span className="text-[11px] font-mono" style={{ color: "var(--text-tertiary)" }}>{c.year}</span>}
                     {c.is_serious && (
                       <span
-                        className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[2px]"
+                        className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[var(--radius-tag)]"
                         style={{
                           color: "var(--text-secondary)",
                           background: "var(--bg-elevated-2)",
@@ -350,7 +348,7 @@ function EducationTab({ mp }: { mp: Mp }) {
       {mp.education_level && (
         <AnimateItem>
           <div
-            className="inline-flex items-center gap-2 px-3 py-2 rounded-[6px]"
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-xl"
             style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
           >
             <span className="text-[11px] uppercase tracking-[0.07em]" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.medium }}>
@@ -395,7 +393,7 @@ function EducationTab({ mp }: { mp: Mp }) {
                     }}
                   />
                   <div
-                    className="p-4 rounded-[6px]"
+                    className="p-4 rounded-xl"
                     style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
                   >
                     <div className="flex items-start justify-between gap-2 mb-1">
@@ -441,14 +439,14 @@ function EducationTab({ mp }: { mp: Mp }) {
   )
 }
 
-// ─── Asset Breakdown Chart (Issues-Status style) ─────────────────────────────
+// ─── Asset Breakdown Chart ───────────────────────────────────────────────────
 
-// Reference-exact palette: sampled from the zoomed bar screenshot
-// Blue=#3B82F6 (new), Purple=#7C3AED (open — unused here), Amber=#F59E0B (regressed), Green=#10B981 (resolved)
+// Semantic status tokens (UI_RULES §2 — no bespoke hex): net worth reads as
+// "kept" (green), liabilities as "broken" (red), gross assets as neutral info.
 const ASSET_COLORS = {
-  assets:      "#3B82F6", // blue-500  — "New"
-  liabilities: "#F59E0B", // amber-500 — "Regressed"
-  net:         "#10B981", // emerald-500 — "Resolved"
+  assets:      "var(--status-inworks)", // info — gross declared assets
+  liabilities: "var(--status-broken)",  // red  — liabilities
+  net:         "var(--status-kept)",     // green — net worth
 } as const
 
 function AssetIcon({ kind }: { kind: "assets" | "liabilities" | "net" }) {
@@ -500,8 +498,8 @@ function AssetBreakdownChart({ mp }: { mp: Mp }) {
   const netPct  = assets > 0 ? Math.max(0, 100 - liabPct) : 0
 
   const rows: { kind: "assets" | "liabilities" | "net"; label: string; value: number | null }[] = [
-    { kind: "assets",      label: "Total declared assets",            value: mp.assets_inr    },
-    { kind: "liabilities", label: "Total liabilities",                value: mp.liabilities_inr },
+    { kind: "assets",      label: "Total declared assets",            value: mp.assets_inr ?? null    },
+    { kind: "liabilities", label: "Total liabilities",                value: mp.liabilities_inr ?? null },
     { kind: "net",         label: "Net worth (assets − liabilities)", value: net              },
   ]
 
@@ -531,8 +529,8 @@ function AssetBreakdownChart({ mp }: { mp: Mp }) {
       {/* Stacked bar — 14px tall, gap-px + dark bg = thin dark divider between segments */}
       {assets > 0 && (
         <div
-          className="flex gap-[2px] rounded-[4px] overflow-hidden mb-2"
-          style={{ height: 14, background: "#000", border: "1px solid #404040" }}
+          className="flex gap-[2px] rounded-lg overflow-hidden mb-2"
+          style={{ height: 14, background: "var(--bg-base)", border: "1px solid var(--border-strong)" }}
         >
           {netPct > 0 && (
             <div style={{ width: `${netPct}%`, background: ASSET_COLORS.net, flexShrink: 0 }} />
@@ -543,12 +541,12 @@ function AssetBreakdownChart({ mp }: { mp: Mp }) {
         </div>
       )}
 
-      {/* Row list — py-5 matches reference row height, dashed separator */}
+      {/* Row list — py-3 matches the dossier StatRow rhythm, dashed separator */}
       <div>
         {rows.map(({ kind, label, value }, i) => (
           <div
             key={i}
-            className="flex items-center justify-between py-5"
+            className="flex items-center justify-between py-3"
             style={{
               borderBottom: i < rows.length - 1 ? "1px dashed var(--border)" : undefined,
             }}
@@ -556,14 +554,14 @@ function AssetBreakdownChart({ mp }: { mp: Mp }) {
             <div className="flex items-center gap-3.5">
               <AssetIcon kind={kind} />
               <span
-                className="text-[18px]"
-                style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.medium }}
+                className="text-[13px]"
+                style={{ color: "var(--text-secondary)", fontVariationSettings: fontWeights.medium }}
               >
                 {label}
               </span>
             </div>
             <span
-              className="text-[18px] tabular-nums"
+              className="text-[14px] tabular-nums"
               style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold }}
             >
               {formatINR(value)}
@@ -588,7 +586,7 @@ function FinancialsTab({ mp }: { mp: Mp }) {
         <AnimateIn stagger className="grid grid-cols-2 gap-3">
           <AnimateItem>
             <div
-              className="p-4 rounded-[6px]"
+              className="p-4 rounded-xl"
               style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
             >
               <div className="text-[11px] uppercase tracking-[0.07em] mb-1" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.medium }}>
@@ -607,7 +605,7 @@ function FinancialsTab({ mp }: { mp: Mp }) {
           </AnimateItem>
           <AnimateItem>
             <div
-              className="p-4 rounded-[6px]"
+              className="p-4 rounded-xl"
               style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
             >
               <div className="text-[11px] uppercase tracking-[0.07em] mb-1" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.medium }}>
@@ -675,6 +673,7 @@ const TABS = [
   { value: "criminal",   label: "Criminal"  },
   { value: "education",  label: "Education" },
   { value: "financials", label: "Financials"},
+  { value: "interests",  label: "Interests" },
 ] as const
 
 export function MpPageTabs({ mp }: { mp: Mp }) {
@@ -694,6 +693,7 @@ export function MpPageTabs({ mp }: { mp: Mp }) {
       <TabPanel value="criminal">   <CriminalTab   mp={mp} /> </TabPanel>
       <TabPanel value="education">  <EducationTab  mp={mp} /> </TabPanel>
       <TabPanel value="financials"> <FinancialsTab mp={mp} /> </TabPanel>
+      <TabPanel value="interests">  <InterestsTab  mp={mp} /> </TabPanel>
     </Tabs>
   )
 }

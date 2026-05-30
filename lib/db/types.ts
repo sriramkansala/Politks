@@ -121,7 +121,11 @@ export interface PromiseComparison {
 
 export type BillType = "constitutional" | "ordinary" | "money" | "private_member"
 export type BillOutcome = "passed" | "lapsed" | "withdrawn" | "repealed" | "pending"
-export type HouseType = "lok_sabha" | "rajya_sabha" | "state_assembly"
+export type HouseType =
+  | "lok_sabha"        // Union — directly elected (MPs)
+  | "rajya_sabha"      // Union — indirectly elected (MPs)
+  | "vidhan_sabha"     // State — directly elected (MLAs)
+  | "vidhan_parishad"  // State — indirectly elected (MLCs); only in 6 states
 export type EdgeType =
   | "blocked_by" | "amended_by" | "linked_to" | "opposed_by"
   | "lapsed_with" | "superseded_by" | "descended_from"
@@ -198,7 +202,97 @@ export interface Mp {
   pin_codes?: string[]                        // PINs that route to this MP's constituency
   data_confidence?: "high" | "medium" | "low" | "unavailable"
   data_sources?: string[]                     // URLs cited
+  // ── Business interests (declared) ─────────────────────────────────────
+  // Always populated from sworn ADR / Form-26 affidavits or MCA21 filings.
+  // Inferred-only matches (shared address, shared auditor) NEVER live here —
+  // they would be surfaced via a separate `inferred_links` field gated behind
+  // a "show inferred" toggle and a methodology note.
+  business_interests?: BusinessInterest[]
+  business_interests_status?: BusinessInterestsIngestStatus
 }
+
+// ── Business interests ──────────────────────────────────────────────────────
+export type BusinessInterestRole =
+  | "director"
+  | "shareholder"
+  | "partner"       // LLP / partnership
+  | "trustee"
+  | "proprietor"
+  | "karta"         // HUF
+  | "beneficiary"
+
+export type BusinessInterestEntityKind =
+  | "private_ltd"
+  | "public_ltd"
+  | "llp"
+  | "partnership"
+  | "proprietorship"
+  | "trust"
+  | "society"
+  | "huf"
+  | "other"
+
+export type CoOwnerRelationship =
+  | "self"
+  | "spouse"
+  | "child"
+  | "parent"
+  | "sibling"
+  | "huf_member"
+  | "politician"   // co-owner is themselves an elected legislator in our DB
+  | "business"     // arms-length business partner
+  | "unknown"
+
+export interface BusinessInterestCoOwner {
+  name: string
+  relationship: CoOwnerRelationship
+  holding_pct?: number | null          // null if undisclosed in the source filing
+  role?: BusinessInterestRole          // their role in the same entity
+  /** If this person is themselves an MP/MLA in our DB, link to their slug. */
+  linked_mp_slug?: string | null
+  /** DIN (Director Identification Number) — for MCA21-sourced rows. */
+  din?: string | null
+}
+
+export interface BusinessInterest {
+  /** Stable id within the MP — entity slug + role */
+  id: string
+  entity_name: string
+  entity_kind: BusinessInterestEntityKind
+  /** MCA21 Corporate Identification Number (Ltd / LLP), if registered. */
+  cin?: string | null
+  /** Registered address as filed. Required for the (future) inferred-match graph. */
+  registered_address?: string | null
+  state_code?: string | null
+  incorporated_year?: number | null
+  role: BusinessInterestRole
+  /** Holding % when declared. Null when undeclared (HUF, trusts, etc.). */
+  holding_pct?: number | null
+  /** Declared co-owners from the SAME filing only. No inferred entries. */
+  co_owners: BusinessInterestCoOwner[]
+  /** Provenance — every entity must cite at least one source filing. */
+  source: {
+    kind: "adr_affidavit" | "mca21" | "form26" | "press"
+    filed_for: string              // e.g. "Lok Sabha 2024 — Rae Bareli"
+    filed_on?: string              // ISO date
+    url?: string
+  }
+  /** Editor notes (e.g. "Reported in 2019 affidavit; not in 2024 — exit?"). */
+  note?: string
+  /** Flag for the future inferred-match overlay; never auto-set in v1. */
+  flags?: Array<{
+    kind: "shared_address" | "shared_auditor" | "shared_director" | "press_dispute"
+    label: string
+    detail?: string
+    confidence: "high" | "medium" | "low"
+  }>
+}
+
+export type BusinessInterestsIngestStatus =
+  | { kind: "pending" }                       // not yet ingested — show placeholder
+  | { kind: "ingested"; ingested_at: string } // ADR/MCA21 fetched on this date
+  | { kind: "none_declared"; ingested_at: string } // ingestion ran, MP declared nothing
+  | { kind: "unavailable"; reason: string }   // affidavit missing / RS member etc.
 
 export interface Bill {
   id: string

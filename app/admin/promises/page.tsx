@@ -31,7 +31,7 @@ export default function PromisesAdminPage() {
   return (
     <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-6">
       <div>
-        <h1 className="text-heading mb-1" style={{ color: "var(--text-primary)" }}>
+        <h1 className="h-page mb-1" style={{ color: "var(--text-primary)" }}>
           Promise Status Editor
         </h1>
         <p className="text-body" style={{ color: "var(--text-secondary)" }}>
@@ -40,7 +40,7 @@ export default function PromisesAdminPage() {
       </div>
 
       <div
-        className="rounded-[6px] overflow-hidden"
+        className="rounded-xl overflow-hidden"
         style={{ border: "1px solid var(--border)" }}
       >
         {promises.map((p, i) => (

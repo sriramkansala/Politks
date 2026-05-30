@@ -18,6 +18,10 @@ interface SwitchProps extends HTMLAttributes<HTMLDivElement> {
   checked: boolean;
   onToggle: () => void;
   disabled?: boolean;
+  /** Keep `label` as the accessible name but hide it visually — use when the
+   *  surrounding row already shows the label and a visible copy would duplicate
+   *  it. */
+  hideLabel?: boolean;
 }
 
 const TRACK_WIDTH = 34;
@@ -31,7 +35,7 @@ const PRESS_SHRINK = 4;
 const DRAG_DEAD_ZONE = 2;
 
 const Switch = forwardRef<HTMLDivElement, SwitchProps>(
-  ({ label, checked, onToggle, disabled = false, className, ...props }, ref) => {
+  ({ label, checked, onToggle, disabled = false, hideLabel = false, className, ...props }, ref) => {
     const hasMounted = useRef(false);
     const [hovered, setHovered] = useState(false);
     const [pressed, setPressed] = useState(false);
@@ -188,11 +192,13 @@ const Switch = forwardRef<HTMLDivElement, SwitchProps>(
           style={{
             width: TRACK_WIDTH,
             height: TRACK_HEIGHT,
+            // ON → accent token; OFF → neutral recessed track. Both theme-aware,
+            // no bespoke hex (UI_RULES §2). Focus ring stays library-consistent.
             backgroundColor: checked
-              ? hovered ? "#5C89F2" : "#6B97FF"
+              ? hovered ? "var(--accent-hover)" : "var(--accent)"
               : hovered
-                ? "color-mix(in oklab, var(--accent), rgb(var(--overlay)) 10%)"
-                : "var(--accent)",
+                ? "var(--border-stronger)"
+                : "var(--bg-quaternary)",
           }}
           onClick={(e) => e.stopPropagation()}
         >
@@ -211,11 +217,14 @@ const Switch = forwardRef<HTMLDivElement, SwitchProps>(
           </SwitchPrimitive.Thumb>
         </SwitchPrimitive.Root>
 
-        {/* Label */}
+        {/* Label — visually hidden when the surrounding row already shows it,
+            but always present as the control's accessible name. */}
         <span
           className={cn(
-            "text-[13px] transition-[color] duration-80",
-            checked ? "text-foreground" : "text-muted-foreground"
+            hideLabel
+              ? "sr-only"
+              : "text-[13px] transition-[color] duration-80",
+            !hideLabel && (checked ? "text-foreground" : "text-muted-foreground")
           )}
         >
           {label}

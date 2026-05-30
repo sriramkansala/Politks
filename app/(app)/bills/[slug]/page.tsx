@@ -173,8 +173,8 @@ export default async function BillDetailPage({
               className="inline-flex items-center px-3 py-1.5 text-[13px] uppercase tracking-[0.06em] rounded-[var(--radius-pill)] shrink-0 self-start whitespace-nowrap"
               style={{
                 color: outcomeStyle.color,
-                background: `${outcomeStyle.color}22`,
-                border: `1px solid ${outcomeStyle.color}55`,
+                background: `color-mix(in oklab, ${outcomeStyle.color} 14%, transparent)`,
+                border: `1px solid color-mix(in oklab, ${outcomeStyle.color} 32%, transparent)`,
                 fontVariationSettings: fontWeights.semibold,
               }}
             >

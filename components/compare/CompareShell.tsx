@@ -34,6 +34,7 @@ import { motion, AnimatePresence, LayoutGroup } from "framer-motion"
 import { StatusPill } from "@/components/promises/StatusPill"
 import type { PromiseStatus } from "@/lib/db/types"
 import { tokens } from "@/lib/tokens"
+import { formatINR } from "@/lib/format"
 import { fontWeights } from "@/lib/font-weight"
 import { springs } from "@/lib/springs"
 import { useHiddenParties } from "@/hooks/use-hidden-parties"
@@ -162,11 +163,6 @@ interface SpecGroup<T> {
   rows: SpecRow<T>[]
 }
 
-function crore(inr: number | null) {
-  if (inr == null) return "—"
-  return `₹${(inr / 1e7).toFixed(1)} cr`
-}
-
 function pct(num: number, denom: number) {
   if (denom === 0) return "—"
   return `${Math.round((num / denom) * 100)}% (${num}/${denom})`
@@ -266,7 +262,7 @@ const MP_GROUPS: SpecGroup<CompareMp>[] = [
           )
         },
       },
-      { label: "Declared assets", render: (m) => crore(m.assets_inr) },
+      { label: "Declared assets", render: (m) => formatINR(m.assets_inr) },
     ],
   },
 ]
@@ -365,7 +361,7 @@ function SlotColumn({
           {/* §1 exception: chip-internal remove control on a slot card. */}
           <button
             onClick={onRemove}
-            className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full transition-colors hover:bg-[var(--bg-elevated-2)]"
+            className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-lg transition-colors hover:bg-[var(--bg-elevated-2)]"
             style={{ color: tokens.color.textTertiary }}
             aria-label="Remove from comparison"
           >
@@ -394,7 +390,7 @@ function SlotColumn({
                 add its own 32px-h bordered box inside the already-bordered slot
                 card — a double frame per §7. Bare input keeps the slot tidy. */}
             <div className="relative">
-              <div className="flex items-center gap-2 px-2 py-1.5 rounded-[6px]"
+              <div className="flex items-center gap-2 px-2 py-1.5 rounded-xl"
                 style={{
                   background: tokens.color.bgElevated2,
                   border: `1px solid ${focused ? "var(--accent)" : tokens.color.border}`,
@@ -419,7 +415,7 @@ function SlotColumn({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 4 }}
                     transition={springs.snap}
-                    className="absolute top-full left-0 right-0 mt-1 z-30 rounded-[6px] overflow-hidden flex flex-col"
+                    className="absolute top-full left-0 right-0 mt-1 z-30 rounded-xl overflow-hidden flex flex-col"
                     style={{
                       background: tokens.color.bgElevated,
                       border: `1px solid ${tokens.color.border}`,
@@ -441,7 +437,7 @@ function SlotColumn({
                             <button
                               key={g.type}
                               onClick={() => setActiveGroupIdx(i)}
-                              className="relative flex-1 px-1.5 py-1 rounded-[6px] text-[11px] whitespace-nowrap transition-colors duration-80"
+                              className="relative flex-1 px-1.5 py-1 rounded-xl text-[11px] whitespace-nowrap transition-colors duration-80"
                               style={{
                                 color: isActive ? tokens.color.textPrimary : tokens.color.textTertiary,
                                 fontVariationSettings: isActive ? fontWeights.semibold : fontWeights.medium,
@@ -450,7 +446,7 @@ function SlotColumn({
                               {isActive && (
                                 <motion.span
                                   layoutId={layoutId}
-                                  className="absolute inset-0 rounded-[6px]"
+                                  className="absolute inset-0 rounded-xl"
                                   style={{ background: "var(--bg-tertiary)" }}
                                   transition={springs.moderate}
                                 />
@@ -502,7 +498,7 @@ function SlotColumn({
           {/* Empty placeholder body */}
           <div className="flex-1 flex flex-col items-center justify-center px-3 py-6 gap-2">
             <div
-              className="rounded-[6px]"
+              className="rounded-xl"
               style={{
                 width: 64,
                 height: 64,
@@ -811,7 +807,7 @@ export function CompareShell({
                 </span>
                 <div className="flex flex-wrap gap-1.5 mt-1">
                   <span
-                    className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[2px]"
+                    className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[var(--radius-tag)]"
                     style={{
                       background: tokens.color.bgElevated2,
                       color: tokens.color.textSecondary,
@@ -822,7 +818,7 @@ export function CompareShell({
                   </span>
                   {p.total > 0 && (
                     <span
-                      className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[2px]"
+                      className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[var(--radius-tag)]"
                       style={{
                         background: "color-mix(in srgb, var(--status-kept) 14%, transparent)",
                         color: "var(--status-kept)",

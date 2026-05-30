@@ -170,6 +170,51 @@ const SEED: Seed[] = [
     education_level: "Post Graduate",
     pin_codes: ["229001", "229010"],
     data_confidence: "high",
+    business_interests_status: { kind: "ingested", ingested_at: "2024-05-14T00:00:00Z" },
+    business_interests: [
+      {
+        id: "young-indian-director",
+        entity_name: "Young Indian",
+        entity_kind: "private_ltd",
+        cin: "U85100DL2010NPL211393",
+        registered_address: "5A, Herald House, Bahadur Shah Zafar Marg, New Delhi",
+        state_code: "DL",
+        incorporated_year: 2010,
+        role: "director",
+        holding_pct: 38,
+        co_owners: [
+          { name: "Sonia Gandhi", relationship: "politician", role: "director", holding_pct: 38, linked_mp_slug: "sonia-gandhi" },
+          { name: "Suman Dubey", relationship: "business", role: "director" },
+          { name: "Sam Pitroda", relationship: "business", role: "director" },
+        ],
+        source: {
+          kind: "adr_affidavit",
+          filed_for: "Lok Sabha 2024 — Rae Bareli",
+          filed_on: "2024-05-14",
+          url: "https://myneta.info/LokSabha2024/candidate.php?candidate_id=4170",
+        },
+        note: "Section 8 (not-for-profit) company. Subject of the National Herald case — ED has filed prosecution complaint; matter is sub judice.",
+      },
+      {
+        id: "backops-director",
+        entity_name: "Backops Services Pvt Ltd",
+        entity_kind: "private_ltd",
+        cin: null,
+        registered_address: null,
+        state_code: "DL",
+        incorporated_year: 2003,
+        role: "director",
+        holding_pct: 83,
+        co_owners: [],
+        source: {
+          kind: "adr_affidavit",
+          filed_for: "Lok Sabha 2024 — Rae Bareli",
+          filed_on: "2024-05-14",
+          url: "https://myneta.info/LokSabha2024/candidate.php?candidate_id=4170",
+        },
+        note: "Holding declared in 2019 affidavit (Wayanad); status reaffirmed in 2024.",
+      },
+    ],
   },
   {
     prs_slug: "priyanka-gandhi-vadra",
@@ -240,6 +285,48 @@ const SEED: Seed[] = [
     is_minister: true,
     education_level: "Post Graduate",
     data_confidence: "high",
+    business_interests_status: { kind: "ingested", ingested_at: "2024-03-22T00:00:00Z" },
+    business_interests: [
+      {
+        id: "scindia-school-trustee",
+        entity_name: "The Scindia School Society",
+        entity_kind: "society",
+        cin: null,
+        registered_address: "Fort, Gwalior, Madhya Pradesh",
+        state_code: "MP",
+        incorporated_year: 1897,
+        role: "trustee",
+        holding_pct: null,
+        co_owners: [
+          { name: "Madhavi Raje Scindia", relationship: "parent", role: "trustee" },
+        ],
+        source: {
+          kind: "adr_affidavit",
+          filed_for: "Rajya Sabha 2020 — Madhya Pradesh",
+          filed_on: "2020-06-12",
+          url: "https://myneta.info/RajyaSabha2020/candidate.php?candidate_id=212",
+        },
+        note: "Hereditary trusteeship via the Gwalior royal family. Non-commercial educational society.",
+      },
+      {
+        id: "jiwajirao-trust",
+        entity_name: "Jiwajirao Education Society",
+        entity_kind: "society",
+        cin: null,
+        registered_address: "Jai Vilas Palace, Gwalior",
+        state_code: "MP",
+        incorporated_year: 1956,
+        role: "trustee",
+        holding_pct: null,
+        co_owners: [],
+        source: {
+          kind: "adr_affidavit",
+          filed_for: "Rajya Sabha 2020 — Madhya Pradesh",
+          filed_on: "2020-06-12",
+          url: "https://myneta.info/RajyaSabha2020/candidate.php?candidate_id=212",
+        },
+      },
+    ],
   },
   {
     prs_slug: "himanta-biswa-sarma",
@@ -348,6 +435,32 @@ const SEED: Seed[] = [
     is_crorepati: true,
     education_level: "Undergraduate",
     data_confidence: "high",
+    business_interests_status: { kind: "ingested", ingested_at: "2024-02-14T00:00:00Z" },
+    business_interests: [
+      {
+        id: "young-indian-director",
+        entity_name: "Young Indian",
+        entity_kind: "private_ltd",
+        cin: "U85100DL2010NPL211393",
+        registered_address: "5A, Herald House, Bahadur Shah Zafar Marg, New Delhi",
+        state_code: "DL",
+        incorporated_year: 2010,
+        role: "director",
+        holding_pct: 38,
+        co_owners: [
+          { name: "Rahul Gandhi", relationship: "politician", role: "director", holding_pct: 38, linked_mp_slug: "rahul-gandhi" },
+          { name: "Suman Dubey", relationship: "business", role: "director" },
+          { name: "Sam Pitroda", relationship: "business", role: "director" },
+        ],
+        source: {
+          kind: "adr_affidavit",
+          filed_for: "Rajya Sabha 2024 — Rajasthan",
+          filed_on: "2024-02-14",
+          url: "https://myneta.info/RajyaSabha2024/candidate.php?candidate_id=129",
+        },
+        note: "Section 8 (not-for-profit) company. Co-accused with Rahul Gandhi in the National Herald ED case; sub judice.",
+      },
+    ],
   },
   // ── BMW-170: Akhilesh Yadav — 0 Qs in 17th LS (Azamgarh) ─────────────
   {
@@ -580,21 +693,86 @@ export const STATIC_MPS_BMW: Mp[] = SEED.map((s) => ({
   questions_detail: s.questions_detail ?? [],
   criminal_cases_detail: s.criminal_cases_detail ?? [],
   education_history: s.education_history ?? [],
+  business_interests: s.business_interests ?? undefined,
+  business_interests_status: s.business_interests_status ?? undefined,
 }))
 
-// ── Merge marquee + generated full PRS roster ────────────────────────────
+// ── Merge marquee + generated full PRS roster + state MLAs ───────────────
 // STATIC_MPS_ALL is the union of:
 //   - 25 marquee MPs (BMW spec, with extra fields like pin_codes, education,
 //     criminal_cases, MPLADS — hand-curated)
 //   - 544 PRS-scraped MPs (full 18th LS, with attendance/questions/sessions)
-// Marquee entries override generated ones when both exist (richer data wins).
+//   - ~50 marquee MLAs from STATIC_MLAS (CMs + senior cabinet across 10 states)
+// Marquee MP entries override generated ones when both exist (richer data wins).
+// MLAs slot into the same Mp shape via mlaToMp() so search/routes work for everyone.
 import { STATIC_MPS_GEN } from "./staticMps.generated"
+import { STATIC_MLAS, type Mla } from "./staticMlas"
+
+// Adapt an MLA record into the Mp shape. Most parliamentary fields stay null
+// (attendance, questions, etc.) — state assembly ingest will fill them later.
+function mlaToMp(mla: Mla): Mp {
+  // URL slug: stable, collision-safe with MP slugs (mla- prefix).
+  // Derived from mla.id which already has the form "mla:<state>:<slug>".
+  const slug = mla.id.replace(/:/g, "-")
+  return {
+    id: mla.id,
+    name: mla.name,
+    name_translations: {},
+    party_id: null,
+    party_name: mla.party,
+    house: "vidhan_sabha",
+    constituency: mla.constituency,
+    state_code: mla.state_code,
+    term_start: null,
+    term_end: null,
+    photo_url: mla.photo_url ?? null,
+    myneta_id: null,
+    created_at: now,
+    prs_slug: slug,
+    lok_sabha_term: null,
+    attendance_pct: null,
+    attendance_note: `${mla.state} MLA — state assembly attendance/questions feed not yet wired (ADR + state portal scrapers in build).`,
+    session_attendance: {},
+    questions_asked: null,
+    debates_participated: null,
+    private_member_bills: null,
+    national_avg_attendance: null,
+    national_avg_questions: null,
+    national_avg_debates: null,
+    myneta_url: null,
+    assets_inr: null,
+    liabilities_inr: null,
+    criminal_cases_any: null,
+    criminal_cases_serious: null,
+    is_crorepati: null,
+    education_level: mla.education ?? null,
+    age_at_election: mla.age ?? null,
+    mplads_sanctioned_inr: null,
+    mplads_released_inr: null,
+    mplads_spent_inr: null,
+    mplads_unspent_inr: null,
+    is_minister: !!mla.cabinet_role,
+    pin_codes: [],
+    data_confidence: mla.data_confidence,
+    data_sources: [],
+    questions_detail: [],
+    criminal_cases_detail: [],
+    education_history: [],
+    business_interests: undefined,
+    business_interests_status: undefined,
+  }
+}
+
 const _allBySlug: Record<string, Mp> = {}
 for (const mp of STATIC_MPS_GEN as Mp[]) {
   if (mp.prs_slug) _allBySlug[mp.prs_slug] = mp
 }
 for (const mp of STATIC_MPS_BMW) {
   if (mp.prs_slug) _allBySlug[mp.prs_slug] = mp
+}
+for (const mla of STATIC_MLAS) {
+  const adapted = mlaToMp(mla)
+  if (adapted.prs_slug) _allBySlug[adapted.prs_slug] = adapted
 }
 export const STATIC_MPS_ALL: Mp[] = Object.values(_allBySlug)
 

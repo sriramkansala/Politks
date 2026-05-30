@@ -150,7 +150,7 @@ export default async function PromisePage({ params }: { params: Promise<{ id: st
       <>
         <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto">
           <div
-            className="rounded-[6px] px-6 py-10 text-center"
+            className="rounded-xl px-6 py-10 text-center"
             style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
           >
             <p className="text-body" style={{ color: "var(--text-secondary)" }}>
@@ -212,7 +212,7 @@ export default async function PromisePage({ params }: { params: Promise<{ id: st
 
         {/* Success criteria */}
         <div
-          className="rounded-[6px] px-5 py-4"
+          className="rounded-xl px-5 py-4"
           style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
         >
           <p className="text-caption uppercase tracking-wide mb-2" style={{ color: "var(--text-tertiary)" }}>
@@ -232,7 +232,7 @@ export default async function PromisePage({ params }: { params: Promise<{ id: st
             {promise.status_history.map((entry, i) => (
               <div
                 key={i}
-                className="flex gap-3 items-start p-3 rounded-[6px]"
+                className="flex gap-3 items-start p-3 rounded-xl"
                 style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
               >
                 <Clock size={13} strokeWidth={1.5} className="mt-0.5 shrink-0" style={{ color: "var(--text-tertiary)" }} />
@@ -359,7 +359,7 @@ export default async function PromisePage({ params }: { params: Promise<{ id: st
                           {source.title}
                         </span>
                         <span
-                          className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[2px]"
+                          className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[var(--radius-tag)]"
                           style={{
                             background: "var(--bg-elevated-2)",
                             color: "var(--text-tertiary)",
@@ -371,7 +371,7 @@ export default async function PromisePage({ params }: { params: Promise<{ id: st
                         {/* HTTP status badge */}
                         {source.http_status != null && (
                           <span
-                            className="text-[10px] font-mono px-1.5 py-0.5 rounded-[2px]"
+                            className="text-[10px] font-mono px-1.5 py-0.5 rounded-[var(--radius-tag)]"
                             style={{
                               background: isOk
                                 ? "color-mix(in oklab, var(--status-kept) 16%, transparent)"
@@ -387,7 +387,7 @@ export default async function PromisePage({ params }: { params: Promise<{ id: st
                         )}
                         {isDead && (
                           <span
-                            className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[2px]"
+                            className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[var(--radius-tag)]"
                             style={{
                               background: "color-mix(in oklab, var(--status-broken) 16%, transparent)",
                               color: "var(--status-broken)",
@@ -400,7 +400,7 @@ export default async function PromisePage({ params }: { params: Promise<{ id: st
                         {/* Keyword match badge */}
                         {kwOk && (
                           <span
-                            className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[2px]"
+                            className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[var(--radius-tag)]"
                             style={{
                               background: "color-mix(in oklab, var(--status-kept) 16%, transparent)",
                               color: "var(--status-kept)",
@@ -413,7 +413,7 @@ export default async function PromisePage({ params }: { params: Promise<{ id: st
                         )}
                         {source.reachable && source.keywords_match === false && (
                           <span
-                            className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[2px]"
+                            className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[var(--radius-tag)]"
                             style={{
                               background: "color-mix(in oklab, var(--status-compromise) 16%, transparent)",
                               color: "var(--status-compromise)",

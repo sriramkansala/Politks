@@ -120,7 +120,7 @@ function OverviewTab({ stats }: { stats: PartyStats[] }) {
 
       {/* Breakdown table */}
       <AnimateItem>
-        <div className="rounded-[6px] overflow-hidden"
+        <div className="rounded-xl overflow-hidden"
           style={{ border: `1px solid ${tokens.color.border}`, background: tokens.color.bgElevated }}>
           <Table>
             <TableHeader>
@@ -246,7 +246,7 @@ function PromisesTab({
                   key={p.id}
                   whileHover={{ backgroundColor: "var(--hover-row)" }}
                   transition={springs.snap}
-                  className="flex items-start justify-between gap-4 py-3 px-1 rounded-[4px]"
+                  className="flex items-start justify-between gap-4 py-3 px-1 rounded-lg"
                   style={{ borderBottom: "1px solid var(--border)" }}
                 >
                   <div className="flex items-start gap-2.5 min-w-0 flex-1">
@@ -265,7 +265,7 @@ function PromisesTab({
                           </span>
                         )}
                         {p.category && (
-                          <span className="text-[10px] uppercase tracking-[0.06em] px-1 py-px rounded-[2px]"
+                          <span className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[var(--radius-tag)]"
                             style={{ color: "var(--text-disabled)", background: "var(--bg-elevated-2)", border: "1px solid var(--border)" }}>
                             {p.category}
                           </span>

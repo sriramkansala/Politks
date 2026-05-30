@@ -49,7 +49,7 @@ export function PartyManifestoList({
           initial={{ opacity: 0, y: 24 }}
           animate={shown ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
           transition={{ ...springs.gentle, delay: i * 0.08 }}
-          className="p-3 rounded-[6px] flex flex-col gap-2 h-full"
+          className="p-3 rounded-xl flex flex-col gap-2 h-full"
           style={{
             background: "var(--bg-elevated)",
             border: "1px solid var(--border)",
@@ -57,7 +57,7 @@ export function PartyManifestoList({
         >
           <div className="flex items-center gap-2">
             <span
-              className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[2px]"
+              className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[var(--radius-tag)]"
               style={{
                 color: partyColor,
                 background: `${partyColor}1A`,
@@ -98,10 +98,8 @@ export function PartyManifestoList({
           <div className="flex items-center gap-2 mt-auto pt-1">
             <Link
               href={`/manifestos/${m.id}`}
-              className="flex-1 h-8 px-2.5 rounded-[6px] text-[12px] inline-flex items-center justify-between"
+              className="flex-1 h-8 px-2.5 rounded-xl text-[12px] inline-flex items-center justify-between border border-[var(--border)] bg-[var(--bg-elevated-2)] transition-colors duration-100 hover:bg-[var(--bg-elevated-3)] hover:border-[var(--border-strong)]"
               style={{
-                background: "var(--bg-elevated-2)",
-                border: "1px solid var(--border)",
                 color: "var(--text-primary)",
                 textDecoration: "none",
                 fontVariationSettings: fontWeights.medium,
@@ -115,10 +113,8 @@ export function PartyManifestoList({
                 href={m.source_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="h-8 px-2.5 rounded-[6px] text-[12px] inline-flex items-center gap-1.5"
+                className="h-8 px-2.5 rounded-xl text-[12px] inline-flex items-center gap-1.5 border border-[var(--border)] bg-[var(--bg-elevated-2)] transition-colors duration-100 hover:bg-[var(--bg-elevated-3)] hover:border-[var(--border-strong)]"
                 style={{
-                  background: "var(--bg-elevated-2)",
-                  border: "1px solid var(--border)",
                   color: "var(--text-secondary)",
                   textDecoration: "none",
                 }}

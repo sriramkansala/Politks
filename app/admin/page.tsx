@@ -6,7 +6,7 @@ export default function AdminDashboard() {
   return (
     <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-6">
       <div>
-        <h1 className="text-heading mb-1" style={{ color: "var(--text-primary)" }}>
+        <h1 className="h-page mb-1" style={{ color: "var(--text-primary)" }}>
           Admin Dashboard
         </h1>
         <p className="text-body" style={{ color: "var(--text-secondary)" }}>
@@ -41,14 +41,14 @@ export default function AdminDashboard() {
           <Link
             key={href}
             href={href}
-            className="group p-5 rounded-[6px] flex flex-col gap-3 transition-colors duration-100 hover:bg-[var(--bg-elevated-2)]"
+            className="group p-5 rounded-xl flex flex-col gap-3 transition-colors duration-100 hover:bg-[var(--bg-elevated-2)]"
             style={{
               background: "var(--bg-elevated)",
               border: accent ? `1px solid var(--accent)` : "1px solid var(--border)",
             }}
           >
             <div
-              className="w-8 h-8 rounded-[6px] flex items-center justify-center"
+              className="w-8 h-8 rounded-xl flex items-center justify-center"
               style={{ background: accent ? "var(--accent)" : "var(--bg-elevated-2)" }}
             >
               <Icon size={15} strokeWidth={1.5} style={{ color: accent ? "var(--text-on-accent)" : "var(--text-secondary)" }} />

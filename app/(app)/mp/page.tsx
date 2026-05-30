@@ -103,11 +103,13 @@ export default async function MpHubPage({ searchParams }: PageProps) {
       if (pinMatch) {
         resolved = [pinMatch]
       } else {
-        notice = `No MP currently mapped to PIN ${raw}. PIN→constituency mapping for the full 543-seat roster is still being wired in — try searching by name or constituency instead.`
+        notice = `No legislator currently mapped to PIN ${raw}. PIN→constituency mapping is live for the marquee MP set; full 543-seat MP coverage and 4,123-seat MLA coverage are being wired in. Try searching by name or constituency instead.`
       }
     } else {
       resolved = findMpByQuery(raw)
-      if (resolved.length === 0) notice = `No MP found for "${raw}".`
+      if (resolved.length === 0) {
+        notice = `No legislator found for "${raw}". MPs (Lok Sabha + Rajya Sabha) and marquee MLAs from 10 states are searchable; full state-assembly rosters land later.`
+      }
     }
   }
 
@@ -290,7 +292,7 @@ export default async function MpHubPage({ searchParams }: PageProps) {
       {/* Coverage caveat */}
       <AnimateItem>
         <section
-          className="rounded-[6px] p-4 text-[12px] leading-relaxed"
+          className="rounded-xl p-4 text-[12px] leading-relaxed"
           style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)", color: "var(--text-tertiary)" }}
         >
           <strong style={{ color: "var(--text-secondary)" }}>Coverage.</strong>{" "}

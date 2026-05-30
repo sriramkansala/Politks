@@ -93,7 +93,7 @@ function Delta({
       {value}
       <span
         className="ml-1 text-[10px]"
-        style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.regular }}
+        style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.normal }}
       >
         YoY
       </span>

@@ -160,7 +160,6 @@ function CompositionBars() {
         const segs = HEADS.map(h => ({
           ...h,
           color: tokenColor(h.cat),
-          // @ts-expect-error — narrowed
           value: TIME_MACHINE[h.key][i] as number,
         }))
         const segSum = segs.reduce((s, x) => s + x.value, 0)
@@ -202,7 +201,6 @@ export function BudgetTimeMachine() {
   const rows = useMemo(() => HEADS.map(h => ({
     ...h,
     color: tokenColor(h.cat),
-    // @ts-expect-error — narrowed at runtime
     values: TIME_MACHINE[h.key] as number[],
   })), [])
 

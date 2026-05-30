@@ -45,7 +45,7 @@ export default function AboutPage() {
         ].map(({ title, content }) => (
           <section
             key={title}
-            className="rounded-[6px] p-5"
+            className="rounded-xl p-5"
             style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
           >
             <h2 className="h-section mb-2" style={{ color: "var(--text-primary)" }}>{title}</h2>
@@ -68,7 +68,7 @@ export default function AboutPage() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 transition-colors duration-100"
+                  className="flex items-center gap-1 transition-colors duration-100 hover:underline hover:text-[var(--accent-hover)]"
                   style={{ color: "var(--accent)" }}
                 >
                   {text} <ExternalLink size={11} strokeWidth={1.5} />

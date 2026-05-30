@@ -184,7 +184,7 @@ function HoverPanel({ node, color }: { node: LNode; color: string }) {
       <p className="text-[20px] tabular-nums leading-none"
         style={{ color, fontVariationSettings: fontWeights.bold }}>
         ₹{node.value.toFixed(2)}{" "}
-        <span className="text-[11px]" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.regular }}>
+        <span className="text-[11px]" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.normal }}>
           lakh crore
         </span>
       </p>

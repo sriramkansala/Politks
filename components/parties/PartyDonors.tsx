@@ -34,7 +34,7 @@ export function PartyDonors({
       {sorted.map((d, i) => (
         <article
           key={`${d.donor}-${d.fy}-${i}`}
-          className="p-3 rounded-[6px]"
+          className="p-3 rounded-xl"
           style={{
             background: "var(--bg-elevated)",
             border: "1px solid var(--border)",
@@ -44,7 +44,7 @@ export function PartyDonors({
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 mb-1 flex-wrap">
                 <span
-                  className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[2px]"
+                  className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[var(--radius-tag)]"
                   style={{
                     color: partyColor,
                     background: `${partyColor}1A`,

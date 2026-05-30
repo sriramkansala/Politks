@@ -310,7 +310,7 @@ export function PromiseList({ promises }: PromiseListProps) {
       {/* ── Table ── */}
       {filtered.length === 0 ? (
         <div
-          className="px-4 py-10 text-center rounded-[6px]"
+          className="px-4 py-10 text-center rounded-xl"
           style={{ border: `1px solid ${tokens.color.border}` }}
         >
           <p className="text-caption" style={{ color: tokens.color.textTertiary }}>
@@ -319,7 +319,7 @@ export function PromiseList({ promises }: PromiseListProps) {
         </div>
       ) : (
         <div
-          className="rounded-[6px] overflow-hidden"
+          className="rounded-xl overflow-hidden"
           style={{ border: `1px solid ${tokens.color.border}`, background: tokens.color.bgElevated }}
         >
           <Table>
@@ -388,7 +388,7 @@ export function PromiseList({ promises }: PromiseListProps) {
                     {/* Category */}
                     <TableCell className="hidden md:table-cell" style={{ whiteSpace: "nowrap" }}>
                       <span
-                        className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-[2px]"
+                        className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-full"
                         style={{
                           background: tokens.color.bgElevated2,
                           color: tokens.color.textSecondary,

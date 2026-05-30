@@ -7,11 +7,12 @@
  */
 
 import { useState, Fragment } from "react"
-import { motion, LayoutGroup, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { Info, AlertTriangle, Vote } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { SegmentedControl } from "@/components/ui/segmented-control"
+import { Tooltip } from "@/components/ui/tooltip"
 import { springs } from "@/lib/springs"
 import { fontWeights } from "@/lib/font-weight"
 import { CSS_RELEASES } from "@/lib/budget/data"
@@ -47,25 +48,16 @@ export function CssReleaseTracker() {
 
       {/* FY toggle */}
       <div className="flex justify-end">
-        <LayoutGroup id="css-fy">
-          <div className="flex items-center rounded-lg p-0.5 gap-0.5"
-            style={{ background: "var(--bg-elevated-2)", border: "1px solid var(--border)" }}>
-            {(["fy24", "fy25"] as FyKey[]).map(f => (
-              <button key={f} onClick={() => setFy(f)}
-                className="relative px-3 py-1.5 rounded-md text-[12px] outline-none"
-                style={{
-                  color: fy === f ? "var(--text-primary)" : "var(--text-tertiary)",
-                  fontVariationSettings: fy === f ? fontWeights.semibold : fontWeights.medium,
-                }}>
-                {fy === f && (
-                  <motion.div layoutId="css-pill" className="absolute inset-0 rounded-md"
-                    style={{ background: "var(--bg-elevated-3)" }} transition={springs.responsive} />
-                )}
-                <span className="relative z-10 uppercase tabular-nums">{f}</span>
-              </button>
-            ))}
-          </div>
-        </LayoutGroup>
+        <SegmentedControl<FyKey>
+          value={fy}
+          onValueChange={setFy}
+          options={[
+            { value: "fy24", label: "FY24" },
+            { value: "fy25", label: "FY25" },
+          ]}
+          size="sm"
+          ariaLabel="Financial year"
+        />
       </div>
 
       {/* Heatmap */}
@@ -99,24 +91,28 @@ export function CssReleaseTracker() {
                     const pct = row[pctKey]
                     const c = pctColor(pct)
                     return (
-                      <motion.div key={`${state}-${scheme}`}
-                        initial={{ opacity: 0, scale: 0.85 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ ...springs.gentle, delay: 0.04 * sIdx + 0.03 * scIdx }}
-                        className="rounded flex flex-col items-center justify-center py-2 px-1 cursor-help"
-                        style={{
-                          background: `color-mix(in srgb, ${c} ${20 + (pct / 100) * 40}%, var(--bg-elevated-3))`,
-                          border: `1px solid color-mix(in srgb, ${c} 30%, transparent)`,
-                        }}
-                        title={`${state} · ${scheme}: ${pct}% released, ${row[lateKey].toFixed(1)} mo avg delay`}>
-                        <span className="text-[12px] tabular-nums"
-                          style={{ color: c, fontVariationSettings: fontWeights.bold }}>
-                          {pct}%
-                        </span>
-                        <span className="text-[9px] tabular-nums" style={{ color: "var(--text-tertiary)" }}>
-                          {row[lateKey].toFixed(1)} mo late
-                        </span>
-                      </motion.div>
+                      <Tooltip
+                        key={`${state}-${scheme}`}
+                        content={`${state} · ${scheme}: ${pct}% released, ${row[lateKey].toFixed(1)} mo avg delay`}
+                      >
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.85 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ ...springs.gentle, delay: 0.04 * sIdx + 0.03 * scIdx }}
+                          className="rounded flex flex-col items-center justify-center py-2 px-1 cursor-help"
+                          style={{
+                            background: `color-mix(in srgb, ${c} ${20 + (pct / 100) * 40}%, var(--bg-elevated-3))`,
+                            border: `1px solid color-mix(in srgb, ${c} 30%, transparent)`,
+                          }}>
+                          <span className="text-[12px] tabular-nums"
+                            style={{ color: c, fontVariationSettings: fontWeights.bold }}>
+                            {pct}%
+                          </span>
+                          <span className="text-[9px] tabular-nums" style={{ color: "var(--text-tertiary)" }}>
+                            {row[lateKey].toFixed(1)} mo late
+                          </span>
+                        </motion.div>
+                      </Tooltip>
                     )
                   })}
                 </Fragment>

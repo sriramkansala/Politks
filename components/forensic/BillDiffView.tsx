@@ -20,19 +20,19 @@ const DIFF_STYLE: Record<DiffType, { bgFrom: string; bgTo: string; labelColor: s
   },
   added: {
     bgFrom: "transparent",
-    bgTo:   `${tokens.status.kept}14`,   // green tint
+    bgTo:   `color-mix(in oklab, ${tokens.status.kept} 8%, transparent)`,   // green tint
     labelColor: tokens.status.kept,
     label: "added",
   },
   removed: {
-    bgFrom: `${tokens.status.broken}14`, // red tint
+    bgFrom: `color-mix(in oklab, ${tokens.status.broken} 8%, transparent)`, // red tint
     bgTo:   "transparent",
     labelColor: tokens.status.broken,
     label: "removed",
   },
   modified: {
-    bgFrom: `${tokens.status.compromise}0f`, // amber tint
-    bgTo:   `${tokens.status.compromise}0f`,
+    bgFrom: `color-mix(in oklab, ${tokens.status.compromise} 6%, transparent)`, // amber tint
+    bgTo:   `color-mix(in oklab, ${tokens.status.compromise} 6%, transparent)`,
     labelColor: tokens.status.compromise,
     label: "modified",
   },
@@ -57,7 +57,7 @@ export function TimeMachineSlider({
 
   return (
     <div
-      className="rounded-[6px] p-4"
+      className="rounded-xl p-4"
       style={{ background: tokens.color.bgElevated, border: `1px solid ${tokens.color.border}` }}
     >
       <p className="text-[11px] uppercase tracking-wider mb-3" style={{ color: tokens.color.textTertiary, fontVariationSettings: fontWeights.semibold }}>
@@ -189,7 +189,7 @@ function ClauseRow({ pair, showUnchanged }: ClauseRowProps) {
 
   return (
     <div
-      className="rounded-[6px] overflow-hidden"
+      className="rounded-xl overflow-hidden"
       style={{ border: `1px solid ${pair.isPoisonPill ? tokens.status.broken : tokens.color.border}` }}
     >
       {/* Clause header */}
@@ -216,9 +216,9 @@ function ClauseRow({ pair, showUnchanged }: ClauseRowProps) {
         <div className="flex items-center gap-2">
           {pair.isPoisonPill && (
             <div
-              className="flex items-center gap-1 px-2 py-0.5 rounded-[3px] text-[10px] uppercase tracking-wider"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-[var(--radius-tag)] text-[10px] uppercase tracking-wider"
               style={{
-                background: `${tokens.status.broken}20`,
+                background: `color-mix(in oklab, ${tokens.status.broken} 14%, transparent)`,
                 color: tokens.status.broken,
                 fontVariationSettings: fontWeights.medium,
               }}
@@ -319,7 +319,7 @@ export function BillDiffView({
       <div
         aria-live="polite"
         aria-atomic="true"
-        className="flex flex-wrap items-center gap-4 px-4 py-3 rounded-[6px]"
+        className="flex flex-wrap items-center gap-4 px-4 py-3 rounded-xl"
         style={{ background: tokens.color.bgElevated, border: `1px solid ${tokens.color.border}` }}
       >
         {[
@@ -356,7 +356,7 @@ export function BillDiffView({
               Keep as a bare <button> — documented exception. */}
           <button
             onClick={() => setShowUnchanged((v) => !v)}
-            className="text-[11px] px-2.5 py-1 rounded-[4px] transition-colors duration-80"
+            className="text-[11px] px-2.5 py-1 rounded-lg transition-colors duration-80"
             style={{
               color: showUnchanged ? tokens.color.textPrimary : tokens.color.textTertiary,
               background: showUnchanged ? tokens.color.bgElevated2 : "transparent",

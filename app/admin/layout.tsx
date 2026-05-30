@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { fontWeights } from "@/lib/font-weight"
+import { AdminNav } from "@/components/admin/AdminNav"
 
 export const metadata: Metadata = {
   title: "Admin — Neo Nīti",
@@ -32,28 +33,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             Admin
           </span>
           <span
-            className="px-1.5 py-0.5 text-[10px] rounded-[2px] uppercase tracking-wide"
+            className="px-1.5 py-0.5 text-[10px] rounded-[var(--radius-tag)] uppercase tracking-wide"
             style={{ background: "var(--accent-muted)", color: "var(--accent)", fontVariationSettings: fontWeights.medium }}
           >
             Editor
           </span>
         </div>
-        <nav className="flex items-center gap-1">
-          {[
-            { href: "/admin", label: "Dashboard" },
-            { href: "/admin/manifestos", label: "Manifestos" },
-            { href: "/admin/manifestos/new", label: "Upload" },
-          ].map(({ href, label }) => (
-            <a
-              key={href}
-              href={href}
-              className="px-3 h-7 flex items-center text-[13px] rounded-[6px] transition-colors duration-100 hover:bg-[var(--bg-elevated-2)]"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
+        <AdminNav />
       </header>
       <main className="flex-1 overflow-y-auto">{children}</main>
     </div>

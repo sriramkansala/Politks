@@ -20,6 +20,7 @@ import {
 } from "lucide-react"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { cn } from "@/lib/utils"
 import { useCommandPalette } from "@/hooks/use-command-palette"
 import { springs } from "@/lib/springs"
@@ -66,10 +67,11 @@ function NavItem({
       rel={external ? "noopener noreferrer" : undefined}
       className={cn(
         // MEASURED on linear.app product sidebar:
-        //   font-size 13px, weight 510, gap 8px, padding 0 6px,
-        //   height 28px, radius 6px, color #d0d6e0 (idle), no accent bar.
+        //   font-size 13px, weight 510, gap 8px, padding 0 6px, height 28px,
+        //   color #d0d6e0 (idle), no accent bar. Radius follows --radius-card
+        //   (12px) per the 2026-05 radius-scale migration (see TASTE_CHANGELOG).
         "relative flex items-center gap-2 px-1.5 h-[28px] rounded-[var(--radius-card)] text-[13px] transition-colors duration-100",
-        active ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgb(var(--overlay,0_0_0)/0.06)]"
+        active ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--ff-hover)]"
       )}
       style={{ fontVariationSettings: "'wght' 510", transition: "color 80ms, background 80ms" }}
     >
@@ -97,7 +99,7 @@ function Wordmark() {
   return (
     <div className="flex items-center gap-2">
       <div
-        className="w-5 h-5 rounded-[4px] flex items-center justify-center shrink-0"
+        className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
         style={{ background: "var(--accent)" }}
       >
         <span className="text-[10px]" style={{ color: "var(--text-on-accent)", fontVariationSettings: fontWeights.semibold }}>N</span>
@@ -154,10 +156,11 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
             onClick={onNavigate}
           />
         ))}
-        <div className="px-3 pt-2">
+        <div className="flex items-center justify-between px-3 pt-2">
           <span className="text-[11px] font-mono" style={{ color: "var(--text-disabled)" }}>
             v0.1.0 · beta
           </span>
+          <ThemeToggle />
         </div>
       </div>
     </div>
@@ -206,20 +209,23 @@ export function MobileNav() {
         }}
       >
         <Wordmark />
-        {/* UI_RULES.md §1 exception: mobile-nav hamburger trigger. Sized 32x32
-            to match the topnav-height row context with a 16px icon. The
-            closest <Button> variant (icon-sm = h-8/w-8 = 32px) ships a 14px
-            icon and the wrapper's group-hover stroke-width/scale transitions
-            change the icon's visual weight on tap, which we don't want on
-            mobile. Keep as a bare <button> — documented exception. */}
-        <button
-          onClick={() => setOpen(true)}
-          aria-label="Open navigation menu"
-          className="flex items-center justify-center w-8 h-8 rounded-[6px] transition-colors duration-100 hover:bg-[var(--bg-elevated-2)]"
-          style={{ color: "var(--text-secondary)" }}
-        >
-          <Menu size={16} strokeWidth={1.5} />
-        </button>
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          {/* UI_RULES.md §1 exception: mobile-nav hamburger trigger. Sized 32x32
+              to match the topnav-height row context with a 16px icon. The
+              closest <Button> variant (icon-sm = h-8/w-8 = 32px) ships a 14px
+              icon and the wrapper's group-hover stroke-width/scale transitions
+              change the icon's visual weight on tap, which we don't want on
+              mobile. Keep as a bare <button> — documented exception. */}
+          <button
+            onClick={() => setOpen(true)}
+            aria-label="Open navigation menu"
+            className="flex items-center justify-center w-8 h-8 rounded-lg transition-colors duration-100 hover:bg-[var(--bg-elevated-2)]"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            <Menu size={16} strokeWidth={1.5} />
+          </button>
+        </div>
       </header>
 
       {/* Slide-in nav drawer */}

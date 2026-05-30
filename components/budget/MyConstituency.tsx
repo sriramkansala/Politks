@@ -55,7 +55,7 @@ export function MyConstituency() {
         {MPLADS_SAMPLE.map((c, i) => (
           <button key={c.pin}
             onClick={() => { setActiveIdx(i); setPin(c.pin) }}
-            className="text-[11px] px-2.5 py-1 rounded-full transition-colors"
+            className="text-[11px] px-2.5 py-1 rounded-lg transition-colors"
             style={{
               background: i === activeIdx
                 ? "color-mix(in srgb, var(--accent) 18%, transparent)"
@@ -151,7 +151,7 @@ export function MyConstituency() {
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {active.neighbours.map(n => (
-                    <span key={n} className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full"
+                    <span key={n} className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-[var(--radius-tag)]"
                       style={{ background: "var(--bg-elevated-3)", color: "var(--text-secondary)" }}>
                       <Users size={9} strokeWidth={2} /> {n}
                     </span>

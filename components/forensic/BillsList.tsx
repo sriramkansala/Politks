@@ -89,7 +89,7 @@ function BillTable({ bills, hideHouseTag = false }: { bills: BillRow[]; hideHous
   if (bills.length === 0) {
     return (
       <div
-        className="rounded-[6px] p-8 text-center"
+        className="rounded-xl p-8 text-center"
         style={{ border: "1px solid var(--border)", background: "var(--bg-elevated)" }}
       >
         <p className="text-[13px]" style={{ color: "var(--text-tertiary)" }}>
@@ -100,7 +100,7 @@ function BillTable({ bills, hideHouseTag = false }: { bills: BillRow[]; hideHous
   }
   return (
     <div
-      className="rounded-[6px] overflow-hidden"
+      className="rounded-xl overflow-hidden"
       style={{ border: "1px solid var(--border)", background: "var(--bg-elevated)" }}
     >
       <Table>

@@ -129,7 +129,7 @@ export function BudgetHero({ onJumpToYou }: { onJumpToYou: () => void }) {
             <p className="text-[18px] tabular-nums leading-none mt-0.5"
               style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.bold }}>
               {hasIncome ? formatINR(total) : "—"}{" "}
-              <span className="text-[10px]" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.regular }}>
+              <span className="text-[10px]" style={{ color: "var(--text-tertiary)", fontVariationSettings: fontWeights.normal }}>
                 / year
               </span>
             </p>

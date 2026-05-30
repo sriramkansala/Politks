@@ -26,7 +26,7 @@ export function StatusPill({ status, variant = "dot", className }: StatusPillPro
         style={{
           color: meta.color,
           background: meta.bg,
-          borderRadius: "2px",
+          borderRadius: "var(--radius-tag)",
           fontVariationSettings: fontWeights.medium,
         }}
       >

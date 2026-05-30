@@ -52,9 +52,10 @@ export function PromiseCard({ promise, className }: PromiseCardProps) {
               style={{ color: "var(--text-tertiary)" }}
             >
               <span
-                className="px-1.5 py-0.5 rounded-[2px] text-[10px] uppercase tracking-wide"
+                className="px-2 py-0.5 rounded-[var(--radius-pill)] text-[10px] uppercase tracking-wide"
                 style={{
                   background: "var(--bg-elevated-2)",
+                  border: "1px solid var(--border)",
                   color: "var(--text-secondary)",
                   fontVariationSettings: fontWeights.medium,
                 }}

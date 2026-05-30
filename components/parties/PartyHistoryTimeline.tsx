@@ -26,9 +26,9 @@ const KIND_TONE: Record<PartyHistoryEvent["kind"], string> = {
   election_loss: "var(--status-broken)",
   split: "var(--status-broken)",
   controversy: "var(--status-broken)",
-  merger: "var(--status-in-progress)",
-  alliance: "var(--status-in-progress)",
-  leadership: "var(--status-in-progress)",
+  merger: "var(--status-inworks)",
+  alliance: "var(--status-inworks)",
+  leadership: "var(--status-inworks)",
   ideology: "var(--text-tertiary)",
   milestone: "var(--accent)",
 }
@@ -67,7 +67,7 @@ export function PartyHistoryTimeline({
               }}
             />
             <div
-              className="p-3 rounded-[6px]"
+              className="p-3 rounded-xl"
               style={{
                 background: "var(--bg-elevated)",
                 border: "1px solid var(--border)",
@@ -81,11 +81,11 @@ export function PartyHistoryTimeline({
                   {ev.year}
                 </span>
                 <span
-                  className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[2px]"
+                  className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[var(--radius-tag)]"
                   style={{
                     color: tone,
-                    background: `${tone}1A`,
-                    border: `1px solid ${tone}55`,
+                    background: `color-mix(in oklab, ${tone} 12%, transparent)`,
+                    border: `1px solid color-mix(in oklab, ${tone} 34%, transparent)`,
                   }}
                 >
                   {KIND_LABELS[ev.kind]}

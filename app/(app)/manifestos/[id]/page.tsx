@@ -5,7 +5,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeft, Download, ExternalLink, FileText, Star } from "lucide-react"
 import { createPublicClient } from "@/lib/db/server"
-import { statusMeta, type PromiseStatus } from "@/lib/tokens"
+import { StatusPill } from "@/components/promises/StatusPill"
 import type { Manifesto, Party, PromiseRow } from "@/lib/db/types"
 import { formatTarget, formatIndianNumber } from "@/lib/format"
 import { fontWeights } from "@/lib/font-weight"
@@ -34,17 +34,6 @@ export async function generateMetadata({
   return { title: row?.title ? `${row.title} · BMW` : "Manifesto · BMW" }
 }
 
-function StatusPill({ status }: { status: PromiseStatus }) {
-  const meta = statusMeta[status]
-  return (
-    <span
-      className="inline-flex items-center px-2 py-0.5 text-[10px] uppercase tracking-[0.04em] rounded-[2px]"
-      style={{ color: meta.color, background: meta.bg, fontVariationSettings: fontWeights.medium }}
-    >
-      {meta.label}
-    </span>
-  )
-}
 
 function PromiseCard({
   p,
@@ -75,14 +64,14 @@ function PromiseCard({
             {p.title}
           </h3>
         </div>
-        <StatusPill status={p.status} />
+        <StatusPill status={p.status} variant="chip" />
       </div>
       <p className="text-[12px] leading-relaxed" style={{ color: "var(--text-secondary)" }}>
         {p.text}
       </p>
       <div className="flex flex-wrap items-center gap-1.5 mt-1">
         <span
-          className="text-[10px] px-1.5 py-0.5 rounded-[2px] uppercase tracking-[0.05em]"
+          className="text-[10px] px-1.5 py-0.5 rounded-[var(--radius-tag)] uppercase tracking-[0.05em]"
           style={{
             background: "var(--bg-elevated-2)",
             color: "var(--text-tertiary)",
@@ -94,7 +83,7 @@ function PromiseCard({
         {p.tags?.slice(0, 4).map((t) => (
           <span
             key={t}
-            className="text-[10px] px-1.5 py-0.5 rounded-[2px]"
+            className="text-[10px] px-1.5 py-0.5 rounded-[var(--radius-tag)]"
             style={{
               color: "var(--text-tertiary)",
               border: "1px solid var(--border)",
@@ -105,7 +94,7 @@ function PromiseCard({
         ))}
         {p.target_metric && (
           <span
-            className="text-[10px] px-1.5 py-0.5 rounded-[2px] font-mono"
+            className="text-[10px] px-1.5 py-0.5 rounded-[var(--radius-tag)] font-mono"
             style={{
               color: "var(--text-primary)",
               background: "var(--bg-elevated-2)",
@@ -183,7 +172,7 @@ export default async function ManifestoDetailPage({
 
       {/* Header */}
       <section
-        className="rounded-[6px] overflow-hidden"
+        className="rounded-xl overflow-hidden"
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
       >
         <div style={{ height: 4, background: partyColor }} />
@@ -191,7 +180,7 @@ export default async function ManifestoDetailPage({
           <div className="flex items-center gap-2 mb-3">
             {party && (
               <span
-                className="text-[10px] uppercase tracking-[0.07em] px-2 py-0.5 rounded-[2px]"
+                className="text-[10px] uppercase tracking-[0.07em] px-2 py-0.5 rounded-[var(--radius-tag)]"
                 style={{
                   background: `${partyColor}22`,
                   color: partyColor,
@@ -210,8 +199,8 @@ export default async function ManifestoDetailPage({
             </span>
           </div>
           <h1
-            className="text-heading-xl mb-2"
-            style={{ color: "var(--text-primary)", letterSpacing: "-0.022em" }}
+            className="h-page mb-2"
+            style={{ color: "var(--text-primary)" }}
           >
             {m.title}
           </h1>
@@ -224,7 +213,7 @@ export default async function ManifestoDetailPage({
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5">
             <div
-              className="p-3 rounded-[6px]"
+              className="p-3 rounded-xl"
               style={{ background: "var(--bg-elevated-2)", border: "1px solid var(--border)" }}
             >
               <div className="text-[10px] uppercase tracking-[0.06em]" style={{ color: "var(--text-tertiary)" }}>
@@ -235,7 +224,7 @@ export default async function ManifestoDetailPage({
               </div>
             </div>
             <div
-              className="p-3 rounded-[6px]"
+              className="p-3 rounded-xl"
               style={{ background: "var(--bg-elevated-2)", border: "1px solid var(--border)" }}
             >
               <div className="text-[10px] uppercase tracking-[0.06em]" style={{ color: "var(--text-tertiary)" }}>
@@ -246,7 +235,7 @@ export default async function ManifestoDetailPage({
               </div>
             </div>
             <div
-              className="p-3 rounded-[6px]"
+              className="p-3 rounded-xl"
               style={{ background: "var(--bg-elevated-2)", border: "1px solid var(--border)" }}
             >
               <div className="text-[10px] uppercase tracking-[0.06em]" style={{ color: "var(--text-tertiary)" }}>
@@ -257,7 +246,7 @@ export default async function ManifestoDetailPage({
               </div>
             </div>
             <div
-              className="p-3 rounded-[6px]"
+              className="p-3 rounded-xl"
               style={{ background: "var(--bg-elevated-2)", border: "1px solid var(--border)" }}
             >
               <div className="text-[10px] uppercase tracking-[0.06em]" style={{ color: "var(--text-tertiary)" }}>
@@ -277,8 +266,8 @@ export default async function ManifestoDetailPage({
                   href={m.source_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="h-9 px-4 rounded-[6px] text-[12px] inline-flex items-center gap-1.5 transition-colors"
-                  style={{ background: "var(--accent)", color: "var(--text-on-accent)", textDecoration: "none", fontVariationSettings: fontWeights.medium }}
+                  className="h-9 px-4 rounded-xl text-[12px] inline-flex items-center gap-1.5 bg-[var(--accent)] transition-colors duration-100 hover:bg-[var(--accent-hover)]"
+                  style={{ color: "var(--text-on-accent)", textDecoration: "none", fontVariationSettings: fontWeights.medium }}
                 >
                   {m.source_url.endsWith(".pdf") ? (
                     <>
@@ -294,10 +283,8 @@ export default async function ManifestoDetailPage({
                   href={m.source_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="h-9 px-4 rounded-[6px] text-[12px] inline-flex items-center gap-1.5 transition-colors"
+                  className="h-9 px-4 rounded-xl text-[12px] inline-flex items-center gap-1.5 border border-[var(--border)] bg-[var(--bg-elevated-2)] transition-colors duration-100 hover:bg-[var(--bg-elevated-3)] hover:border-[var(--border-strong)]"
                   style={{
-                    background: "var(--bg-elevated-2)",
-                    border: "1px solid var(--border)",
                     color: "var(--text-primary)",
                     textDecoration: "none",
                     fontVariationSettings: fontWeights.medium,
@@ -310,9 +297,8 @@ export default async function ManifestoDetailPage({
             {party && (
               <Link
                 href={`/parties/${party.slug}`}
-                className="h-9 px-4 rounded-[6px] text-[12px] inline-flex items-center gap-1 transition-colors"
+                className="h-9 px-4 rounded-xl text-[12px] inline-flex items-center gap-1 border border-[var(--border)] transition-colors duration-100 hover:bg-[var(--bg-elevated-2)] hover:border-[var(--border-strong)]"
                 style={{
-                  border: "1px solid var(--border)",
                   color: "var(--text-secondary)",
                   textDecoration: "none",
                 }}
@@ -405,7 +391,7 @@ export default async function ManifestoDetailPage({
       {/* Empty state */}
       {promises.length === 0 && (
         <section
-          className="rounded-[6px] p-6 text-[13px]"
+          className="rounded-xl p-6 text-[13px]"
           style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)", color: "var(--text-tertiary)" }}
         >
           No promises extracted for this manifesto yet. Download the source PDF
@@ -415,7 +401,7 @@ export default async function ManifestoDetailPage({
 
       {/* Caveat */}
       <section
-        className="rounded-[6px] p-4 text-[12px] leading-relaxed"
+        className="rounded-xl p-4 text-[12px] leading-relaxed"
         style={{
           background: "var(--bg-elevated)",
           border: "1px solid var(--border)",

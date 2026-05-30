@@ -1,13 +1,14 @@
 import { Sidebar, MobileNav } from "@/components/shell/Sidebar"
 import { CommandPalette } from "@/components/shell/CommandPalette"
 import { MccBanner } from "@/components/shell/MccBanner"
+import { AskBar } from "@/components/shell/AskBar"
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Skip link — visually hidden until focused */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-3 focus:py-1.5 focus:rounded-[6px] focus:text-[13px]"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-3 focus:py-1.5 focus:rounded-xl focus:text-[13px]"
         style={{ background: "var(--accent)", color: "var(--text-on-accent)" }}
       >
         Skip to main content
@@ -16,9 +17,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex flex-col flex-1 overflow-hidden min-w-0">
         <MccBanner />
         <MobileNav />
-        <main id="main-content" className="flex-1 overflow-y-auto pb-6">{children}</main>
+        {/* pb-24 clears the ~68px AskBar floating at bottom-5 */}
+        <main id="main-content" className="flex-1 overflow-y-auto pb-24">{children}</main>
       </div>
       <CommandPalette />
+      <AskBar />
     </div>
   )
 }

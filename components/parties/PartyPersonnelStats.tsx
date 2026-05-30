@@ -97,7 +97,7 @@ export function PartyPersonnelStats({ mps, partyColor }: Props) {
             Top by declared case count
           </h3>
           <ul
-            className="rounded-[6px] overflow-hidden"
+            className="rounded-xl overflow-hidden"
             style={{
               background: "var(--bg-elevated)",
               border: "1px solid var(--border)",
@@ -203,7 +203,7 @@ function StatCard({
 }) {
   return (
     <div
-      className="p-3 rounded-[6px]"
+      className="p-3 rounded-xl"
       style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
     >
       <div

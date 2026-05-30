@@ -125,10 +125,10 @@
   --radius-pill: 9999px;    /* L: --radius-rounded */
   --radius-circle: 50%;     /* L: --radius-circle */
   /* Project aliases for the most-used sizes */
-  --radius-tag:    var(--radius-2);
-  --radius-badge:  var(--radius-4);
-  --radius-card:   var(--radius-6);
-  --radius-large:  var(--radius-12);
+  --radius-tag:    var(--radius-4);
+  --radius-badge:  var(--radius-6);
+  --radius-card:   var(--radius-12);
+  --radius-large:  var(--radius-16);
 
   /* ── Linear button sizing (VERIFIED) ─────────────────────────────────── */
   --button-height-sm:   24px;
@@ -174,7 +174,7 @@
   --border-ui:          var(--border);
   --input-ui:           var(--bg-input);
   --ring:               var(--accent);
-  --radius:             6px;
+  --radius:             12px;
 
   /* Fluid Functionalism surface tokens */
   --ff-hover:  rgba(247, 248, 248, 0.06);
@@ -441,8 +441,8 @@ tr.is-active td {
 .legislator-row.mono {
   background: transparent !important;
   border: none !important;
-  border-radius: var(--radius-4);
-  padding: 8px 10px;
+  border-radius: var(--radius-6);
+  padding: 10px 12px;
   box-shadow: none;
   gap: 10px;
 }
@@ -482,7 +482,7 @@ h1, h2 { font-feature-settings: 'ss01' 1, 'ss02' 1, 'cv11' 1; }
   gap: 6px;
   height: 32px;
   padding: 0 14px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-card);
   font-size: 13px;
   font-variation-settings: 'wght' 510;
   font-weight: 510;
@@ -511,7 +511,7 @@ h1, h2 { font-feature-settings: 'ss01' 1, 'ss02' 1, 'cv11' 1; }
   gap: 6px;
   height: 32px;
   padding: 0 14px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-card);
   font-size: 13px;
   font-variation-settings: 'wght' 510;
   font-weight: 510;
@@ -771,7 +771,7 @@ a[style*="--bg-elevated)"]:hover {
   font-variation-settings: 'wght' 510;
 }
 .stat-card .value {
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1.1;
   letter-spacing: -0.24px;
   color: var(--text-primary);
@@ -786,20 +786,20 @@ a[style*="--bg-elevated)"]:hover {
 .stat-card.tone-warn  .value { color: var(--status-compromise); }
 .stat-card.tone-info  .value { color: var(--status-inworks); }
 
-/* Filter chip — Linear's filter-row pattern (compact 22px height) */
+/* Filter chip — pill-shaped tab control */
 .filter-chip {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  height: 22px;
-  padding: 0 8px;
+  height: 24px;
+  padding: 0 10px;
   font-size: 11px;
   letter-spacing: -0.24px;
   font-variation-settings: 'wght' 510;
   color: var(--text-tertiary);
   background: transparent;
   border: 1px solid transparent;
-  border-radius: var(--radius-4);
+  border-radius: var(--radius-8);
   text-decoration: none;
   transition: color var(--duration) var(--ease-out-quart),
               background var(--duration) var(--ease-out-quart),
@@ -812,6 +812,7 @@ a[style*="--bg-elevated)"]:hover {
 .filter-chip.is-active {
   color: var(--text-primary);
   background: var(--bg-tertiary);
+  border-color: var(--border-strong);
 }
 .filter-chip .swatch {
   width: 6px; height: 6px; border-radius: 50%;
@@ -823,11 +824,11 @@ a[style*="--bg-elevated)"]:hover {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  height: 22px;
-  padding: 0 8px;
+  height: 24px;
+  padding: 0 10px;
   min-width: 130px;
   max-width: 240px;
-  border-radius: var(--radius-4);
+  border-radius: var(--radius-8);
   border: 1px solid transparent;
   background: transparent;
   color: var(--text-secondary);
@@ -872,14 +873,14 @@ a[style*="--bg-elevated)"]:hover {
   align-items: center;
   gap: 8px;
   width: 100%;
-  height: 26px;
-  padding: 0 8px;
+  height: 30px;
+  padding: 0 10px;
   border: 0;
   background: transparent;
   text-align: left;
   font-size: 12px;
   color: var(--text-secondary);
-  border-radius: var(--radius-4);
+  border-radius: var(--radius-6);
   cursor: pointer;
   overflow: hidden;
   white-space: nowrap;
@@ -903,12 +904,12 @@ a[style*="--bg-elevated)"]:hover {
   color: var(--text-primary);
 }
 
-/* Compact filter row — Linear's `/changelog` style: dense, horizontal-scroll */
+/* Compact filter row — pill-container style, holds pill-shaped filter chips */
 .filter-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
   padding: 4px;
   border-radius: var(--radius-card);
   background: var(--bg-elevated);
@@ -995,6 +996,158 @@ a[style*="--bg-elevated)"]:hover {
 .shadow-surface-6 { box-shadow: var(--shadow-s6); }
 .shadow-surface-7 { box-shadow: var(--shadow-s7); }
 .shadow-surface-8 { box-shadow: var(--shadow-s8); }
+
+/* ─── Light mode token overrides ─────────────────────────────
+ * Applied when next-themes sets class="light" on <html>.
+ * Every token that differs from the dark-mode :root is listed here.
+ * Tokens that stay the same (radii, spacing, motion, etc.) are omitted.
+ */
+html.light {
+  /* ── Surfaces ─────────────────────────────────────────────── */
+  --bg-base:       #F5F5F7;   /* macOS-style light canvas */
+  --bg-elevated:   #FFFFFF;   /* card / panel surface */
+  --bg-elevated-2: #F8F8FA;   /* slightly recessed */
+  --bg-elevated-3: #F2F3F5;
+  --bg-secondary:  #EBEBED;
+  --bg-tertiary:   #E2E3E6;
+  --bg-quaternary: #D9DADD;
+  --bg-quinary:    #D2D3D6;
+  --bg-tint:       #F2F3F5;
+  --bg-shade:      #ECEDF0;
+  --bg-input:      #FFFFFF;
+  --bg-card:       #FFFFFF;
+
+  /* ── Borders ──────────────────────────────────────────────── */
+  --border:           #E2E4E8;
+  --border-strong:    #CBCDD3;
+  --border-stronger:  #AAACB4;
+  --border-thin:      #E8EAED;
+  --border-solid:     #DCDEE3;
+  --border-frame:     #EEEFF2;
+  --border-faint-thin:#F2F3F5;
+
+  /* ── Text ─────────────────────────────────────────────────── */
+  --text-primary:    #0F1117;
+  --text-secondary:  #323644;
+  --text-tertiary:   #6B7080;
+  --text-quaternary: #9298A8;
+  --text-disabled:   #BCC0CA;
+  --text-emphasis:   #323644;
+  --text-on-accent:  #ffffff;
+
+  /* ── Accent (slightly deeper for light-bg contrast) ───────── */
+  --accent:        #5e6ad2;
+  --accent-brand:  #5e6ad2;
+  --accent-hover:  #4f5cbd;
+  --accent-tint:   #EEF0FC;
+  --accent-muted:  color-mix(in oklab, #5e6ad2 12%, transparent);
+
+  /* ── Shadows (soft drop shadows, no inset highlights) ─────── */
+  --shadow-sm:     0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-subtle: inset 0 0 0 1px #E2E4E8;
+  --shadow-xl:     0 4px 24px rgba(0,0,0,0.09), 0 2px 8px rgba(0,0,0,0.05);
+
+  --shadow-s1: 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-s2: 0 2px 4px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-s3: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-s4: 0 8px 20px rgba(0,0,0,0.09), 0 3px 6px rgba(0,0,0,0.05);
+  --shadow-s5: 0 12px 32px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.05);
+  --shadow-s6: 0 18px 48px rgba(0,0,0,0.10), 0 6px 12px rgba(0,0,0,0.06);
+  --shadow-s7: 0 24px 64px rgba(0,0,0,0.11), 0 8px 16px rgba(0,0,0,0.06);
+  --shadow-s8: 0 32px 80px rgba(0,0,0,0.12), 0 10px 20px rgba(0,0,0,0.07);
+
+  /* ── Fluid Functionalism surfaces ────────────────────────── */
+  --ff-hover:  rgba(0,0,0,0.04);
+  --ff-active: rgba(0,0,0,0.08);
+
+  --surface-1: #F5F5F7;
+  --surface-2: #FFFFFF;
+  --surface-3: #F8F8FA;
+  --surface-4: #F2F3F5;
+  --surface-5: #EBEBED;
+  --surface-6: #E2E3E6;
+  --surface-7: #D9DADD;
+  --surface-8: #D2D3D6;
+
+  /* ── Row hover overlays ───────────────────────────────────── */
+  --hover-row:        rgba(0,0,0,0.02);
+  --hover-row-strong: rgba(0,0,0,0.04);
+
+  /* ── Focus ring ───────────────────────────────────────────── */
+  --focus-ring-color:  color-mix(in oklab, var(--accent) 40%, transparent);
+}
+
+/* ─── Light mode: card & component shadow overrides ──────────
+ * Dark mode cards rely on inset top-edge white highlights.
+ * In light mode those look wrong — replace with clean drop shadows.
+ */
+html.light .card-base,
+html.light .stat-card,
+html.light .caveat-block {
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.07),
+    0 1px 2px rgba(0,0,0,0.04);
+}
+html.light .card-base:hover,
+html.light .stat-card:hover {
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.10),
+    0 2px 4px rgba(0,0,0,0.05);
+}
+
+html.light .party-card {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+}
+html.light .party-card:hover {
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.10),
+    0 2px 6px rgba(0,0,0,0.06);
+}
+
+html.light .legislator-row {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.03);
+}
+html.light .legislator-row:hover {
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.09),
+    0 4px 16px rgba(0,0,0,0.08);
+  background-color: var(--bg-elevated-2) !important;
+}
+
+html.light .filter-dropdown-menu {
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.10),
+    0 2px 6px rgba(0,0,0,0.06);
+}
+
+/* Nav active pill in light mode */
+html.light nav a[aria-current="page"] {
+  background: var(--bg-secondary);
+  box-shadow: none;
+}
+html.light nav a:hover:not([aria-current="page"]) {
+  background: var(--ff-hover);
+}
+
+/* Scrollbar for light mode */
+html.light ::-webkit-scrollbar-track { background: var(--bg-base); }
+html.light ::-webkit-scrollbar-thumb { background: var(--border-strong); }
+html.light ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+/* ─── Theme transition — smooth crossfade on mode switch ─────
+ * Applied only during the theme-change moment (next-themes
+ * temporarily removes `disableTransitionOnChange` behaviour via
+ * the suppressHydrationWarning pattern). Keep duration short
+ * so it feels snappy not laggy. */
+html.transitioning *,
+html.transitioning *::before,
+html.transitioning *::after {
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease !important;
+}
 
 /* ─── Reduced motion ───────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {

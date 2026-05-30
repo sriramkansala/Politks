@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { useRef, useState } from "react"
+import { fontWeights } from "@/lib/font-weight"
 
 export interface GraphNode {
   id: string
@@ -180,7 +181,7 @@ export function IssueGraph({ nodes, edges, width = 900, height = 480 }: IssueGra
                   fontSize="9"
                   dy="-5"
                   fill="var(--text-secondary)"
-                  style={{ fontFamily: "var(--font-sans)", fontWeight: 510 }}
+                  style={{ fontFamily: "var(--font-sans)", fontVariationSettings: fontWeights.semibold }}
                 >
                   {node.label.split(" ")[0]}
                 </text>
@@ -243,7 +244,7 @@ export function IssueGraph({ nodes, edges, width = 900, height = 480 }: IssueGra
                 y="15"
                 fontSize="10"
                 fill="var(--text-primary)"
-                style={{ fontFamily: "var(--font-sans)", fontWeight: 510 }}
+                style={{ fontFamily: "var(--font-sans)", fontVariationSettings: fontWeights.semibold }}
               >
                 {node.label.length > 18 ? node.label.slice(0, 18) + "…" : node.label}
               </text>

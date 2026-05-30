@@ -22,7 +22,7 @@ export default function BillDetailLoading() {
 
       {/* Graph placeholder */}
       <div
-        className="rounded-[6px] h-[320px]"
+        className="rounded-xl h-[320px]"
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
       />
 
@@ -42,7 +42,7 @@ export default function BillDetailLoading() {
               />
               {i % 3 === 0 && (
                 <div
-                  className="h-14 rounded-[4px]"
+                  className="h-14 rounded-lg"
                   style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
                 />
               )}

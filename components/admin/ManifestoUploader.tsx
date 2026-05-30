@@ -88,7 +88,7 @@ export function ManifestoUploader() {
     <div className="space-y-6">
       {/* Form */}
       <div
-        className="rounded-[6px] p-6 space-y-4"
+        className="rounded-xl p-6 space-y-4"
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
       >
         <h2 className="text-subheading" style={{ color: "var(--text-primary)" }}>
@@ -168,7 +168,7 @@ export function ManifestoUploader() {
       {/* Progress steps */}
       {steps.length > 0 && (
         <div
-          className="rounded-[6px] overflow-hidden"
+          className="rounded-xl overflow-hidden"
           style={{ border: "1px solid var(--border)" }}
         >
           <div

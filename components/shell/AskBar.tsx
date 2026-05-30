@@ -194,7 +194,7 @@ export function AskBar() {
                     // Documented §1 exception: composite AskBar button cluster.
                     <button
                       onClick={clear}
-                      className="flex items-center gap-1 text-[11px] px-2 py-1 rounded-[6px] transition-colors hover:bg-[var(--bg-tertiary)]"
+                      className="flex items-center gap-1 text-[11px] px-2 py-1 rounded-lg transition-colors hover:bg-[var(--bg-tertiary)]"
                       style={{ color: "var(--text-tertiary)" }}
                       title="Clear chat"
                     >
@@ -205,7 +205,7 @@ export function AskBar() {
                   {/* Documented §1 exception. */}
                   <button
                     onClick={close}
-                    className="p-1 rounded-[6px] transition-colors hover:bg-[var(--bg-tertiary)]"
+                    className="p-1 rounded-lg transition-colors hover:bg-[var(--bg-tertiary)]"
                     style={{ color: "var(--text-tertiary)" }}
                   >
                     <ChevronDown size={14} />
@@ -334,7 +334,7 @@ export function AskBar() {
                 onClick={() => abortRef.current?.abort()}
                 whileTap={{ scale: 0.97 }}
                 transition={springs.snap}
-                className="flex items-center gap-1 text-[11px] px-2 py-1 rounded-[6px] transition-colors hover:bg-[var(--bg-tertiary)]"
+                className="flex items-center gap-1 text-[11px] px-2 py-1 rounded-lg transition-colors hover:bg-[var(--bg-tertiary)]"
                 style={{ color: "var(--text-tertiary)" }}
               >
                 <X size={10} /> Stop

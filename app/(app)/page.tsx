@@ -75,7 +75,7 @@ export default async function HomePage() {
       <AnimateIn>
         <section className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-4 flex-wrap">
-            <h1 className="h-hero" style={{ color: "var(--text-primary)" }}>
+            <h1 className="h-page" style={{ color: "var(--text-primary)" }}>
               Overview
             </h1>
             <div className="flex flex-wrap gap-2">
@@ -124,7 +124,7 @@ export default async function HomePage() {
                       data-explain-value={value}
                       data-explain-context="Neo Nīti home dashboard — At a glance summary across all tracked parties and promises in India."
                     >
-                      <div className="value" style={{ fontSize: "28px", letterSpacing: "-0.022em" }}>{value}</div>
+                      <div className="value">{value}</div>
                       <div className="label">{label}</div>
                     </div>
                   </AnimateItem>

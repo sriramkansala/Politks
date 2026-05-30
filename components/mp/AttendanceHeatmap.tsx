@@ -18,7 +18,7 @@ export function AttendanceHeatmap({ mp }: { mp: Mp }) {
   if (sessions.length === 0) {
     return (
       <div
-        className="rounded-[6px] p-4"
+        className="rounded-xl p-4"
         style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
       >
         <div className="text-subheading mb-1" style={{ color: "var(--text-primary)" }}>
@@ -39,7 +39,7 @@ export function AttendanceHeatmap({ mp }: { mp: Mp }) {
 
   return (
     <div
-      className="rounded-[6px] p-5"
+      className="rounded-xl p-5"
       style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
     >
       <div className="flex items-baseline justify-between mb-4">
@@ -60,7 +60,7 @@ export function AttendanceHeatmap({ mp }: { mp: Mp }) {
             >
               {label}
             </div>
-            <div className="flex-1 h-3 rounded-[2px] overflow-hidden" style={{ background: "var(--bg-elevated-2)" }}>
+            <div className="flex-1 h-3 rounded-full overflow-hidden" style={{ background: "var(--bg-elevated-2)" }}>
               <div
                 style={{
                   width: `${Math.max(0, Math.min(100, pct))}%`,

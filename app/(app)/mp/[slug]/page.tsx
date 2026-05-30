@@ -41,7 +41,13 @@ export default async function MpDossierPage({
   const mp = MP_BY_SLUG[slug] as Mp | undefined
   if (!mp) notFound()
 
-  const house = mp.house === "rajya_sabha" ? "Rajya Sabha" : "Lok Sabha"
+  const HOUSE_LABEL: Record<string, string> = {
+    lok_sabha:       "Lok Sabha · MP",
+    rajya_sabha:     "Rajya Sabha · MP",
+    vidhan_sabha:    "Vidhan Sabha · MLA",
+    vidhan_parishad: "Vidhan Parishad · MLC",
+  }
+  const house = (mp.house && HOUSE_LABEL[mp.house]) ?? "Legislator"
 
   return (
     <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto">

@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
-import { statusMeta, type PromiseStatus } from "@/lib/tokens"
-import { fontWeights } from "@/lib/font-weight"
+import { StatusPill } from "@/components/promises/StatusPill"
+import { TypographySpecimen } from "@/components/dev/TypographySpecimen"
+import { type PromiseStatus } from "@/lib/tokens"
 
 const statuses: PromiseStatus[] = [
   "not_yet_rated",
@@ -40,7 +41,7 @@ export default function DesignPage() {
             ].map(({ label, color }) => (
               <div key={label} className="flex flex-col items-start gap-1.5">
                 <div
-                  className="w-12 h-12 rounded-[6px]"
+                  className="w-12 h-12 rounded-xl"
                   style={{ background: color, border: "1px solid var(--border)" }}
                 />
                 <span className="text-caption font-mono" style={{ color: "var(--text-tertiary)" }}>
@@ -75,22 +76,18 @@ export default function DesignPage() {
 
         <Separator style={{ background: "var(--border)" }} />
 
-        {/* Status pills */}
+        {/* Status indicators */}
         <section>
-          <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Status pills (PolitiFact taxonomy)</h2>
-          <div className="flex flex-wrap gap-2">
-            {statuses.map((s) => {
-              const meta = statusMeta[s]
-              return (
-                <span
-                  key={s}
-                  className="inline-flex items-center px-2 py-0.5 text-[11px] uppercase tracking-[0.04em]"
-                  style={{ color: meta.color, background: meta.bg, borderRadius: "2px", fontVariationSettings: fontWeights.medium }}
-                >
-                  {meta.label}
-                </span>
-              )
-            })}
+          <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Status indicators (PolitiFact taxonomy)</h2>
+          <div className="space-y-3">
+            {/* Dot variant — the default, monochrome list indicator */}
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
+              {statuses.map((s) => <StatusPill key={s} status={s} />)}
+            </div>
+            {/* Chip variant — status-emphasis surfaces only */}
+            <div className="flex flex-wrap gap-2">
+              {statuses.map((s) => <StatusPill key={s} status={s} variant="chip" />)}
+            </div>
           </div>
         </section>
 
@@ -101,9 +98,9 @@ export default function DesignPage() {
           <h2 className="h-section mb-4" style={{ color: "var(--text-primary)" }}>Buttons</h2>
           <div className="flex gap-3 flex-wrap items-center">
             <Button>Primary</Button>
-            <Button variant="tertiary">Outline</Button>
+            <Button variant="secondary">Secondary</Button>
+            <Button variant="tertiary">Tertiary</Button>
             <Button variant="ghost">Ghost</Button>
-            <Button variant="secondary">Destructive</Button>
             <Button size="sm">Small</Button>
             <Button disabled>Disabled</Button>
           </div>
@@ -151,6 +148,17 @@ export default function DesignPage() {
             <Input placeholder="Search promises…" />
             <Input placeholder="Disabled" disabled />
           </div>
+        </section>
+
+        <Separator style={{ background: "var(--border)" }} />
+
+        {/* Typography specimen — realistic product strings, both themes */}
+        <section>
+          <h2 className="h-section mb-1" style={{ color: "var(--text-primary)" }}>Typography specimen</h2>
+          <p className="text-[13px] mb-4" style={{ color: "var(--text-tertiary)" }}>
+            Inter Variable across every product role, rendered in both themes for side-by-side validation.
+          </p>
+          <TypographySpecimen />
         </section>
 
       </div>

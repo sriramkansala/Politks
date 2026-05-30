@@ -128,7 +128,7 @@ export default async function ManifestosPage({ searchParams }: PageProps) {
           return (
             <article
               key={m.id}
-              className="rounded-[6px] overflow-hidden flex flex-col"
+              className="rounded-xl overflow-hidden flex flex-col"
               style={{
                 background: "var(--bg-elevated)",
                 border: "1px solid var(--border)",
@@ -143,7 +143,7 @@ export default async function ManifestosPage({ searchParams }: PageProps) {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 mb-1.5">
                       <span
-                        className="text-[10px] uppercase tracking-[0.07em] px-1.5 py-0.5 rounded-[2px]"
+                        className="text-[10px] uppercase tracking-[0.07em] px-1.5 py-0.5 rounded-[var(--radius-tag)]"
                         style={{
                           background: `${partyColor}22`,
                           color: partyColor,
@@ -211,10 +211,8 @@ export default async function ManifestosPage({ searchParams }: PageProps) {
                 <div className="flex items-center gap-2 mt-auto">
                   <Link
                     href={`/manifestos/${m.id}`}
-                    className="flex-1 h-9 px-3 rounded-[6px] text-[12px] inline-flex items-center justify-between transition-colors"
+                    className="flex-1 h-9 px-3 rounded-xl text-[12px] inline-flex items-center justify-between border border-[var(--border)] bg-[var(--bg-elevated-2)] transition-colors duration-100 hover:bg-[var(--bg-elevated-3)] hover:border-[var(--border-strong)]"
                     style={{
-                      background: "var(--bg-elevated-2)",
-                      border: "1px solid var(--border)",
                       color: "var(--text-primary)",
                       textDecoration: "none",
                       fontVariationSettings: fontWeights.medium,
@@ -230,11 +228,9 @@ export default async function ManifestosPage({ searchParams }: PageProps) {
                       href={m.source_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="h-9 px-3 rounded-[var(--radius-card)] text-[12px] inline-flex items-center gap-1.5 transition-colors"
+                      className="h-9 px-3 rounded-[var(--radius-card)] text-[12px] inline-flex items-center gap-1.5 border border-[var(--border)] bg-[var(--bg-elevated-2)] transition-colors duration-100 hover:bg-[var(--bg-elevated-3)] hover:border-[var(--border-strong)]"
                       style={{
                         // Linear discipline: tertiary monochrome button (not 12 accent buttons on screen).
-                        background: "var(--bg-elevated-2)",
-                        border: "1px solid var(--border)",
                         color: "var(--text-secondary)",
                         textDecoration: "none",
                         fontVariationSettings: fontWeights.medium,
@@ -267,7 +263,7 @@ export default async function ManifestosPage({ searchParams }: PageProps) {
 
       {/* Source caveat */}
       <section
-        className="rounded-[6px] p-4 text-[12px] leading-relaxed"
+        className="rounded-xl p-4 text-[12px] leading-relaxed"
         style={{
           background: "var(--bg-elevated)",
           border: "1px solid var(--border)",

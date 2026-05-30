@@ -256,7 +256,7 @@ export function BillPageTabs({
                 <SectionHeading sub="Relationships between bills, MPs, and blocking events">
                   Causal graph
                 </SectionHeading>
-                <div className="rounded-[6px] overflow-hidden p-4"
+                <div className="rounded-xl overflow-hidden p-4"
                   style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}>
                   <IssueGraph nodes={graphNodes} edges={graphEdges} width={920} height={480} />
                 </div>

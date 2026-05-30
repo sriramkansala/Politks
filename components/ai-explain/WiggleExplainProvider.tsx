@@ -184,7 +184,7 @@ function StatusPill({ onExit }: { onExit: () => void }) {
       transition={{ type: "spring", stiffness: 380, damping: 26 }}
     >
       <div
-        className="flex items-center gap-2 rounded-full px-3 py-1.5 text-[12px]"
+        className="flex items-center gap-2 rounded-xl px-3 py-1.5 text-[12px]"
         style={{
           background: "color-mix(in oklab, var(--bg-elevated-2) 92%, transparent)",
           backdropFilter: "blur(10px)",
@@ -211,7 +211,7 @@ function StatusPill({ onExit }: { onExit: () => void }) {
             e.stopPropagation()
             onExit()
           }}
-          className="ml-1 rounded-full px-1.5 py-0.5 text-[10.5px] tracking-wide"
+          className="ml-1 rounded-md px-1.5 py-0.5 text-[10.5px] tracking-wide"
           style={{
             color: "var(--text-tertiary)",
             border: "1px solid var(--border)",

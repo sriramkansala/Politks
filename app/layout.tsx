@@ -27,8 +27,9 @@ export default function RootLayout({
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
-          enableSystem={false}
-          disableTransitionOnChange
+          themes={["dark", "light"]}
+          enableSystem
+          storageKey="neoniti-theme"
         >
           <ShapeProvider defaultShape="rounded">
             {children}

@@ -96,6 +96,7 @@ export function PartyVisibilityList({ parties }: { parties: PartyOption[] }) {
               </div>
               <Switch
                 label={`Show ${p.short_name ?? p.name}`}
+                hideLabel
                 checked={!isHidden}
                 onToggle={() => toggle(p.id)}
               />

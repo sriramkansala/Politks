@@ -14,23 +14,22 @@ export const metadata = { title: "Insights · Neo Nīti" }
 export const revalidate = 21600
 
 interface PageProps {
-  searchParams: Promise<{ category?: FactCategory; era?: string }>
+  searchParams: Promise<{ category?: FactCategory }>
 }
 
 export default async function InsightsPage({ searchParams }: PageProps) {
-  const { category, era } = await searchParams
+  const { category } = await searchParams
 
   const today = pickDailyFact()
   const filtered = FACTS.filter((f) => {
     if (category && f.category !== category) return false
-    if (era && f.era !== era) return false
     return true
   })
 
   return (
     <div className="px-6 py-8 max-w-[var(--content-max)] mx-auto space-y-10">
       <section>
-        <h1 className="text-heading-xl mb-2" style={{ color: "var(--text-primary)" }}>
+        <h1 className="h-page mb-2" style={{ color: "var(--text-primary)" }}>
           Insights
         </h1>
         <p className="text-[15px] max-w-2xl" style={{ color: "var(--text-secondary)" }}>
@@ -83,7 +82,7 @@ export default async function InsightsPage({ searchParams }: PageProps) {
 
       {/* Caveats */}
       <section
-        className="rounded-[6px] p-4 text-[12px] leading-relaxed"
+        className="rounded-xl p-4 text-[12px] leading-relaxed"
         style={{
           background: "var(--bg-elevated)",
           border: "1px solid var(--border)",

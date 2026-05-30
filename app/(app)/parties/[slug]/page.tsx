@@ -18,7 +18,8 @@
 
 import { notFound } from "next/navigation"
 import { ExternalLink } from "lucide-react"
-import { PoliticalCompass, getPartyLean } from "@/components/parties/PoliticalCompass"
+import { PoliticalCompass } from "@/components/parties/PoliticalCompass"
+import { getPartyLean } from "@/components/parties/political-compass-data"
 import { PartySymbol } from "@/components/parties/PartySymbol"
 import { PromiseList } from "@/components/promises/PromiseList"
 import { PartyTabNav, type TabSpec } from "@/components/parties/PartyTabNav"
@@ -146,7 +147,7 @@ export default async function PartyPage({ params, searchParams }: PageProps) {
       <AnimateIn className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div
-            className="w-12 h-12 rounded-[6px] flex items-center justify-center shrink-0"
+            className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
             style={{ background: `${typedParty.color_hex}18` }}
           >
             <PartySymbol slug={slug} color={typedParty.color_hex as string} size={34} />
@@ -216,7 +217,7 @@ export default async function PartyPage({ params, searchParams }: PageProps) {
             ).map(([status, label]) => (
               <AnimateItem key={status}>
               <div
-                className="p-3 rounded-[6px] text-center h-full"
+                className="p-3 rounded-xl text-center h-full"
                 style={{
                   background: "var(--bg-elevated)",
                   border: "1px solid var(--border)",
@@ -314,7 +315,7 @@ export default async function PartyPage({ params, searchParams }: PageProps) {
       {active !== "promises" && (
         <AnimateIn delay={0.15}>
         <section
-          className="rounded-[6px] p-4 text-[12px] leading-relaxed"
+          className="rounded-xl p-4 text-[12px] leading-relaxed"
           style={{
             background: "var(--bg-elevated)",
             border: "1px solid var(--border)",

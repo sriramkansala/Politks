@@ -35,14 +35,19 @@ export function StatusUpdateDialog({
   const [newStatus, setNewStatus] = useState<PromiseStatus>(currentStatus)
   const [rationale, setRationale] = useState("")
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   async function handleSave() {
     if (!rationale.trim()) return
     setSaving(true)
+    setError(null)
     try {
       await onUpdate(newStatus, rationale.trim())
       setRationale("")
       onOpenChange(false)
+    } catch (err) {
+      // Keep the dialog open so the typed rationale isn't lost.
+      setError(err instanceof Error ? err.message : "Couldn't save the status change. Try again.")
     } finally {
       setSaving(false)
     }
@@ -91,7 +96,7 @@ export function StatusUpdateDialog({
               placeholder="Why is this status changing? Cite evidence. (≤500 chars)"
               maxLength={500}
               rows={4}
-              className="w-full text-[13px] px-3 py-2 rounded-[6px] resize-none outline-none transition-colors duration-100"
+              className="w-full text-[13px] px-3 py-2 rounded-xl resize-none outline-none transition-colors duration-100"
               style={{
                 background: "var(--bg-input)",
                 border: "1px solid var(--border)",
@@ -105,6 +110,20 @@ export function StatusUpdateDialog({
             </p>
           </div>
         </div>
+
+        {error && (
+          <p
+            className="text-[12px] px-3 py-2 rounded-lg"
+            style={{
+              color: "var(--danger)",
+              background: "color-mix(in oklab, var(--danger) 10%, transparent)",
+              border: "1px solid color-mix(in oklab, var(--danger) 28%, transparent)",
+            }}
+            role="alert"
+          >
+            {error}
+          </p>
+        )}
 
         <DialogFooter>
           <Button variant="tertiary" onClick={() => onOpenChange(false)} disabled={saving}>

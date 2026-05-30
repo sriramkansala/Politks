@@ -71,19 +71,12 @@ function LiveCard({ item, onNavigate, idx }: {
       tabIndex={0}
       onClick={() => onNavigate?.(item.tabValue)}
       onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onNavigate?.(item.tabValue)}
-      whileHover={{ y: -2 }}
-      className="group cursor-pointer rounded-[10px] px-[14px] py-[12px] flex flex-col gap-[6px] outline-none focus-visible:ring-1"
-      style={{
-        background: "var(--bg-elevated)",
-        border: "1px solid var(--border)",
-      }}
+      className="group cursor-pointer rounded-[10px] px-[14px] py-[12px] flex flex-col gap-[6px] outline-none focus-visible:ring-1 border border-[var(--border)] bg-[var(--bg-elevated)] transition-colors duration-100 hover:bg-[var(--bg-elevated-2)] hover:border-[var(--border-strong)]"
     >
       {/* Status row */}
       <div className="flex items-center gap-[6px]">
-        <span className="relative flex items-center justify-center w-[8px] h-[8px] shrink-0">
-          <span className="absolute inset-0 rounded-full animate-ping opacity-30"
-            style={{ background: "var(--status-kept)" }} />
-          <span className="relative w-[6px] h-[6px] rounded-full"
+        <span className="flex items-center justify-center w-[8px] h-[8px] shrink-0">
+          <span className="w-[6px] h-[6px] rounded-full"
             style={{ background: "var(--status-kept)" }} />
         </span>
         <span className="text-[10px] uppercase tracking-[0.07em]"
@@ -137,7 +130,7 @@ function CohortSection({ cohort, items, onNavigate, startIdx }: {
             style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold }}>
             {meta.label}
           </h3>
-          <span className="text-[10.5px] px-[7px] py-[2px] rounded-full tabular-nums"
+          <span className="text-[10.5px] px-[7px] py-[2px] rounded-md tabular-nums"
             style={{
               background: "color-mix(in srgb, var(--status-kept) 12%, transparent)",
               color: "var(--status-kept)",

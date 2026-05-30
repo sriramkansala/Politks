@@ -10,8 +10,8 @@ import { PartyEmptyState } from "./PartyEmptyState"
 import { fontWeights } from "@/lib/font-weight"
 
 const STATUS_TONE: Record<PartyLegalCase["status"], string> = {
-  pending: "var(--status-in-progress)",
-  ongoing: "var(--status-in-progress)",
+  pending: "var(--status-inworks)",
+  ongoing: "var(--status-inworks)",
   dismissed: "var(--status-kept)",
   closed: "var(--text-tertiary)",
   settled: "var(--text-tertiary)",
@@ -37,7 +37,7 @@ export function PartyLegalCases({ cases }: { cases: PartyLegalCase[] }) {
         return (
           <article
             key={`${c.year}-${c.title}-${i}`}
-            className="p-3 rounded-[6px]"
+            className="p-3 rounded-xl"
             style={{
               background: "var(--bg-elevated)",
               border: "1px solid var(--border)",
@@ -51,11 +51,11 @@ export function PartyLegalCases({ cases }: { cases: PartyLegalCase[] }) {
                 {c.year}
               </span>
               <span
-                className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[2px]"
+                className="text-[10px] uppercase tracking-[0.06em] px-1.5 py-0.5 rounded-[var(--radius-tag)]"
                 style={{
                   color: tone,
-                  background: `${tone}1A`,
-                  border: `1px solid ${tone}55`,
+                  background: `color-mix(in oklab, ${tone} 12%, transparent)`,
+                  border: `1px solid color-mix(in oklab, ${tone} 34%, transparent)`,
                 }}
               >
                 {STATUS_LABEL[c.status]}

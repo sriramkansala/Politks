@@ -73,7 +73,7 @@ export default function MethodologyPage() {
             {STATUSES.map(({ status, definition, example }) => (
               <AnimateItem key={status}>
                 <div
-                  className="rounded-[6px] p-4"
+                  className="rounded-xl p-4"
                   style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
                 >
                   <StatusPill status={status} />
@@ -89,7 +89,7 @@ export default function MethodologyPage() {
 
         <AnimateIn delay={0.15}>
           <section
-            className="rounded-[6px] p-5"
+            className="rounded-xl p-5"
             style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}
           >
             <h2 className="h-section mb-3" style={{ color: "var(--text-primary)" }}>Data Sources</h2>
