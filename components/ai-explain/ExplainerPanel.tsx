@@ -137,13 +137,13 @@ export function ExplainerPanel({
           </div>
           <div className="min-w-0 flex-1">
             <div
-              className="text-[10.5px] uppercase tracking-[0.08em]"
+              className="text-[10px] uppercase tracking-[0.08em]"
               style={{ color: "var(--accent)", ...{ fontVariationSettings: fontWeights.medium } }}
             >
               AI Explainer
             </div>
             <div
-              className="text-[13.5px] truncate"
+              className="text-[13px] truncate"
               style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.medium }}
               title={target.label}
             >

@@ -146,7 +146,7 @@ export function CssReleaseTracker() {
                     Election {row.electionMonth}/{row.electionYear}
                   </span>
                   {s.note && (
-                    <span className="text-[10.5px] italic ml-2" style={{ color: "var(--text-tertiary)" }}>
+                    <span className="text-[10px] italic ml-2" style={{ color: "var(--text-tertiary)" }}>
                       · {s.note}
                     </span>
                   )}
@@ -162,7 +162,7 @@ export function CssReleaseTracker() {
         style={{ background: "color-mix(in srgb, var(--accent) 7%, transparent)",
                  border: "1px solid color-mix(in srgb, var(--accent) 20%, transparent)" }}>
         <AlertTriangle size={13} strokeWidth={2} className="shrink-0 mt-0.5" style={{ color: "var(--accent)" }} />
-        <p className="text-[11.5px] leading-[1.55]" style={{ color: "var(--text-secondary)" }}>
+        <p className="text-[11px] leading-[1.55]" style={{ color: "var(--text-secondary)" }}>
           <strong style={{ color: "var(--accent)" }}>Correlation ≠ causation.</strong> Release timing differences can be driven by state utilisation-certificate compliance, SNA SPARSH adoption, demand-side absorption capacity, or Centre-state political relations. The data shows the variance; assigning cause requires triangulation with PFMS releases, UC submissions, and audit reports.
         </p>
       </div>

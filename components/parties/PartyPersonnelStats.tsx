@@ -121,7 +121,7 @@ export function PartyPersonnelStats({ mps, partyColor }: Props) {
                   {mp.prs_slug ? (
                     <Link
                       href={`/mp?slug=${mp.prs_slug}`}
-                      className="text-[13.5px]"
+                      className="text-[13px]"
                       style={{
                         color: "var(--text-primary)",
                         textDecoration: "none",
@@ -132,14 +132,14 @@ export function PartyPersonnelStats({ mps, partyColor }: Props) {
                     </Link>
                   ) : (
                     <span
-                      className="text-[13.5px]"
+                      className="text-[13px]"
                       style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.medium }}
                     >
                       {mp.name}
                     </span>
                   )}
                   <span
-                    className="text-[11.5px] ml-2"
+                    className="text-[11px] ml-2"
                     style={{ color: "var(--text-tertiary)" }}
                   >
                     {mp.constituency ?? "—"}
@@ -179,7 +179,7 @@ export function PartyPersonnelStats({ mps, partyColor }: Props) {
       )}
 
       {withAdr.length < total && (
-        <p className="text-[11.5px]" style={{ color: "var(--text-disabled)" }}>
+        <p className="text-[11px]" style={{ color: "var(--text-disabled)" }}>
           Affidavit data available for {withAdr.length} of {total} representatives;
           coverage expands as MyNeta records are ingested.
         </p>

@@ -98,7 +98,7 @@ export function PartyHistoryTimeline({
                 {ev.title}
               </h3>
               <p
-                className="text-[12.5px] mt-1 leading-relaxed"
+                className="text-[12px] mt-1 leading-relaxed"
                 style={{ color: "var(--text-secondary)" }}
               >
                 {ev.description}

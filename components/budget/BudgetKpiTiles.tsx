@@ -161,7 +161,7 @@ function Tile({
 
         {/* Label */}
         <p
-          className="text-[10.5px] uppercase leading-none mb-2.5 whitespace-nowrap"
+          className="text-[10px] uppercase leading-none mb-2.5 whitespace-nowrap"
           style={{
             color: "var(--text-tertiary)",
             letterSpacing: "0.08em",
@@ -212,7 +212,7 @@ function Tile({
         {/* Support / context line */}
         {support && (
           <p
-            className="text-[10.5px] leading-[1.45] tabular-nums"
+            className="text-[10px] leading-[1.45] tabular-nums"
             style={{ color: "var(--text-tertiary)" }}
           >
             {support}

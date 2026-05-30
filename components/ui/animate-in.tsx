@@ -6,7 +6,7 @@
 //   - Slightly longer Y offset so the motion is felt without being theatrical.
 //   - Slower stagger so the cards "cascade" instead of "pop".
 
-import { motion, useInView } from "framer-motion"
+import { motion, useInView, useReducedMotion } from "framer-motion"
 import { useRef, type ReactNode } from "react"
 import { springs } from "@/lib/springs"
 
@@ -41,6 +41,14 @@ const itemVariants = {
 export function AnimateIn({ children, delay = 0, className, stagger = false }: AnimateInProps) {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: "-40px" })
+  const reduceMotion = useReducedMotion()
+
+  // framer animates on rAF/JS and bypasses the CSS prefers-reduced-motion guard,
+  // so reduced-motion users would otherwise still get the slide+fade AND be the
+  // cohort most exposed to content gated behind an animation. Render visible.
+  if (reduceMotion) {
+    return <div className={className}>{children}</div>
+  }
 
   if (stagger) {
     return (
@@ -71,6 +79,10 @@ export function AnimateIn({ children, delay = 0, className, stagger = false }: A
 
 /** Use inside an AnimateIn with stagger=true to stagger individual items. */
 export function AnimateItem({ children, className }: { children: ReactNode; className?: string }) {
+  const reduceMotion = useReducedMotion()
+  if (reduceMotion) {
+    return <div className={className}>{children}</div>
+  }
   return (
     <motion.div variants={itemVariants} className={className}>
       {children}
@@ -81,6 +93,10 @@ export function AnimateItem({ children, className }: { children: ReactNode; clas
 /** Shared tab-panel entrance: tiny y-slide + fade, tuned to springs.gentle.
  *  Use this in any tab strip's panels so all tabs feel identical. */
 export function PanelMotion({ children, className }: { children: ReactNode; className?: string }) {
+  const reduceMotion = useReducedMotion()
+  if (reduceMotion) {
+    return <div className={className}>{children}</div>
+  }
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}

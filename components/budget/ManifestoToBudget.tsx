@@ -114,21 +114,21 @@ export function ManifestoToBudget() {
                         <div>
                           <p className="text-[10px] uppercase tracking-[0.05em]"
                             style={{ color: "var(--text-tertiary)" }}>Category</p>
-                          <p className="text-[11.5px]" style={{ color: "var(--text-secondary)" }}>
+                          <p className="text-[11px]" style={{ color: "var(--text-secondary)" }}>
                             {r.category}
                           </p>
                         </div>
                         <div>
                           <p className="text-[10px] uppercase tracking-[0.05em]"
                             style={{ color: "var(--text-tertiary)" }}>Budget head</p>
-                          <p className="text-[11.5px]" style={{ color: "var(--text-secondary)" }}>
+                          <p className="text-[11px]" style={{ color: "var(--text-secondary)" }}>
                             {r.budgetHead}
                           </p>
                         </div>
                         <div>
                           <p className="text-[10px] uppercase tracking-[0.05em]"
                             style={{ color: "var(--text-tertiary)" }}>FY27 allocation</p>
-                          <p className="text-[11.5px] tabular-nums"
+                          <p className="text-[11px] tabular-nums"
                             style={{ color: meta.color, fontVariationSettings: fontWeights.semibold }}>
                             {r.allocatedINR > 0 ? `₹${r.allocatedINR.toFixed(2)} LC` : "—"}
                             {typeof r.promisedINR === "number" && r.promisedINR > 0 && (

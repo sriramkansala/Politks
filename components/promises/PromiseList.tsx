@@ -11,9 +11,17 @@ import { Input } from "@/components/ui/input"
 import { Tooltip } from "@/components/ui/tooltip"
 import { StatusPill } from "./StatusPill"
 import {
-  Table, TableHeader, TableBody, TableRow, TableHead, TableCell,
+  Table, TableHeader, TableBody, TableRow, TableHead, TableSortHeader, TableCell,
 } from "@/components/ui/table"
 import type { PromiseStatus } from "@/lib/db/types"
+
+// ── Sort ───────────────────────────────────────────────────────────────────
+type PromiseSortKey = "title" | "category" | "status"
+type PromiseSortState = { key: PromiseSortKey; dir: "asc" | "desc" } | null
+// Status order: kept → in-progress spectrum → broken → unrated.
+const STATUS_SORT_ORDER: PromiseStatus[] = [
+  "promise_kept", "in_the_works", "compromise", "stalled", "promise_broken", "not_yet_rated",
+]
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -201,6 +209,31 @@ export function PromiseList({ promises }: PromiseListProps) {
     return list
   }, [classified, activeFilter, search])
 
+  const [sort, setSort] = useState<PromiseSortState>(null)
+  const sorted = useMemo(() => {
+    if (!sort) return filtered // natural order = significance ranking
+    const dir = sort.dir === "asc" ? 1 : -1
+    const arr = [...filtered]
+    arr.sort((a, b) => {
+      switch (sort.key) {
+        case "title":
+          return a.title.toLowerCase() < b.title.toLowerCase() ? -dir
+            : a.title.toLowerCase() > b.title.toLowerCase() ? dir : 0
+        case "category":
+          return a.category < b.category ? -dir : a.category > b.category ? dir : 0
+        case "status":
+          return (STATUS_SORT_ORDER.indexOf(a.status as PromiseStatus)
+            - STATUS_SORT_ORDER.indexOf(b.status as PromiseStatus)) * dir
+        default:
+          return 0
+      }
+    })
+    return arr
+  }, [filtered, sort])
+
+  const toggleSort = (key: PromiseSortKey) =>
+    setSort((p) => (p?.key === key ? (p.dir === "asc" ? { key, dir: "desc" } : null) : { key, dir: "asc" }))
+
   return (
     <div className="space-y-3">
 
@@ -326,28 +359,25 @@ export function PromiseList({ promises }: PromiseListProps) {
             <TableHeader>
               <TableRow>
                 <TableHead style={{ width: 6 }} />
-                <TableHead
+                <TableSortHeader
+                  label="Promise" active={sort?.key === "title"} direction={sort?.key === "title" ? sort.dir : null} onSort={() => toggleSort("title")}
                   className="text-[10px] uppercase tracking-wide"
                   style={{ color: tokens.color.textTertiary }}
-                >
-                  Promise
-                </TableHead>
-                <TableHead
+                />
+                <TableSortHeader
+                  label="Category" active={sort?.key === "category"} direction={sort?.key === "category" ? sort.dir : null} onSort={() => toggleSort("category")}
                   className="text-[10px] uppercase tracking-wide hidden md:table-cell"
                   style={{ color: tokens.color.textTertiary, width: 160 }}
-                >
-                  Category
-                </TableHead>
-                <TableHead
+                />
+                <TableSortHeader
+                  label="Status" active={sort?.key === "status"} direction={sort?.key === "status" ? sort.dir : null} onSort={() => toggleSort("status")}
                   className="text-[10px] uppercase tracking-wide"
                   style={{ color: tokens.color.textTertiary, width: 160 }}
-                >
-                  Status
-                </TableHead>
+                />
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((promise, i) => {
+              {sorted.map((promise, i) => {
                 const sig = SIG[promise.sig]
                 return (
                   <TableRow key={promise.id} index={i}>

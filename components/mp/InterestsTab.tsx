@@ -124,7 +124,7 @@ function CoOwnerRow({ owner }: { owner: BusinessInterestCoOwner }) {
       >
         {/* Avatar */}
         <div
-          className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[10.5px] tabular-nums"
+          className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[10px] tabular-nums"
           style={{
             background: "var(--bg-elevated)",
             border: "1px solid var(--border)",
@@ -138,7 +138,7 @@ function CoOwnerRow({ owner }: { owner: BusinessInterestCoOwner }) {
         {/* Name + role */}
         <div className="flex-1 min-w-0">
           <p
-            className="text-[12.5px] leading-tight truncate"
+            className="text-[12px] leading-tight truncate"
             style={{
               color: "var(--text-primary)",
               fontVariationSettings: fontWeights.medium,
@@ -147,7 +147,7 @@ function CoOwnerRow({ owner }: { owner: BusinessInterestCoOwner }) {
             {owner.name}
           </p>
           <p
-            className="text-[10.5px] leading-tight mt-0.5"
+            className="text-[10px] leading-tight mt-0.5"
             style={{ color: "var(--text-tertiary)" }}
           >
             <span style={{ color: toneFg, fontVariationSettings: fontWeights.semibold }}>
@@ -199,7 +199,7 @@ function SourcePill({ source }: { source: BusinessInterest["source"] }) {
 
   const content = (
     <span
-      className="inline-flex items-center gap-1 text-[10.5px] px-2 py-1 rounded-md tabular-nums"
+      className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-md tabular-nums"
       style={{
         background: "var(--bg-elevated)",
         border: "1px solid var(--border)",
@@ -275,7 +275,7 @@ function EntityCard({ entity, idx }: { entity: BusinessInterest; idx: number }) 
           {/* Role + holding */}
           <div className="text-right shrink-0">
             <p
-              className="text-[10.5px] uppercase leading-none"
+              className="text-[10px] uppercase leading-none"
               style={{
                 color: "var(--text-tertiary)",
                 letterSpacing: "0.08em",
@@ -304,7 +304,7 @@ function EntityCard({ entity, idx }: { entity: BusinessInterest; idx: number }) 
       <div className="px-4 py-3">
         <div className="flex items-center justify-between mb-2">
           <p
-            className="text-[10.5px] uppercase leading-none"
+            className="text-[10px] uppercase leading-none"
             style={{
               color: "var(--text-tertiary)",
               letterSpacing: "0.08em",
@@ -314,7 +314,7 @@ function EntityCard({ entity, idx }: { entity: BusinessInterest; idx: number }) 
             Co-owners
           </p>
           <span
-            className="text-[10.5px] tabular-nums"
+            className="text-[10px] tabular-nums"
             style={{ color: "var(--text-tertiary)" }}
           >
             {co.length === 0 ? "None declared" : `${co.length} declared`}
@@ -329,7 +329,7 @@ function EntityCard({ entity, idx }: { entity: BusinessInterest; idx: number }) 
           </div>
         ) : (
           <p
-            className="text-[11.5px] py-1"
+            className="text-[11px] py-1"
             style={{ color: "var(--text-tertiary)" }}
           >
             No other co-owners listed in the source filing.
@@ -355,7 +355,7 @@ function EntityCard({ entity, idx }: { entity: BusinessInterest; idx: number }) 
               />
               <div className="flex-1 min-w-0">
                 <p
-                  className="text-[11.5px] leading-tight"
+                  className="text-[11px] leading-tight"
                   style={{
                     color: "var(--status-broken)",
                     fontVariationSettings: fontWeights.semibold,
@@ -432,7 +432,7 @@ function PendingIngestState({ mp }: { mp: Mp }) {
             Business interests not yet ingested
           </p>
           <p
-            className="text-[12.5px] leading-relaxed mt-1.5"
+            className="text-[12px] leading-relaxed mt-1.5"
             style={{ color: "var(--text-secondary)" }}
           >
             We surface only co-owners explicitly named in {mp.name}&rsquo;s sworn
@@ -452,7 +452,7 @@ function PendingIngestState({ mp }: { mp: Mp }) {
         }}
       >
         <p
-          className="text-[10.5px] uppercase"
+          className="text-[10px] uppercase"
           style={{
             color: "var(--text-tertiary)",
             letterSpacing: "0.08em",
@@ -495,7 +495,7 @@ function PendingIngestState({ mp }: { mp: Mp }) {
         </ul>
       </div>
 
-      <div className="flex items-start gap-2 text-[11.5px]" style={{ color: "var(--text-tertiary)" }}>
+      <div className="flex items-start gap-2 text-[11px]" style={{ color: "var(--text-tertiary)" }}>
         <Info size={12} className="shrink-0 mt-[2px]" />
         <span>
           We publish only what {mp.name} sworn-declared, plus what the Registrar of
@@ -654,7 +654,7 @@ export function InterestsTab({ mp }: { mp: Mp }) {
 
       {/* Methodology footer — always visible */}
       <div
-        className="rounded-md px-3.5 py-3 text-[11.5px] leading-relaxed flex items-start gap-2"
+        className="rounded-md px-3.5 py-3 text-[11px] leading-relaxed flex items-start gap-2"
         style={{
           background: "var(--bg-elevated)",
           border: "1px solid var(--border)",

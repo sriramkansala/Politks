@@ -246,7 +246,7 @@ function Lead({ sentences }: { sentences: string[] }) {
         The lead
       </div>
       <p
-        className="text-[13.5px] leading-relaxed max-w-[64ch]"
+        className="text-[13px] leading-relaxed max-w-[64ch]"
         style={{
           color: "var(--text-primary)",
           fontVariationSettings: fontWeights.normal,

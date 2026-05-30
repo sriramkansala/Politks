@@ -126,7 +126,7 @@ export function OffBudgetBorrowings() {
         style={{ background: "color-mix(in srgb, var(--status-broken) 7%, transparent)",
                  border: "1px solid color-mix(in srgb, var(--status-broken) 20%, transparent)" }}>
         <AlertTriangle size={13} strokeWidth={2} className="shrink-0 mt-0.5" style={{ color: "var(--status-broken)" }} />
-        <p className="text-[11.5px] leading-[1.55]" style={{ color: "var(--text-secondary)" }}>
+        <p className="text-[11px] leading-[1.55]" style={{ color: "var(--text-secondary)" }}>
           <strong style={{ color: "var(--status-broken)" }}>FY20 peak:</strong> CAG flagged ₹2.27 LC OBB — true fiscal deficit was ~2.5 percentage points higher than reported. The FY21 budget began the glide path that brought FCI-NSSF on-budget. Both UPA-era oil bonds and NDA-era FCI loans use the same mechanism.
         </p>
       </div>

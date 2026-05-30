@@ -83,7 +83,7 @@ function LiveCard({ item, onNavigate, idx }: {
           style={{ color: "var(--status-kept)", fontVariationSettings: fontWeights.semibold }}>
           Live
         </span>
-        <span className="ml-auto font-mono text-[9.5px]"
+        <span className="ml-auto font-mono text-[10px]"
           style={{ color: "var(--text-tertiary)", opacity: 0.6 }}>
           {item.id}
         </span>
@@ -130,7 +130,7 @@ function CohortSection({ cohort, items, onNavigate, startIdx }: {
             style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold }}>
             {meta.label}
           </h3>
-          <span className="text-[10.5px] px-[7px] py-[2px] rounded-md tabular-nums"
+          <span className="text-[10px] px-[7px] py-[2px] rounded-md tabular-nums"
             style={{
               background: "color-mix(in srgb, var(--status-kept) 12%, transparent)",
               color: "var(--status-kept)",

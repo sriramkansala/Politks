@@ -5,7 +5,7 @@
 // and the same data is reused. Uses the project's Tabs primitive so the
 // active-pill animation matches every other tab strip in the app.
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import Link from "next/link"
 import { Tabs, TabsList, TabItem, TabPanel } from "@/components/ui/tabs"
 import { AnimateIn, AnimateItem } from "@/components/ui/animate-in"
@@ -15,6 +15,7 @@ import {
   TableBody,
   TableRow,
   TableHead,
+  TableSortHeader,
   TableCell,
 } from "@/components/ui/table"
 import type { Bill } from "@/lib/db/types"
@@ -85,7 +86,49 @@ function Tag({ children, tone = "default" }: { children: React.ReactNode; tone?:
   )
 }
 
+type SortKey = "title" | "year" | "stage" | "outcome"
+type SortState = { key: SortKey; dir: "asc" | "desc" } | null
+
+// Outcome ordering for sort: resolved-positive → pending → negative.
+const OUTCOME_SORT_ORDER = ["passed", "pending", "withdrawn", "lapsed", "repealed"]
+
 function BillTable({ bills, hideHouseTag = false }: { bills: BillRow[]; hideHouseTag?: boolean }) {
+  const [sort, setSort] = useState<SortState>(null)
+
+  const sorted = useMemo(() => {
+    if (!sort) return bills
+    const dir = sort.dir === "asc" ? 1 : -1
+    const arr = [...bills]
+    arr.sort((a, b) => {
+      switch (sort.key) {
+        case "title": {
+          const av = (a.short_title ?? a.title ?? "").toLowerCase()
+          const bv = (b.short_title ?? b.title ?? "").toLowerCase()
+          return av < bv ? -dir : av > bv ? dir : 0
+        }
+        case "year": {
+          const av = a.introduced_date ?? ""
+          const bv = b.introduced_date ?? ""
+          return av < bv ? -dir : av > bv ? dir : 0
+        }
+        case "stage":
+          return ((a.current_stage ?? -1) - (b.current_stage ?? -1)) * dir
+        case "outcome": {
+          const ai = OUTCOME_SORT_ORDER.indexOf(a.outcome ?? "pending")
+          const bi = OUTCOME_SORT_ORDER.indexOf(b.outcome ?? "pending")
+          return (ai - bi) * dir
+        }
+        default:
+          return 0
+      }
+    })
+    return arr
+  }, [bills, sort])
+
+  // First click → asc, second → desc, third → clear (back to natural order).
+  const toggleSort = (key: SortKey) =>
+    setSort((p) => (p?.key === key ? (p.dir === "asc" ? { key, dir: "desc" } : null) : { key, dir: "asc" }))
+
   if (bills.length === 0) {
     return (
       <div
@@ -106,25 +149,29 @@ function BillTable({ bills, hideHouseTag = false }: { bills: BillRow[]; hideHous
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="text-[10px] uppercase tracking-wide" style={{ color: "var(--text-tertiary)" }}>
-              Bill
-            </TableHead>
+            <TableSortHeader
+              label="Bill" active={sort?.key === "title"} direction={sort?.key === "title" ? sort.dir : null} onSort={() => toggleSort("title")}
+              className="text-[10px] uppercase tracking-wide" style={{ color: "var(--text-tertiary)" }}
+            />
             <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: hideHouseTag ? 180 : 300 }}>
               {hideHouseTag ? "Type" : "Chamber / Type"}
             </TableHead>
-            <TableHead className="text-[10px] uppercase tracking-wide hidden md:table-cell whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 70 }}>
-              Year
-            </TableHead>
-            <TableHead className="text-[10px] uppercase tracking-wide whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 130 }}>
-              Stage
-            </TableHead>
-            <TableHead className="text-[10px] uppercase tracking-wide whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 130 }}>
-              Outcome
-            </TableHead>
+            <TableSortHeader
+              label="Year" active={sort?.key === "year"} direction={sort?.key === "year" ? sort.dir : null} onSort={() => toggleSort("year")}
+              className="text-[10px] uppercase tracking-wide hidden md:table-cell whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 70 }}
+            />
+            <TableSortHeader
+              label="Stage" active={sort?.key === "stage"} direction={sort?.key === "stage" ? sort.dir : null} onSort={() => toggleSort("stage")}
+              className="text-[10px] uppercase tracking-wide whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 130 }}
+            />
+            <TableSortHeader
+              label="Outcome" active={sort?.key === "outcome"} direction={sort?.key === "outcome" ? sort.dir : null} onSort={() => toggleSort("outcome")}
+              className="text-[10px] uppercase tracking-wide whitespace-nowrap" style={{ color: "var(--text-tertiary)", width: 130 }}
+            />
           </TableRow>
         </TableHeader>
         <TableBody>
-          {bills.map((bill, i) => (
+          {sorted.map((bill, i) => (
             <TableRow key={bill.id} index={i}>
               <TableCell>
                 <Link href={`/bills/${bill.slug}`} className="block" style={{ textDecoration: "none" }}>

@@ -50,7 +50,7 @@ export function DykCard({
           className={
             isCompact
               ? "text-[14px] leading-snug"
-              : "text-[17px] leading-snug"
+              : "text-[18px] leading-snug"
           }
           style={{ color: "var(--text-primary)", letterSpacing: "-0.011em", fontVariationSettings: fontWeights.medium }}
         >

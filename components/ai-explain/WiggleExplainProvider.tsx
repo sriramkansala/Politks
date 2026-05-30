@@ -211,7 +211,7 @@ function StatusPill({ onExit }: { onExit: () => void }) {
             e.stopPropagation()
             onExit()
           }}
-          className="ml-1 rounded-md px-1.5 py-0.5 text-[10.5px] tracking-wide"
+          className="ml-1 rounded-md px-1.5 py-0.5 text-[10px] tracking-wide"
           style={{
             color: "var(--text-tertiary)",
             border: "1px solid var(--border)",
@@ -326,7 +326,7 @@ function HintToast() {
         >
           <Sparkles size={15} />
         </motion.div>
-        <div className="text-[12.5px] leading-snug" style={{ color: "var(--text-secondary)" }}>
+        <div className="text-[12px] leading-snug" style={{ color: "var(--text-secondary)" }}>
           <div style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.medium }}>
             Tip: wiggle your cursor
           </div>

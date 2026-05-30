@@ -24,6 +24,33 @@ Whenever feedback is received on a UI, update this file with the reusable lesson
 
 ---
 
+## 2026-05-30 — Type-scale off-scale drift + sortable tables
+
+### Observed problem
+A type-scale audit (playbook anti-pattern #23) found **19 distinct arbitrary
+`text-[Npx]` sizes**, including **off-grid fractionals** (`9.5/10.5/11.5/12.5/13.5px`)
+and a stray `17px` — the same semantic element drifting between sizes. Separately,
+the bills/promises lists were not sortable (playbook #18, weak tables).
+
+### Why it failed
+Components pick a font size locally per element instead of binding to a fixed
+scale, so the grid drifts. Fractional px values are pure off-scale noise (no
+font renders meaningfully differently at 10.5 vs 11). Tables under-invest in the
+sort/filter affordances that make them a real work surface.
+
+### New reusable rule
+1. Every text size must land on the integer scale step grid
+   (10/11/12/13/14/15/16/18/20/24/28). **No fractional or one-off px sizes.**
+   Build hierarchy with weight + color, not invented sizes.
+2. Sortable tables use the shared `TableSortHeader` from `components/ui/table.tsx`
+   (asc → desc → clear, `aria-sort`, caret affordance). The consumer owns sort
+   state; the header is identical everywhere — never hand-roll a second one.
+
+### Applies to
+All text elements; `BillsList`, `PromiseList`, and any future columnar table.
+
+---
+
 ## 2026-05-30 — Card & control border-radius scale
 
 ### Observed problem

@@ -129,7 +129,7 @@ export function WhereDoesMyTaxGo() {
                 <motion.div key={s.slab}
                   initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
                   transition={{ ...springs.gentle, delay: 0.04 * i }}
-                  className="flex items-center justify-between text-[11.5px]">
+                  className="flex items-center justify-between text-[11px]">
                   <span style={{ color: "var(--text-secondary)" }}>{s.slab}</span>
                   <span className="tabular-nums"
                     style={{ color: "var(--text-primary)", fontVariationSettings: fontWeights.semibold }}>

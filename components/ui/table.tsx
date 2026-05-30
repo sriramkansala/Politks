@@ -12,10 +12,13 @@ import {
   type ThHTMLAttributes,
 } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, ChevronUp, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { springs } from "@/lib/springs";
 import { fontWeights } from "@/lib/font-weight";
 import { useProximityHover } from "@/hooks/use-proximity-hover";
+
+type SortDirection = "asc" | "desc";
 
 // ── Context ──────────────────────────────────────────────
 
@@ -196,6 +199,47 @@ const TableHead = forwardRef<
 
 TableHead.displayName = "TableHead";
 
+// ── TableSortHeader ──────────────────────────────────────
+// A clickable column header with an asc/desc/unsorted caret. The consumer owns
+// the sort state and passes `active` + `direction`; this just renders the UI
+// and the toggle affordance so every sortable table looks/behaves identically.
+
+interface TableSortHeaderProps {
+  label: ReactNode;
+  active: boolean;
+  direction: SortDirection | null;
+  onSort: () => void;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+function TableSortHeader({
+  label,
+  active,
+  direction,
+  onSort,
+  className,
+  style,
+}: TableSortHeaderProps) {
+  const Icon = !active ? ChevronsUpDown : direction === "asc" ? ChevronUp : ChevronDown;
+  return (
+    <TableHead className={className} style={style}>
+      <button
+        type="button"
+        onClick={onSort}
+        aria-sort={active && direction ? (direction === "asc" ? "ascending" : "descending") : "none"}
+        className="inline-flex items-center gap-1 cursor-pointer select-none transition-colors hover:text-[var(--text-secondary)]"
+        style={{ color: active ? "var(--text-secondary)" : "inherit" }}
+      >
+        {label}
+        <Icon size={11} strokeWidth={2} style={{ opacity: active ? 1 : 0.45 }} />
+      </button>
+    </TableHead>
+  );
+}
+
+TableSortHeader.displayName = "TableSortHeader";
+
 // ── TableCell ────────────────────────────────────────────
 
 const TableCell = forwardRef<
@@ -216,4 +260,5 @@ TableCell.displayName = "TableCell";
 
 // ── Exports ──────────────────────────────────────────────
 
-export { Table, TableHeader, TableBody, TableRow, TableHead, TableCell };
+export { Table, TableHeader, TableBody, TableRow, TableHead, TableSortHeader, TableCell };
+export type { SortDirection };

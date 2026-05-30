@@ -49,7 +49,7 @@ export function PartyOrganisation({
           </p>
           {snap.note && (
             <p
-              className="text-[12.5px] mt-0.5"
+              className="text-[12px] mt-0.5"
               style={{ color: "var(--text-secondary)" }}
             >
               {snap.note}
